@@ -1,0 +1,38 @@
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
+
+with lib;
+
+{
+  config = {
+    services.xserver = {
+      enable = true;
+      windowManager.bspwm = {
+        enable = true;
+      };
+    };
+
+    home-manager.sharedModules = [
+      {
+        xdg.configFile."bspwm/bspwmrc" = {
+          source = lib.configFile "bspwm/bspwmrc";
+          executable = true;
+        };
+      }
+    ];
+
+    services.displayManager.defaultSession = "none+bspwm";
+
+    environment.systemPackages = with pkgs; [
+      bspwm
+      sxhkd
+      xorg.xsetroot
+      nitrogen
+      polkit_gnome
+    ];
+  };
+}

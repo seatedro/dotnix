@@ -1,0 +1,42 @@
+#! /bin/sh
+xsetroot -cursor_name left_ptr
+
+pgrep -x sxhkd > /dev/null || sxhkd &
+
+bspc monitor -d 1 2 3 4 5 6 7 8
+
+bspc config border_width         3
+bspc config window_gap           12
+
+bspc config split_ratio          0.52
+bspc config borderless_monocle   false
+bspc config gapless_monocle      false
+
+# Gruvbox Dark Hard color scheme
+bspc config normal_border_color     "#3c3836"    # gruvbox-bg1  
+bspc config focused_border_color    "#fabd2f"    # gruvbox-yellow
+bspc config presel_border_color     "#d65d0e"    # gruvbox-orange
+bspc config active_border_color     "#689d6a"    # gruvbox-aqua
+
+# Add padding for fullscreen/monocle mode to create edges
+bspc config top_padding          45   # space for polybar + extra padding
+bspc config bottom_padding       15   # bottom padding 
+bspc config left_padding         15   # left padding
+bspc config right_padding        15   # right padding
+
+bspc config pointer_follows_focus true                                          
+bspc config pointer_follows_monitor true
+bspc config focus_follows_pointer true
+
+#Autostart applications
+sxhkd &
+systemctl --user restart polybar
+nitrogen --restore &
+
+#Window Rules
+bspc rule -a pavucontrol state=floating
+bspc rule -a Pavucontrol state=floating
+bspc rule -a steam state=floating
+bspc rule -a solaar state=floating
+bspc rule -a galculator state=floating
+bspc rule -a Galculator state=floating
