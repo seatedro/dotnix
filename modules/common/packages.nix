@@ -10,6 +10,8 @@
     code-cursor
 
     # Development tools
+    go
+    rustup
     zig
     nodejs_24
     bun
@@ -41,6 +43,7 @@
     rsync
     neofetch
     fastfetch
+    clang
 
     # Version control
     git
