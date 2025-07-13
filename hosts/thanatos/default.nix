@@ -1,6 +1,6 @@
 lib:
 lib.nixosSystem' (
-  { lib, pkgs, ... }:
+  { lib, pkgs, config, ... }:
   let
     inherit (lib) collectNix remove;
   in

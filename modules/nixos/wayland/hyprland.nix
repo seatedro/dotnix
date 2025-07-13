@@ -46,7 +46,7 @@ with lib;
       swaybg
       
       # Audio and brightness control
-      wpctl
+      wireplumber
       brightnessctl
       playerctl
       
@@ -107,7 +107,7 @@ with lib;
         
         # Wallpaper placeholder
         xdg.configFile."wallpaper.png" = {
-          source = lib.configFile "wallpaper.png";
+          source = ../../../wallpapers/wallhaven-qz8w55.png;
         };
       }
     ];
