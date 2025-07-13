@@ -1,0 +1,78 @@
+/* Catppuccin theme colors for waybar */
+window#waybar {
+  background-color: #24273a;
+  color: #cad3f5;
+}
+
+#workspaces button {
+  color: #a5adcb;
+}
+
+#workspaces button.active {
+  background-color: #8aadf4;
+  color: #24273a;
+}
+
+#workspaces button:hover {
+  background-color: #363a4f;
+  color: #cad3f5;
+}
+
+#cpu,
+#battery,
+#network,
+#bluetooth,
+#pulseaudio,
+#clock {
+  background-color: #1e2030;
+  color: #cad3f5;
+}
+
+#cpu {
+  color: #a6da95;
+}
+
+#battery {
+  color: #eed49f;
+}
+
+#battery.charging {
+  color: #a6da95;
+}
+
+#battery.critical:not(.charging) {
+  color: #ed8796;
+}
+
+#network {
+  color: #8aadf4;
+}
+
+#network.disconnected {
+  color: #ed8796;
+}
+
+#bluetooth {
+  color: #c6a0f6;
+}
+
+#bluetooth.disabled {
+  color: #5b6078;
+}
+
+#pulseaudio {
+  color: #91d7e3;
+}
+
+#pulseaudio.muted {
+  color: #ed8796;
+}
+
+#clock {
+  color: #f5a97f;
+}
+
+tooltip {
+  background-color: #24273a;
+  border: 1px solid #8aadf4;
+} 

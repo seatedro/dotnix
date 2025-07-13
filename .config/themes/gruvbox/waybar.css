@@ -1,0 +1,78 @@
+/* Gruvbox theme colors for waybar */
+window#waybar {
+  background-color: #1d2021;
+  color: #ebdbb2;
+}
+
+#workspaces button {
+  color: #a89984;
+}
+
+#workspaces button.active {
+  background-color: #458588;
+  color: #ebdbb2;
+}
+
+#workspaces button:hover {
+  background-color: #3c3836;
+  color: #ebdbb2;
+}
+
+#cpu,
+#battery,
+#network,
+#bluetooth,
+#pulseaudio,
+#clock {
+  background-color: #282828;
+  color: #ebdbb2;
+}
+
+#cpu {
+  color: #98971a;
+}
+
+#battery {
+  color: #d79921;
+}
+
+#battery.charging {
+  color: #98971a;
+}
+
+#battery.critical:not(.charging) {
+  color: #fb4934;
+}
+
+#network {
+  color: #458588;
+}
+
+#network.disconnected {
+  color: #cc241d;
+}
+
+#bluetooth {
+  color: #b16286;
+}
+
+#bluetooth.disabled {
+  color: #665c54;
+}
+
+#pulseaudio {
+  color: #689d6a;
+}
+
+#pulseaudio.muted {
+  color: #cc241d;
+}
+
+#clock {
+  color: #d65d0e;
+}
+
+tooltip {
+  background-color: #1d2021;
+  border: 1px solid #458588;
+} 
