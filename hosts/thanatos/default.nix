@@ -64,6 +64,15 @@ lib.nixosSystem' (
       enable = true;
     };
 
+    hardware.nvidia = {
+        modesetting.enable = true;
+        powerManagement.enable = false;
+        powerManagement.finegrained = false;
+        open = true;
+        nvidiaSettings = true;
+        package = config.boot.kernelPackages.nvidiaPackages.latest;
+    };
+
     boot.loader.systemd-boot.consoleMode = "0";
 
     system.stateVersion = "25.11";

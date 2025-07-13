@@ -43,7 +43,23 @@ with lib;
       # System utilities
       papirus-icon-theme
       gvfs
+
+      # Nvidia
+      libva-utils
+      vdpauinfo
+      vulkan-tools
+      vulkan-validation-layers
+      libvdpau-va-gl
+      egl-wayland
+      wgpu-utils
+      mesa
+      libglvnd
+      nvtop
+      nvitop
+      libGL
     ];
+
+    services.xserver.videoDrivers = [ "nvidia" ];
 
     # Enable file manager daemon
     services.gvfs.enable = true;
