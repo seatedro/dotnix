@@ -55,6 +55,8 @@ with lib;
 
     services.xserver.videoDrivers = [ "nvidia" ];
 
+    services.displayManager.ly.enable = true;
+
     # Enable file manager daemon
     services.gvfs.enable = true;
 

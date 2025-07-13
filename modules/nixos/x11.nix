@@ -22,6 +22,12 @@ with lib;
 
   config = mkIf config.x11.enable {
     # Enable X11 and display manager
+    bspwm.enable = true;
+    picom.enable = true;
+    rofi.enable = true;
+    polybar.enable = true;
+    sxhkd.enable = true;
+
     services.xserver = {
       enable = true;
       xkb.layout = "us";

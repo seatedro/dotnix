@@ -8,7 +8,11 @@
 with lib;
 
 {
-  config = {
+  options.polybar = {
+    enable = mkEnableOption "Polybar status bar";
+  };
+
+  config = mkIf config.polybar.enable {
     home-manager.sharedModules = [
       {
         services.polybar = {

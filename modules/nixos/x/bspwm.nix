@@ -8,7 +8,11 @@
 with lib;
 
 {
-  config = {
+  options.bspwm = {
+    enable = mkEnableOption "Bspwm window manager";
+  };
+
+  config = mkIf config.bspwm.enable {
     services.xserver = {
       enable = true;
       windowManager.bspwm = {

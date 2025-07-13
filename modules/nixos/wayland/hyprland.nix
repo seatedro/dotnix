@@ -19,7 +19,6 @@ with lib;
       xwayland.enable = true;
     };
 
-
     # Essential wayland packages
     environment.systemPackages = with pkgs; [
       # Core wayland tools
@@ -28,21 +27,22 @@ with lib;
       hyprlock
       hyprpicker
       hyprshot
-      
+
       # Wayland utilities
       wl-clipboard
       wl-clip-persist
       grim
       slurp
       swaybg
-      
+
       # Audio and brightness control
       wireplumber
       brightnessctl
       playerctl
-      
+
       # System utilities
       polkit_gnome
+
     ];
 
     # Enable sound with PipeWire
@@ -92,12 +92,11 @@ with lib;
         xdg.configFile."hypr/hyprlock.conf" = {
           source = lib.configFile "hypr/hyprlock.conf";
         };
-        
-        # Wallpaper placeholder
+
         xdg.configFile."wallpaper.png" = {
-          source = ../../../wallpapers/wallhaven-qz8w55.png;
+          source = ../../../wallpapers/3840x2160-dark-lines.png;
         };
       }
     ];
   };
-} 
+}
