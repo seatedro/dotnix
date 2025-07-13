@@ -38,7 +38,10 @@ with lib;
     # XDG Portal for Wayland
     xdg.portal = {
       enable = true;
-      extraPortals = [ pkgs.xdg-desktop-portal-hyprland ];
+      extraPortals = [ 
+        pkgs.xdg-desktop-portal-hyprland 
+        pkgs.xdg-desktop-portal-gtk
+       ];
       config.common.default = "*";
     };
 
@@ -47,8 +50,6 @@ with lib;
 
     # Font configuration
     fonts.packages = with pkgs; [
-      noto-fonts
-      noto-fonts-cjk-sans
       noto-fonts-emoji
       liberation_ttf
       fira-code

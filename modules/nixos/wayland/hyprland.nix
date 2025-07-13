@@ -19,15 +19,6 @@ with lib;
       xwayland.enable = true;
     };
 
-    # XDG portal for screen sharing and file dialogs
-    xdg.portal = {
-      enable = true;
-      extraPortals = [
-        pkgs.xdg-desktop-portal-hyprland
-        pkgs.xdg-desktop-portal-gtk
-      ];
-      config.common.default = "*";
-    };
 
     # Essential wayland packages
     environment.systemPackages = with pkgs; [
@@ -53,9 +44,6 @@ with lib;
       # System utilities
       polkit_gnome
     ];
-
-    # Enable polkit for authentication
-    security.polkit.enable = true;
 
     # Enable sound with PipeWire
     security.rtkit.enable = true;
