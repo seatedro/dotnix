@@ -1,8 +1,8 @@
 lib:
 lib.nixosSystem' (
-  { lib, pkgs, ... }:
+  { lib, pkgs, config, ... }:
   let
-    inherit (lib) collectNix remove;
+    inherit (lib) collectNix remove mkDefault;
   in
   {
     imports = collectNix ./. |> remove ./default.nix;
@@ -30,34 +30,24 @@ lib.nixosSystem' (
     wayland-desktop.enable = true;
 
     boot.initrd.availableKernelModules = [
-      "ata_piix"
-      "ohci_pci"
-      "ehci_pci"
+      "nvme"
+      "xhci_pci"
       "ahci"
+      "usbhid"
+      "usb_storage"
       "sd_mod"
-      "sr_mod"
     ];
     boot.initrd.kernelModules = [ ];
-    boot.kernelModules = [ ];
+    boot.kernelModules = [ "kvm-amd" ];
     boot.extraModulePackages = [ ];
     boot.loader = {
         efi.canTouchEfiVariables = true;
         grub = {
-        enable = true;
-        devices = [ "nodev" ];
-        efiSupport = true;
-        useOSProber = true;
+          enable = true;
+          devices = [ "nodev" ];
+          efiSupport = true;
+          useOSProber = true;
         };
-    };
-
-    fileSystems."/" = {
-      device = "/dev/disk/by-label/nixos";
-      fsType = "ext4";
-    };
-
-    fileSystems."/boot" = {
-      device = "/dev/disk/by-label/boot";
-      fsType = "vfat";
     };
 
     hardware.graphics = {
@@ -73,7 +63,24 @@ lib.nixosSystem' (
         package = config.boot.kernelPackages.nvidiaPackages.latest;
     };
 
-    boot.loader.systemd-boot.consoleMode = "0";
+    hardware.cpu.amd.updateMicrocode = mkDefault config.hardware.enableRedistributableFirmware;
+
+    fileSystems."/" =
+    { device = "/dev/disk/by-uuid/91e42d49-54b3-48a0-bd56-37cf1b9a72c3";
+      fsType = "ext4";
+    };
+
+    fileSystems."/boot" =
+    { device = "/dev/disk/by-uuid/1C91-CBB0";
+      fsType = "vfat";
+      options = [ "fmask=0077" "dmask=0077" ];
+    };
+
+    swapDevices =
+    [ { device = "/dev/disk/by-uuid/11bd10e3-c4a2-41b7-8695-b71d16b7ed1f"; }
+    ];
+
+    #boot.loader.systemd-boot.consoleMode = "0";
 
     system.stateVersion = "25.11";
     home-manager.sharedModules = [

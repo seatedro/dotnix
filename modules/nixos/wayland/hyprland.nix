@@ -19,16 +19,6 @@ with lib;
       xwayland.enable = true;
     };
 
-    # XDG portal for screen sharing and file dialogs
-    xdg.portal = {
-      enable = true;
-      extraPortals = [
-        pkgs.xdg-desktop-portal-hyprland
-        pkgs.xdg-desktop-portal-gtk
-      ];
-      config.common.default = "*";
-    };
-
     # Essential wayland packages
     environment.systemPackages = with pkgs; [
       # Core wayland tools
@@ -37,25 +27,23 @@ with lib;
       hyprlock
       hyprpicker
       hyprshot
-      
+
       # Wayland utilities
       wl-clipboard
       wl-clip-persist
       grim
       slurp
       swaybg
-      
+
       # Audio and brightness control
-      wpctl
+      wireplumber
       brightnessctl
       playerctl
-      
+
       # System utilities
       polkit_gnome
-    ];
 
-    # Enable polkit for authentication
-    security.polkit.enable = true;
+    ];
 
     # Enable sound with PipeWire
     security.rtkit.enable = true;
@@ -104,12 +92,11 @@ with lib;
         xdg.configFile."hypr/hyprlock.conf" = {
           source = lib.configFile "hypr/hyprlock.conf";
         };
-        
-        # Wallpaper placeholder
+
         xdg.configFile."wallpaper.png" = {
-          source = lib.configFile "wallpaper.png";
+          source = ../../../wallpapers/3840x2160-dark-lines.png;
         };
       }
     ];
   };
-} 
+}

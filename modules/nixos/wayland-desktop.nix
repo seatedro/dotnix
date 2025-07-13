@@ -9,10 +9,7 @@ with lib;
 
 {
   imports = [
-    ./hyprland.nix
-    ./waybar.nix
-    ./wofi.nix
-    ./mako.nix
+    ./wayland.nix
     ./theme.nix
   ];
 
@@ -21,19 +18,16 @@ with lib;
   };
 
   config = mkIf config.wayland-desktop.enable {
-    # Enable all wayland components
-    hyprland.enable = true;
-    waybar.enable = true;
-    wofi.enable = true;
-    mako.enable = true;
+    # Enable Wayland components
+    wayland.enable = true;
 
     # Essential desktop packages
     environment.systemPackages = with pkgs; [
       # Applications
       ghostty
-      thunar
-      thunar-volman
-      tumbler
+      xfce.thunar
+      xfce.thunar-volman
+      xfce.tumbler
       pavucontrol
       yazi
       btop
@@ -55,12 +49,13 @@ with lib;
       wgpu-utils
       mesa
       libglvnd
-      nvtop
       nvitop
       libGL
     ];
 
     services.xserver.videoDrivers = [ "nvidia" ];
+
+    services.displayManager.ly.enable = true;
 
     # Enable file manager daemon
     services.gvfs.enable = true;
@@ -70,9 +65,6 @@ with lib;
 
     # Enable network manager applet
     programs.nm-applet.enable = true;
-
-    # Enable gnome keyring
-    services.gnome.gnome-keyring.enable = true;
 
     # Enable fcitx5 input method
     i18n.inputMethod = {

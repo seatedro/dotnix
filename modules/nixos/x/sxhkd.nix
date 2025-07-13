@@ -8,7 +8,11 @@
 with lib;
 
 {
-  config = {
+  options.sxhkd = {
+    enable = mkEnableOption "Sxhkd keyboard shortcut daemon";
+  };
+
+  config = mkIf config.sxhkd.enable {
     environment.systemPackages = with pkgs; [
       sxhkd
     ];

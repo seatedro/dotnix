@@ -9,11 +9,7 @@ with lib;
 
 {
   imports = [
-    ./bspwm.nix
-    ./sxhkd.nix
-    ./polybar.nix
-    ./rofi.nix
-    ./picom.nix
+    ./x11.nix
     ./dunst.nix
   ];
 
@@ -22,13 +18,8 @@ with lib;
   };
 
   config = mkIf config.desktop.enable {
-
-    xdg.portal = {
-      enable = true;
-      extraPortals = [ pkgs.xdg-desktop-portal-gnome ];
-      config.common.default = "*";
-    };
-    services.gnome.gnome-keyring.enable = true;
+    # Enable X11 components
+    x11.enable = true;
 
     # Essential desktop packages
     environment.systemPackages = with pkgs; [
@@ -45,21 +36,13 @@ with lib;
       polkit_gnome
     ];
 
-    # Enable X11 and display manager
+    # X11 specific configuration
     services.xserver = {
-      enable = true;
       dpi = 220;
-
-      displayManager = {
-        lightdm.enable = true;
-        sessionCommands = ''
-          ${pkgs.xorg.xset}/bin/xset r rate 200 40
-        '';
-      };
-
-      desktopManager = {
-        wallpaper.mode = "fill";
-      };
+      displayManager.sessionCommands = ''
+        ${pkgs.xorg.xset}/bin/xset r rate 200 40
+      '';
+      desktopManager.wallpaper.mode = "fill";
     };
 
     # Enable polkit for authentication
@@ -67,12 +50,6 @@ with lib;
 
     # Enable sound with PipeWire
     security.rtkit.enable = true;
-    services.pipewire = {
-      enable = true;
-      alsa.enable = true;
-      alsa.support32Bit = true;
-      pulse.enable = true;
-    };
 
     # Enable network manager applet and other system services
     programs.nm-applet.enable = true;

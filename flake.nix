@@ -70,7 +70,8 @@
         |> mapAttrs (name: const <| import ./hosts/${name} lib)
         |> attrsToList
         |> groupBy (
-          { name, value }: if name == "volt" || name == "thanatos" then "nixosConfigurations" else "darwinConfigurations"
+          { name, value }:
+          if name == "volt" || name == "thanatos" then "nixosConfigurations" else "darwinConfigurations"
         )
         |> mapAttrs (const listToAttrs);
 
