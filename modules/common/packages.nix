@@ -6,8 +6,6 @@
     vim
     helix
     neovim
-    zed-editor
-    code-cursor
 
     # Development tools
     go
@@ -44,6 +42,7 @@
     neofetch
     fastfetch
     clang
+    yazi
 
     # Version control
     git

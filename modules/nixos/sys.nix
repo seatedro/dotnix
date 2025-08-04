@@ -38,6 +38,8 @@ in
     brave
     alacritty
     xclip
+    zed-editor
+    code-cursor
     xfce.thunar
     xfce.thunar-volman
     xfce.tumbler
@@ -61,4 +63,9 @@ in
   services.desktopManager.plasma6.enable = false;
 
   system.stateVersion = "25.11";
+
+  config = {
+    # Don't require password for sudo
+    security.sudo.wheelNeedsPassword = false;
+  };
 }

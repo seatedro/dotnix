@@ -26,9 +26,10 @@ let
     "overlays"
     "default"
   ];
+  customOverlays = import ./overlays.nix inputs;
 
   overlayModule = {
-    nixpkgs.overlays = inputOverlays;
+    nixpkgs.overlays = inputOverlays ++ customOverlays;
   };
 
   modulesCommon = collectNix ../modules/common;

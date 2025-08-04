@@ -30,10 +30,10 @@ in
     channel.enable = false;
     gc =
       merge {
-        automatic = true;
         options = "--delete-older-than 3d";
       }
       <| optionalAttrs config.isLinux {
+        automatic = true;
         dates = "weekly";
         persistent = true;
       };

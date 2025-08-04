@@ -7,8 +7,6 @@ lib.darwinSystem' (
   {
     imports = collectNix ./. |> remove ./default.nix;
 
-    type = "desktop";
-
     networking.hostName = "nori";
 
     users.users.ro = {
@@ -29,5 +27,6 @@ lib.darwinSystem' (
     nix.settings.trusted-users = [ "ro" ];
 
     system.stateVersion = 5;
+    nixpkgs.hostPlatform = "aarch64-darwin";
   }
 )

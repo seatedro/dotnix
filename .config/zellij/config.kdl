@@ -1,0 +1,97 @@
+keybinds clear-defaults=true {
+    normal {
+        bind "Ctrl b" { SwitchToMode "Tmux"; }
+        bind "Ctrl s" { SwitchToMode "EnterSearch"; SearchInput 0; }
+    }
+
+    tmux {
+        // Essential tmux keybinds
+        bind "Ctrl b" { Write 2; SwitchToMode "Normal"; }
+        
+        // Pane management
+        bind "\"" { NewPane "Down"; SwitchToMode "Normal"; }
+        bind "%" { NewPane "Right"; SwitchToMode "Normal"; }
+        bind "x" { CloseFocus; SwitchToMode "Normal"; }
+        bind "z" { ToggleFocusFullscreen; SwitchToMode "Normal"; }
+        
+        // Pane navigation  
+        bind "h" { MoveFocus "Left"; SwitchToMode "Normal"; }
+        bind "j" { MoveFocus "Down"; SwitchToMode "Normal"; }
+        bind "k" { MoveFocus "Up"; SwitchToMode "Normal"; }
+        bind "l" { MoveFocus "Right"; SwitchToMode "Normal"; }
+        bind "Left" { MoveFocus "Left"; SwitchToMode "Normal"; }
+        bind "Right" { MoveFocus "Right"; SwitchToMode "Normal"; }
+        bind "Down" { MoveFocus "Down"; SwitchToMode "Normal"; }
+        bind "Up" { MoveFocus "Up"; SwitchToMode "Normal"; }
+        bind "o" { FocusNextPane; }
+        
+        // Tab/window management
+        bind "c" { NewTab; SwitchToMode "Normal"; }
+        bind "p" { GoToPreviousTab; SwitchToMode "Normal"; }
+        bind "n" { GoToNextTab; SwitchToMode "Normal"; }
+        bind "&" { CloseTab; SwitchToMode "Normal"; }
+        bind "," { SwitchToMode "RenameTab"; }
+        
+        // Numbers for direct tab access
+        bind "1" { GoToTab 1; SwitchToMode "Normal"; }
+        bind "2" { GoToTab 2; SwitchToMode "Normal"; }
+        bind "3" { GoToTab 3; SwitchToMode "Normal"; }
+        bind "4" { GoToTab 4; SwitchToMode "Normal"; }
+        bind "5" { GoToTab 5; SwitchToMode "Normal"; }
+        bind "6" { GoToTab 6; SwitchToMode "Normal"; }
+        bind "7" { GoToTab 7; SwitchToMode "Normal"; }
+        bind "8" { GoToTab 8; SwitchToMode "Normal"; }
+        bind "9" { GoToTab 9; SwitchToMode "Normal"; }
+        
+        // Copy mode
+        bind "[" { SwitchToMode "Scroll"; }
+        
+        // Session management
+        bind "d" { Detach; }
+        bind "s" { SwitchToMode "Session"; }
+    }
+
+    scroll {
+        bind "Esc" "q" { SwitchToMode "Normal"; }
+        bind "j" "Down" { ScrollDown; }
+        bind "k" "Up" { ScrollUp; }
+        bind "Ctrl f" "PageDown" { PageScrollDown; }
+        bind "Ctrl b" "PageUp" { PageScrollUp; }
+        bind "d" { HalfPageScrollDown; }
+        bind "u" { HalfPageScrollUp; }
+        bind "/" { SwitchToMode "EnterSearch"; SearchInput 0; }
+        bind "y" { Copy; }
+    }
+
+    search {
+        bind "Esc" { SwitchToMode "Scroll"; }
+        bind "Enter" { SwitchToMode "Scroll"; }
+        bind "n" { Search "down"; }
+        bind "N" { Search "up"; }
+    }
+
+    entersearch {
+        bind "Enter" { SwitchToMode "Search"; }
+        bind "Esc" { SwitchToMode "Normal"; }
+    }
+
+    renametab {
+        bind "Enter" { SwitchToMode "Normal"; }
+        bind "Esc" { UndoRenameTab; SwitchToMode "Normal"; }
+    }
+
+    session {
+        bind "Esc" { SwitchToMode "Normal"; }
+        bind "d" { Detach; }
+    }
+}
+
+// Basic settings
+on_force_close "detach"
+pane_frames true
+default_layout "simple"
+default_mode "normal"
+mouse_mode true
+copy_command "pbcopy"
+copy_on_select true
+theme "gruvbox-dark"

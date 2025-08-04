@@ -9,8 +9,4 @@ in
     isLinux = mkConst <| config.os == "linux";
   };
 
-  config = {
-    # Don't require password for sudo
-    security.sudo.wheelNeedsPassword = false;
-  };
 }

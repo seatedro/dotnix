@@ -46,6 +46,10 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    zjstatus = {
+      url = "github:dj95/zjstatus";
+    };
+
     glimpse.url = "github:seatedro/glimpse";
   };
 
@@ -80,6 +84,7 @@
         |> attrsToList
         |> map ({ name, value }: nameValuePair name value.config)
         |> listToAttrs;
+
     in
     hostsByType
     // hostConfigs
@@ -93,4 +98,5 @@
         aarch64-darwin = nixpkgs.legacyPackages.aarch64-darwin.nixfmt-rfc-style;
       };
     };
+
 }
