@@ -10,16 +10,18 @@
 
     # Applications
     brave
+    ghostty
     vesktop
-    
+
     # File management (common across desktop modules)
     xfce.thunar
     xfce.thunar-volman
     xfce.tumbler
     gvfs
-    
+
     # System applications
     wineWowPackages.stable
     sdl3
   ];
-} 
+}
+

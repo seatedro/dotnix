@@ -68,4 +68,6 @@ $env.config.hooks = {
   pre_prompt: []
 }
 
+alias gg = nvim -c 'Neogit'
+
 source ~/.cache/carapace/init.nu
