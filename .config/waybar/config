@@ -10,6 +10,7 @@
     "clock"
   ],
   "modules-right": [
+    "mpris",
     "bluetooth",
     "network",
     "pulseaudio",
@@ -39,6 +40,30 @@
       "4": [],
       "5": []
     }
+  },
+  "mpris": {
+    "player": "playerctld",
+    "format": "{player_icon} {dynamic}",
+    "format-paused": "{status_icon} <i>{dynamic}</i>",
+    "player-icons": {
+      "default": "♪",
+      "mpv": "🎵",
+      "spotify": "",
+      "firefox": "",
+      "chromium": ""
+    },
+    "status-icons": {
+      "playing": "▶",
+      "paused": "⏸",
+      "stopped": "■"
+    },
+    "dynamic-len": 40,
+    "dynamic-order": ["title", "artist", "album"],
+    "dynamic-separator": " - ",
+    "tooltip-format": "{player}: {dynamic}",
+    "on-click": "playerctl play-pause",
+    "on-click-middle": "playerctl previous",
+    "on-click-right": "playerctl next"
   },
   "cpu": {
     "interval": 5,

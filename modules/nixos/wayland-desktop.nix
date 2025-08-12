@@ -18,10 +18,8 @@ with lib;
   };
 
   config = mkIf config.wayland-desktop.enable {
-    # Enable Wayland components
     wayland.enable = true;
 
-    # Essential desktop packages
     environment.systemPackages = with pkgs; [
       # Applications
       ghostty
@@ -31,10 +29,13 @@ with lib;
       pavucontrol
       yazi
       btop
-      
+      vesktop
+      spotify
+      obsidian
+
       # Bluetooth management
       blueberry
-      
+
       # System utilities
       papirus-icon-theme
       gvfs
@@ -57,16 +58,14 @@ with lib;
 
     services.displayManager.ly.enable = true;
 
-    # Enable file manager daemon
     services.gvfs.enable = true;
 
-    # Enable thumbnail support
     services.tumbler.enable = true;
 
-    # Enable network manager applet
     programs.nm-applet.enable = true;
 
-    # Enable fcitx5 input method
+    programs.nix-ld.enable = true;
+
     i18n.inputMethod = {
       enabled = "fcitx5";
       fcitx5.addons = with pkgs; [
@@ -76,4 +75,4 @@ with lib;
       ];
     };
   };
-} 
+}

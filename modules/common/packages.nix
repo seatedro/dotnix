@@ -17,11 +17,14 @@
     bun
     awscli2
     jujutsu
+    lldb
+    carapace
 
     # Nix tools (additional to what's in nix.nix)
     alejandra
 
     # System tools
+    zsh
     fish
     nushell
     btop
@@ -44,6 +47,7 @@
     neofetch
     fastfetch
     clang
+    ouch
 
     # Version control
     git
@@ -53,6 +57,7 @@
     ffmpeg
     imagemagick
     pandoc
+    obs-studio
 
     # Security tools
     gnupg
