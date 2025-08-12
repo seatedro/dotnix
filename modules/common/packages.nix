@@ -18,6 +18,7 @@
     awscli2
     jujutsu
     lldb
+    alacritty
     carapace
 
     # Nix tools (additional to what's in nix.nix)
@@ -48,6 +49,9 @@
     fastfetch
     clang
     ouch
+    yazi
+    spotify
+    obsidian
 
     # Version control
     git

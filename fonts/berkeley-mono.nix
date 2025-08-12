@@ -4,10 +4,12 @@ pkgs.stdenvNoCC.mkDerivation {
   pname = "berkeley-mono";
   version = "2.0";
 
-  src = ../.config/fonts;
+  src = builtins.path { path = ../.config/fonts; name = "berkeley-mono-src"; };
+
+  dontUnpack = true;
 
   installPhase = ''
-    mkdir -p $out/share/fonts/truetype/
+    mkdir -p "$out/share/fonts/truetype" "$out/share/fonts/opentype"
     cp -r $src/*.{ttf,otf} $out/share/fonts/truetype/
   '';
 

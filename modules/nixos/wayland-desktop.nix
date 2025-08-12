@@ -22,16 +22,7 @@ with lib;
 
     environment.systemPackages = with pkgs; [
       # Applications
-      ghostty
-      xfce.thunar
-      xfce.thunar-volman
-      xfce.tumbler
       pavucontrol
-      yazi
-      btop
-      vesktop
-      spotify
-      obsidian
 
       # Bluetooth management
       blueberry

@@ -27,27 +27,9 @@ in
   ];
 
   hardware.graphics.enable = true;
-
-  environment.systemPackages = with pkgs; [
-    nixfmt-rfc-style
-    nixd
-    git
-    wget
-    curl
-    tree
-    brave
-    alacritty
-    xclip
-    xfce.thunar
-    xfce.thunar-volman
-    xfce.tumbler
-    pkgs.gvfs
-    wineWowPackages.stable
-    sdl3
-
-    # For hypervisors that support auto-resizing, this script forces it.
-    # I've noticed not everyone listens to the udev events so this is a hack.
-    (writeShellScriptBin "xrandr-auto" ''
+  # For hypervisors that support auto-resizing, this script forces it.
+  environment.systemPackages = [
+    (pkgs.writeShellScriptBin "xrandr-auto" ''
       xrandr --output Virtual-1 --auto
     '')
   ];
