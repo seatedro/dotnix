@@ -13,6 +13,7 @@ with lib;
     ./wayland/waybar.nix
     ./wayland/wofi.nix
     ./wayland/mako.nix
+    ./wayland/steam.nix
   ];
 
   options.wayland = {
@@ -25,6 +26,7 @@ with lib;
     waybar.enable = true;
     wofi.enable = true;
     mako.enable = true;
+    steam.enable = true;
 
     # Enable sound
     hardware.pulseaudio.enable = false;
@@ -38,10 +40,10 @@ with lib;
     # XDG Portal for Wayland
     xdg.portal = {
       enable = true;
-      extraPortals = [ 
-        pkgs.xdg-desktop-portal-hyprland 
+      extraPortals = [
+        pkgs.xdg-desktop-portal-hyprland
         pkgs.xdg-desktop-portal-gtk
-       ];
+      ];
       config.common.default = "*";
     };
 
@@ -60,4 +62,5 @@ with lib;
     security.polkit.enable = true;
     services.gnome.gnome-keyring.enable = true;
   };
-} 
+}
+

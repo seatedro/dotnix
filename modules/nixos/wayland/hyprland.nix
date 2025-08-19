@@ -17,6 +17,7 @@ with lib;
     programs.hyprland = {
       enable = true;
       xwayland.enable = true;
+      # withUWSM = true;
     };
 
     # Essential wayland packages

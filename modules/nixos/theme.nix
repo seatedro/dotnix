@@ -10,7 +10,12 @@ with lib;
 {
   options.theme = {
     name = mkOption {
-      type = types.enum [ "gruvbox" "catppuccin" "nord" "tokyo-night" ];
+      type = types.enum [
+        "gruvbox"
+        "catppuccin"
+        "nord"
+        "tokyo-night"
+      ];
       default = "gruvbox";
       description = "Theme to use for the desktop environment";
     };
@@ -33,7 +38,7 @@ with lib;
         xdg.configFile."themes/gruvbox/wofi.css" = {
           source = lib.configFile "themes/gruvbox/wofi.css";
         };
-        
+
         xdg.configFile."themes/catppuccin/waybar.css" = {
           source = lib.configFile "themes/catppuccin/waybar.css";
         };
@@ -78,25 +83,26 @@ with lib;
           echo "Usage: switch-theme <theme-name>"
           exit 1
         fi
-        
+
         THEME_DIR="$HOME/.config/themes/$THEME"
         if [ ! -d "$THEME_DIR" ]; then
           echo "Theme '$THEME' not found!"
           exit 1
         fi
-        
+
         # Update symlinks
         ln -sf "$THEME_DIR" "$HOME/.config/current-theme"
         ln -sf "$THEME_DIR/waybar.css" "$HOME/.config/waybar/theme.css"
         ln -sf "$THEME_DIR/hyprland.conf" "$HOME/.config/hypr/theme.conf"
         ln -sf "$THEME_DIR/hyprlock.conf" "$HOME/.config/hypr/theme-hyprlock.conf"
         ln -sf "$THEME_DIR/wofi.css" "$HOME/.config/wofi/theme.css"
-        
+
         # Reload waybar
         pkill -SIGUSR1 waybar
-        
+
         echo "Switched to $THEME theme"
       '')
     ];
   };
-} 
+}
+

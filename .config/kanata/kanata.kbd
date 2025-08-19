@@ -1,0 +1,11 @@
+(defsrc
+  caps
+)
+
+(deflayer default
+  @cap
+)
+
+(defalias
+  cap (tap-hold-press 200 200 esc caps)
+)

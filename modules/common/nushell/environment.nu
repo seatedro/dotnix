@@ -26,18 +26,22 @@ $env.ENV_CONVERSIONS.PATH = {
 
 $env.LS_COLORS = (if ("~/.config/nushell/ls_colors.txt" | path exists) { 
   open ~/.config/nushell/ls_colors.txt 
-} else { 
+} else {
   vivid generate snazzy 
 })
 
 source ~/.config/nushell/zoxide.nu
-
 source ~/.config/nushell/starship.nu
+
+$env.CARAPACE_BRIDGES = 'zsh,fish,bash,inshellisense' # optional
+mkdir ~/.cache/carapace
+carapace _carapace nushell | save --force ~/.cache/carapace/init.nu
 
 # Path additions
 use std/util "path add"
 path add /opt/homebrew/bin
 path add ~/.bun/bin
+path add ~/.cargo/bin
 
 $env.CARAPACE_BRIDGES = 'zsh,fish,bash,inshellisense' # optional
 mkdir ~/.cache/carapace

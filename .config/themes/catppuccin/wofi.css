@@ -1,37 +1,37 @@
 /* Catppuccin theme for wofi */
 window {
-    background-color: #24273a;
-    border: 2px solid #8aadf4;
+    background-color: #1e1e2e;
+    border: 2px solid #89b4fa;
 }
 
 #inner-box,
 #outer-box,
 #scroll {
-    background-color: #24273a;
+    background-color: #1e1e2e;
 }
 
 #input {
-    border: 1px solid #363a4f;
-    background-color: #1e2030;
-    color: #cad3f5;
+    border: 1px solid #45475a;
+    background-color: #313244;
+    color: #cdd6f4;
 }
 
 #input:focus {
-    border-color: #8aadf4;
+    border-color: #89b4fa;
 }
 
 #text {
-    color: #cad3f5;
+    color: #cdd6f4;
 }
 
 #entry {
-    background-color: #24273a;
+    background-color: #1e1e2e;
 }
 
 #entry:selected {
-    background-color: #8aadf4;
+    background-color: #89b4fa;
 }
 
 #entry:selected #text {
-    color: #24273a;
+    color: #1e1e2e;
 } 

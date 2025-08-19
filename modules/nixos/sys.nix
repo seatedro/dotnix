@@ -27,7 +27,6 @@ in
   ];
 
   hardware.graphics.enable = true;
-
   environment.systemPackages = with pkgs; [
     nixfmt-rfc-style
     nixd

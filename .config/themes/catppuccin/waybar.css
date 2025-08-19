@@ -1,21 +1,21 @@
 /* Catppuccin theme colors for waybar */
 window#waybar {
-  background-color: #24273a;
-  color: #cad3f5;
+  background-color: #1e1e2e;
+  color: #cdd6f4;
 }
 
 #workspaces button {
-  color: #a5adcb;
+  color: #bac2de;
 }
 
 #workspaces button.active {
-  background-color: #8aadf4;
-  color: #24273a;
+  background-color: #89b4fa;
+  color: #1e1e2e;
 }
 
 #workspaces button:hover {
-  background-color: #363a4f;
-  color: #cad3f5;
+  background-color: #45475a;
+  color: #cdd6f4;
 }
 
 #cpu,
@@ -24,55 +24,55 @@ window#waybar {
 #bluetooth,
 #pulseaudio,
 #clock {
-  background-color: #1e2030;
-  color: #cad3f5;
+  background-color: #313244;
+  color: #cdd6f4;
 }
 
 #cpu {
-  color: #a6da95;
+  color: #a6e3a1;
 }
 
 #battery {
-  color: #eed49f;
+  color: #f9e2af;
 }
 
 #battery.charging {
-  color: #a6da95;
+  color: #a6e3a1;
 }
 
 #battery.critical:not(.charging) {
-  color: #ed8796;
+  color: #f38ba8;
 }
 
 #network {
-  color: #8aadf4;
+  color: #89b4fa;
 }
 
 #network.disconnected {
-  color: #ed8796;
+  color: #f38ba8;
 }
 
 #bluetooth {
-  color: #c6a0f6;
+  color: #cba6f7;
 }
 
 #bluetooth.disabled {
-  color: #5b6078;
+  color: #6c7086;
 }
 
 #pulseaudio {
-  color: #91d7e3;
+  color: #94e2d5;
 }
 
 #pulseaudio.muted {
-  color: #ed8796;
+  color: #f38ba8;
 }
 
 #clock {
-  color: #f5a97f;
+  color: #fab387;
 }
 
 tooltip {
-  background-color: #24273a;
-  border: 1px solid #8aadf4;
+  background-color: #1e1e2e;
+  border: 1px solid #89b4fa;
 } 
