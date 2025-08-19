@@ -7,8 +7,6 @@ let
   };
 in
 {
-  #boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
 
   networking.networkmanager.enable = true;
 
@@ -63,8 +61,6 @@ in
 
   system.stateVersion = "25.11";
 
-  config = {
-    # Don't require password for sudo
-    security.sudo.wheelNeedsPassword = false;
-  };
+  # Don't require password for sudo
+  security.sudo.wheelNeedsPassword = false;
 }
