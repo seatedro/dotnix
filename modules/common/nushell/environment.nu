@@ -1,14 +1,3 @@
-$env.PATH = [
-    $"($env.HOME)/.nix-profile/bin"
-    $"/etc/profiles/per-user/($env.USER)/bin"
-    "/run/current-system/sw/bin"
-    "/nix/var/nix/profiles/default/bin"
-    "/usr/local/bin"
-    "/usr/bin"
-    "/usr/sbin"
-    "/bin"
-    "/sbin"
-]
 $env.EDITOR = "nvim"
 $env.NIX_PATH = [
     $"darwin-config=($env.HOME)/.nixpkgs/darwin-configuration.nix"
@@ -39,6 +28,7 @@ carapace _carapace nushell | save --force ~/.cache/carapace/init.nu
 
 # Path additions
 use std/util "path add"
+path add /run/wrappers/bin
 path add /opt/homebrew/bin
 path add ~/.bun/bin
 path add ~/.cargo/bin

@@ -60,7 +60,4 @@ in
   services.desktopManager.plasma6.enable = false;
 
   system.stateVersion = "25.11";
-
-  # Don't require password for sudo
-  security.sudo.wheelNeedsPassword = false;
 }

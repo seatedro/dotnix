@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, swww, ... }:
 
 {
   # Common Linux system packages that were scattered across modules
@@ -22,6 +22,7 @@
     # System applications
     wineWowPackages.stable
     sdl3
+
+    swww.packages.${pkgs.system}.swww
   ];
 }
-

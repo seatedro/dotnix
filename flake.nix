@@ -51,6 +51,8 @@
     };
 
     glimpse.url = "github:seatedro/glimpse";
+
+    swww.url = "github:LGFae/swww";
   };
 
   outputs =

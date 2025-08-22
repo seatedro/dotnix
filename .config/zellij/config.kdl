@@ -92,6 +92,5 @@ pane_frames true
 default_layout "simple"
 default_mode "normal"
 mouse_mode true
-copy_command "pbcopy"
 copy_on_select true
 theme "gruvbox-dark"
