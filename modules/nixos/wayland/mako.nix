@@ -26,10 +26,10 @@ with lib;
         services.mako = {
           enable = true;
           
-          # Gruvbox dark theme configuration
-          backgroundColor = "#1d2021";
-          textColor = "#ebdbb2";
-          borderColor = "#458588";
+          # Kanagawa theme configuration
+          backgroundColor = "#181616";
+          textColor = "#c5c9c5";
+          borderColor = "#8ba4b0";
           borderRadius = 8;
           borderSize = 2;
           
@@ -56,14 +56,14 @@ with lib;
           # Extra config
           extraConfig = ''
             [urgency=low]
-            border-color=#689d6a
+            border-color=#87a987
             
             [urgency=normal]
-            border-color=#d79921
+            border-color=#e6c384
             
             [urgency=high]
-            border-color=#fb4934
-            background-color=#3c1f1e
+            border-color=#e46876
+            background-color=#2d4f67
           '';
         };
       }

@@ -15,17 +15,16 @@ with lib;
         "catppuccin"
         "nord"
         "tokyo-night"
+        "kanagawa"
       ];
-      default = "gruvbox";
+      default = "kanagawa";
       description = "Theme to use for the desktop environment";
     };
   };
 
   config = {
-    # Home Manager configuration for theme
     home-manager.sharedModules = [
       {
-        # Install all theme directories
         xdg.configFile."themes/gruvbox/waybar.css" = {
           source = lib.configFile "themes/gruvbox/waybar.css";
         };
@@ -52,12 +51,23 @@ with lib;
           source = lib.configFile "themes/catppuccin/wofi.css";
         };
 
-        # Create current theme symlink
+        xdg.configFile."themes/kanagawa/waybar.css" = {
+          source = lib.configFile "themes/kanagawa/waybar.css";
+        };
+        xdg.configFile."themes/kanagawa/hyprland.conf" = {
+          source = lib.configFile "themes/kanagawa/hyprland.conf";
+        };
+        xdg.configFile."themes/kanagawa/hyprlock.conf" = {
+          source = lib.configFile "themes/kanagawa/hyprlock.conf";
+        };
+        xdg.configFile."themes/kanagawa/wofi.css" = {
+          source = lib.configFile "themes/kanagawa/wofi.css";
+        };
+
         xdg.configFile."current-theme" = {
           source = lib.configFile "themes/${config.theme.name}";
         };
 
-        # Theme-aware config files that import from current theme
         xdg.configFile."waybar/theme.css" = {
           source = lib.configFile "themes/${config.theme.name}/waybar.css";
         };
@@ -73,13 +83,12 @@ with lib;
       }
     ];
 
-    # Create a simple theme switcher script
     environment.systemPackages = [
       (pkgs.writeShellScriptBin "switch-theme" ''
         #!/bin/bash
         THEME=$1
         if [ -z "$THEME" ]; then
-          echo "Available themes: gruvbox catppuccin nord tokyo-night"
+          echo "Available themes: gruvbox catppuccin nord tokyo-night kanagawa"
           echo "Usage: switch-theme <theme-name>"
           exit 1
         fi
@@ -90,14 +99,12 @@ with lib;
           exit 1
         fi
 
-        # Update symlinks
         ln -sf "$THEME_DIR" "$HOME/.config/current-theme"
         ln -sf "$THEME_DIR/waybar.css" "$HOME/.config/waybar/theme.css"
         ln -sf "$THEME_DIR/hyprland.conf" "$HOME/.config/hypr/theme.conf"
         ln -sf "$THEME_DIR/hyprlock.conf" "$HOME/.config/hypr/theme-hyprlock.conf"
         ln -sf "$THEME_DIR/wofi.css" "$HOME/.config/wofi/theme.css"
 
-        # Reload waybar
         pkill -SIGUSR1 waybar
 
         echo "Switched to $THEME theme"
@@ -105,4 +112,3 @@ with lib;
     ];
   };
 }
-

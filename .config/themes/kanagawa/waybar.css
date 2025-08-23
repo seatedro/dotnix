@@ -1,0 +1,266 @@
+@define-color bg #181616;
+@define-color bg-dark #0d0c0c;
+@define-color bg-light #2d4f67;
+@define-color fg #c5c9c5;
+@define-color fg-dark #a6a69c;
+@define-color fg-light #c8c093;
+
+@define-color red #c4746e;
+@define-color green #8a9a7b;
+@define-color yellow #c4b28a;
+@define-color blue #8ba4b0;
+@define-color magenta #a292a3;
+@define-color cyan #8ea4a2;
+@define-color orange #e6c384;
+
+@define-color bright-red #e46876;
+@define-color bright-green #87a987;
+@define-color bright-yellow #e6c384;
+@define-color bright-blue #7fb4ca;
+@define-color bright-magenta #938aa9;
+@define-color bright-cyan #7aa89f;
+
+@define-color accent @blue;
+@define-color accent-dark @cyan;
+@define-color warning @yellow;
+@define-color critical @red;
+@define-color good @green;
+
+* {
+    border: none;
+    border-radius: 0;
+    font-family: "FiraCode Nerd Font", monospace;
+    font-size: 13px;
+    font-weight: 600;
+    min-height: 0;
+}
+
+window#waybar {
+    background-color: @bg;
+    color: @fg;
+}
+
+window#waybar.hidden {
+    opacity: 0.2;
+}
+
+#workspaces button {
+    padding: 0 5px;
+    background-color: transparent;
+    color: @fg-dark;
+    border-bottom: 3px solid transparent;
+}
+
+#workspaces button:hover {
+    background: @bg-light;
+    box-shadow: inherit;
+    border-bottom: 3px solid @accent;
+}
+
+#workspaces button.active {
+    background-color: @bg-light;
+    border-bottom: 3px solid @accent;
+}
+
+#workspaces button.urgent {
+    background-color: @critical;
+}
+
+#mode {
+    background-color: @bg-light;
+    border-bottom: 3px solid @fg;
+}
+
+#clock,
+#battery,
+#cpu,
+#memory,
+#disk,
+#temperature,
+#backlight,
+#network,
+#pulseaudio,
+#custom-media,
+#tray,
+#mode,
+#idle_inhibitor,
+#mpd {
+    padding: 0 10px;
+    margin: 0 4px;
+    color: @fg;
+}
+
+#window,
+#workspaces {
+    margin: 0 4px;
+}
+
+/* If workspaces is the leftmost module, omit left margin */
+.modules-left > widget:first-child > #workspaces {
+    margin-left: 0;
+}
+
+/* If workspaces is the rightmost module, omit right margin */
+.modules-right > widget:last-child > #workspaces {
+    margin-right: 0;
+}
+
+#clock {
+    background-color: @bg-light;
+    color: @fg-light;
+}
+
+#battery {
+    background-color: @bg;
+    color: @fg;
+}
+
+#battery.charging, #battery.plugged {
+    color: @good;
+    background-color: @bg-light;
+}
+
+@keyframes blink {
+    to {
+        background-color: @bg;
+        color: @critical;
+    }
+}
+
+#battery.critical:not(.charging) {
+    background-color: @critical;
+    color: @bg;
+    animation-name: blink;
+    animation-duration: 0.5s;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+}
+
+label:focus {
+    background-color: @bg;
+}
+
+#cpu {
+    background-color: @green;
+    color: @bg;
+}
+
+#memory {
+    background-color: @magenta;
+    color: @bg;
+}
+
+#disk {
+    background-color: @cyan;
+    color: @bg;
+}
+
+#backlight {
+    background-color: @yellow;
+    color: @bg;
+}
+
+#network {
+    background-color: @blue;
+    color: @bg;
+}
+
+#network.disconnected {
+    background-color: @critical;
+}
+
+#pulseaudio {
+    background-color: @orange;
+    color: @bg;
+}
+
+#pulseaudio.muted {
+    background-color: @fg-dark;
+    color: @bg;
+}
+
+#custom-media {
+    background-color: @green;
+    color: @bg;
+    min-width: 100px;
+}
+
+#custom-media.custom-spotify {
+    background-color: @green;
+}
+
+#custom-media.custom-vlc {
+    background-color: @orange;
+}
+
+#temperature {
+    background-color: @yellow;
+    color: @bg;
+}
+
+#temperature.critical {
+    background-color: @critical;
+}
+
+#tray {
+    background-color: @bg-light;
+}
+
+#tray > .passive {
+    -gtk-icon-effect: dim;
+}
+
+#tray > .needs-attention {
+    -gtk-icon-effect: highlight;
+    background-color: @critical;
+}
+
+#idle_inhibitor {
+    background-color: @bg-light;
+}
+
+#idle_inhibitor.activated {
+    background-color: @fg;
+    color: @bg;
+}
+
+#mpd {
+    background-color: @accent-dark;
+    color: @bg;
+}
+
+#mpd.disconnected {
+    background-color: @critical;
+}
+
+#mpd.stopped {
+    background-color: @fg-dark;
+}
+
+#mpd.paused {
+    background-color: @bg-light;
+    color: @fg;
+}
+
+#language {
+    background: @bg-light;
+    color: @fg-light;
+    padding: 0 10px;
+    margin: 0 4px;
+}
+
+#keyboard-state {
+    background: @warning;
+    color: @bg;
+    padding: 0 10px;
+    margin: 0 4px;
+}
+
+#keyboard-state > label {
+    padding: 0 5px;
+}
+
+#keyboard-state > label.locked {
+    background: rgba(0, 0, 0, 0.2);
+}
