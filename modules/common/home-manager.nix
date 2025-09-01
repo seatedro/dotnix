@@ -1,9 +1,13 @@
+{ inputs, ... }:
+
 {
   home-manager = {
     useGlobalPkgs = true;
     useUserPackages = true;
+    extraSpecialArgs = { inherit inputs; };
 
     sharedModules = [
+      inputs.nix-colors.homeManagerModules.default
       {
         programs.atuin = {
           enable = true;

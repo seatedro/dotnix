@@ -14,6 +14,8 @@ with lib;
     ./wayland/wofi.nix
     ./wayland/mako.nix
     ./wayland/steam.nix
+    ./pywal.nix
+    ./pywal-scripts.nix
   ];
 
   options.wayland = {
@@ -24,9 +26,10 @@ with lib;
     # Enable Wayland components
     hyprland.enable = true;
     waybar.enable = true;
-    wofi.enable = true;
+    wofi.enable = false;
     mako.enable = true;
     steam.enable = true;
+    pywal.enable = true;
 
     # Enable sound
     hardware.pulseaudio.enable = false;

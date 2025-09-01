@@ -1,0 +1,8 @@
+# Pywal colors for Vicinae
+[colors]
+background = "{background}"
+foreground = "{foreground}"
+selection = "{color4}"
+accent = "{color6}"
+warning = "{color3}"
+error = "{color1}"

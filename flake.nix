@@ -6,12 +6,14 @@
       "https://cache.garnix.io/"
       "https://nix-community.cachix.org/"
       "https://hyprland.cachix.org"
+      "https://vicinae.cachix.org"
     ];
 
     extra-trusted-public-keys = [
       "cache.garnix.io:CTFPyKSLcx5RMJKfLo5EEPUObbA78b0YQ2DTCJXqr9g="
       "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
       "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
+      "vicinae.cachix.org-1:1kDrfienkGHPYbkpNj1mWTr7Fm1+zcenzgTizIcI3oc="
     ];
 
     experimental-features = [
@@ -53,6 +55,13 @@
     glimpse.url = "github:seatedro/glimpse";
 
     swww.url = "github:LGFae/swww";
+
+    vicinae = {
+      url = "github:vicinaehq/vicinae";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    nix-colors.url = "github:misterio77/nix-colors";
   };
 
   outputs =

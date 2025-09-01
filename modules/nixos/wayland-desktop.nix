@@ -10,7 +10,6 @@ with lib;
 {
   imports = [
     ./wayland.nix
-    ./theme.nix
   ];
 
   options.wayland-desktop = {

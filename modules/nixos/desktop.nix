@@ -11,6 +11,7 @@ with lib;
   imports = [
     ./x11.nix
     ./dunst.nix
+    ./vicinae.nix
   ];
 
   options.desktop = {
@@ -20,6 +21,9 @@ with lib;
   config = mkIf config.desktop.enable {
     # Enable X11 components
     x11.enable = true;
+
+    # Enable vicinae launcher
+    vicinae.enable = true;
 
     # Essential desktop packages
     environment.systemPackages = with pkgs; [

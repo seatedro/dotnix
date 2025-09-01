@@ -1,4 +1,9 @@
-{ pkgs, swww, ... }:
+{
+  pkgs,
+  swww,
+  vicinae,
+  ...
+}:
 
 {
   # Common Linux system packages that were scattered across modules
@@ -12,6 +17,7 @@
     brave
     ghostty
     vesktop
+    telegram-desktop
 
     # File management (common across desktop modules)
     xfce.thunar
@@ -24,5 +30,6 @@
     sdl3
 
     swww.packages.${pkgs.system}.swww
+    vicinae.packages.${pkgs.system}.default
   ];
 }

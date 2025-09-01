@@ -1,0 +1,14 @@
+background-color={background}
+text-color={foreground}
+border-color={color4}
+progress-color=over {color2}
+
+[urgency=low]
+border-color={color4}
+
+[urgency=normal]
+border-color={color4}
+
+[urgency=high]
+border-color={color1}
+text-color={color1}

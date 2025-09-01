@@ -1,48 +1,178 @@
-/* Import theme colors */
-@import "theme.css";
+/* Import theme colors - using pywal colors */
+@import url("file:///home/ro/.cache/wal/colors-waybar.css");
 
 * {
   border: none;
   border-radius: 0;
   min-height: 0;
-  font-family: "JetBrainsMono Nerd Font";
-  font-size: 12px;
+  font-family: "JetBrainsMono Nerd Font", "Symbols Nerd Font";
+  font-size: 13px;
+  font-weight: 600;
 }
 
 window#waybar {
+  background-color: transparent;
+  color: @foreground;
   transition-property: background-color;
   transition-duration: 0.5s;
 }
 
+window#waybar.hidden {
+  opacity: 0.2;
+}
+
 #workspaces {
-  margin-left: 7px;
+  margin: 0 4px;
 }
 
 #workspaces button {
   all: initial;
-  padding: 2px 6px;
-  margin-right: 3px;
-  background-color: transparent;
-  border-radius: 4px;
+  font-family: "JetBrainsMono Nerd Font";
+  font-size: 13px;
+  font-weight: 600;
+  padding: 0 5px;
+  margin: 4px 0;
+  color: @foreground;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  transition: all 200ms ease-in-out;
 }
 
+#workspaces button.active {
+  color: @color4;
+}
+
+#workspaces button.urgent {
+  color: @color1;
+}
+
+#workspaces button:hover {
+  color: @color6;
+  background: rgba(0, 0, 0, 0.2);
+  box-shadow: inherit;
+  text-shadow: inherit;
+}
+
+/* Individual module styling */
 #cpu,
 #battery,
 #network,
 #bluetooth,
 #pulseaudio,
-#clock {
-  min-width: 12px;
-  margin-right: 13px;
+#clock,
+#custom-music,
+#custom-power,
+#custom-notification,
+#tray,
+#mpris {
   padding: 0 8px;
-  border-radius: 4px;
+  color: @foreground;
+  border-radius: 12px;
+  margin: 5px 2px;
+  background: transparent;
+  font-weight: 600;
 }
 
+/* Module-specific colors */
+#clock {
+  color: @foreground;
+}
+
+#pulseaudio {
+  color: @color5;
+}
+
+#pulseaudio.muted {
+  color: @color8;
+}
+
+#network {
+  color: @color4;
+}
+
+#network.disconnected {
+  color: @color8;
+}
+
+#battery {
+  color: @color2;
+}
+
+#battery.warning:not(.charging) {
+  color: @color1;
+}
+
+#custom-power {
+  color: @color1;
+  margin-right: 5px;
+}
+
+#bluetooth {
+  color: @color6;
+}
+
+#custom-notification {
+  color: @color3;
+}
+
+/* Container styling for modules */
+.modules-left {
+  background-color: alpha(@background, 0.95);
+  border: 1px solid @color8;
+  border-radius: 12px;
+  padding: 0 8px;
+  margin: 5px 0 5px 10px;
+}
+
+.modules-center {
+  background-color: alpha(@background, 0.95);
+  border: 1px solid @color4;
+  border-radius: 12px;
+  padding: 0 10px;
+  margin: 5px 0;
+}
+
+.modules-right {
+  background-color: alpha(@background, 0.95);
+  border: 1px solid @color8;
+  border-radius: 12px;
+  padding: 0 5px;
+  margin: 5px 10px 5px 0;
+}
+
+/* Tooltips */
 tooltip {
-  border-radius: 4px;
-  padding: 4px;
+  background: @background;
+  border: 1px solid @color4;
+  border-radius: 8px;
+  padding: 8px;
 }
 
 tooltip label {
-  padding: 2px;
+  color: @foreground;
+  padding: 4px;
+}
+
+/* Tray styling */
+#tray {
+  margin: 5px 2px;
+}
+
+#tray > .passive {
+  -gtk-icon-effect: dim;
+}
+
+#tray > .needs-attention {
+  -gtk-icon-effect: highlight;
+}
+
+/* Custom module specific styling */
+#custom-spotify {
+  color: @color2;
+  padding-right: 10px;
+}
+
+#image {
+  margin: 4px 0 4px 10px;
 } 
