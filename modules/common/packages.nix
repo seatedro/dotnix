@@ -15,7 +15,6 @@
     bun
     awscli2
     jujutsu
-    lldb
     alacritty
     carapace
 
@@ -45,7 +44,8 @@
     rsync
     neofetch
     fastfetch
-    clang
+    lldb_21
+    llvmPackages_21.libcxxClang
     ouch
     yazi
     spotify

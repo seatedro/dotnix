@@ -31,8 +31,20 @@ lib.nixosSystem' (
 
     networking.hostName = "thanatos";
 
-    # Enable wayland desktop environment
     wayland-desktop.enable = true;
+
+    services.protonvpn = {
+      enable = true;
+      interface = {
+        privateKeyFile = "/root/secrets/protonvpn-private-key";
+        ip = "10.2.0.2/32";
+        dns.ip = "10.2.0.1";
+      };
+      endpoint = {
+        publicKey = "2xvxhMK0AalXOMq6Dh0QMVJ0Cl3WQTmWT5tdeb8SpR0=";
+        ip = "79.127.185.166";
+      };
+    };
 
     boot.initrd.availableKernelModules = [
       "nvme"

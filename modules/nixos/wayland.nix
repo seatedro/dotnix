@@ -43,11 +43,16 @@ with lib;
     # XDG Portal for Wayland
     xdg.portal = {
       enable = true;
+      config = {
+        common.default = [ "hyprland" ];
+        hyprland.default = [ "hyprland" ];
+        hyprland."org.freedesktop.impl.portal.FileChooser" = [ "termfilechooser" ];
+      };
       extraPortals = [
         pkgs.xdg-desktop-portal-hyprland
         pkgs.xdg-desktop-portal-gtk
+        pkgs.xdg-desktop-portal-termfilechooser
       ];
-      config.common.default = "*";
     };
 
     # Enable touchpad support
@@ -59,6 +64,10 @@ with lib;
       liberation_ttf
       fira-code
       fira-code-symbols
+    ];
+
+    environment.systemPackages = with pkgs; [
+      wlsunset
     ];
 
     # Security and authentication

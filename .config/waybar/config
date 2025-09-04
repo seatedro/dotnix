@@ -12,6 +12,7 @@
     "clock"
   ],
   "modules-right": [
+    "hyprland/window",
     "tray",
     "bluetooth",
     "pulseaudio",
@@ -43,6 +44,11 @@
       "4": [],
       "5": []
     }
+  },
+  "hyprland/window": {
+    "format": "{class}",
+    "max-length": 50,
+    "separate-outputs": true
   },
   "tray": {
     "spacing": 10

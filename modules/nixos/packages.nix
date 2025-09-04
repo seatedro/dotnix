@@ -25,6 +25,10 @@
     xfce.tumbler
     gvfs
 
+    # Media viewers
+    mpv
+    feh
+
     # System applications
     wineWowPackages.stable
     sdl3
