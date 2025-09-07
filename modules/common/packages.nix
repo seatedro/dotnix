@@ -4,12 +4,12 @@
   ...
 }: {
   environment.systemPackages = with pkgs; [
-    # Editors
+    #---Editors------
     vim
     helix
     neovim
 
-    # Development tools
+    #---Dev Tools------
     go
     rustup
     zig
@@ -20,10 +20,10 @@
     alacritty
     carapace
 
-    # Nix tools (additional to what's in nix.nix)
+    #---Nix Tools------
     alejandra
 
-    # System tools
+    #---System------
     zsh
     fish
     nushell
@@ -53,21 +53,21 @@
     spotify
     obsidian
 
-    # Version control
+    #---VCS------
     git
     gh
 
-    # Media and utilities
+    #---Media------
     ffmpeg
     imagemagick
     pandoc
     obs-studio
 
-    # Security tools
+    #---Security------
     gnupg
     openssh
 
-    # Custom packages
+    #---Custom------
     glimpse.packages.${pkgs.system}.default
   ];
 }

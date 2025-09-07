@@ -76,9 +76,6 @@ with lib; {
               sticky_history = "yes";
               history_length = 20;
 
-              # dmenu = /usr/bin/dmenu -p dunst:
-              # browser = /usr/bin/sensible-browser
-
               always_run_script = true;
 
               title = "Dunst";

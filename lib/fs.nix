@@ -4,6 +4,6 @@ _: self: super: let
 in {
   collectNix = path: listFilesRecursive path |> filter (hasSuffix ".nix");
 
-  # Helper function to reference config files from flake root
+  #---Config Helper------
   configFile = relativePath: ../. + "/.config/${relativePath}";
 }

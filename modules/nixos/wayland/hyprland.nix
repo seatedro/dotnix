@@ -10,39 +10,38 @@ with lib; {
   };
 
   config = mkIf config.hyprland.enable {
-    # Enable Hyprland
+    #---Hyprland------
     programs.hyprland = {
       enable = true;
       xwayland.enable = true;
-      # withUWSM = true;
     };
 
-    # Essential wayland packages
+    #---Packages------
     environment.systemPackages = with pkgs; [
-      # Core wayland tools
+      #---Core------
       hyprland
       hypridle
       hyprlock
       hyprpicker
       hyprshot
 
-      # Wayland utilities
+      #---Utils------
       wl-clipboard
       wl-clip-persist
       grim
       slurp
       swaybg
 
-      # Audio and brightness control
+      #---Controls------
       wireplumber
       brightnessctl
       playerctl
 
-      # System utilities
+      #---System------
       polkit_gnome
     ];
 
-    # Enable sound with PipeWire
+    #---PipeWire------
     security.rtkit.enable = true;
     services.pipewire = {
       enable = true;
@@ -51,14 +50,14 @@ with lib; {
       pulse.enable = true;
     };
 
-    # Enable bluetooth
+    #---Bluetooth------
     hardware.bluetooth.enable = true;
     services.blueman.enable = true;
 
-    # Home Manager configuration
+    #---Home Manager------
     home-manager.sharedModules = [
       {
-        # Hyprland config files
+        #---Config Files------
         xdg.configFile."hypr/hyprland.conf" = {
           source = lib.configFile "hypr/hyprland.conf";
         };

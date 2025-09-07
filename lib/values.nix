@@ -7,8 +7,7 @@ in {
       __functor = self: next:
         self
         // {
-          # Technically, `contents` is implementation defined
-          # but nothing ever happens, so we can rely on this.
+          #---Implementation------
           contents = self.contents ++ [next];
         };
     };

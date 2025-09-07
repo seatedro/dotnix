@@ -18,7 +18,7 @@ with lib; {
   };
 
   config = mkIf config.x11.enable {
-    # Enable X11 and display manager
+    #---X11------
     bspwm.enable = true;
     picom.enable = true;
     rofi.enable = true;
@@ -32,7 +32,7 @@ with lib; {
       windowManager.bspwm.enable = true;
     };
 
-    # XDG Portal for desktop integration
+    #---XDG Portal------
     xdg.portal = {
       enable = true;
       extraPortals = [pkgs.xdg-desktop-portal-gnome];

@@ -16,15 +16,15 @@ with lib; {
   };
 
   config = mkIf config.desktop.enable {
-    # Enable X11 components
+    #---X11------
     x11.enable = true;
 
-    # Enable vicinae launcher
+    #---Vicinae------
     vicinae.enable = true;
 
-    # Essential desktop packages
+    #---Packages------
     environment.systemPackages = with pkgs; [
-      # Applications
+      #---Apps------
       ghostty
       pcmanfm
       pavucontrol
@@ -33,11 +33,11 @@ with lib; {
       scrot
       nitrogen
 
-      # System utilities
+      #---Utils------
       polkit_gnome
     ];
 
-    # X11 specific configuration
+    #---X11 Config------
     services.xserver = {
       dpi = 220;
       displayManager.sessionCommands = ''
@@ -46,19 +46,19 @@ with lib; {
       desktopManager.wallpaper.mode = "fill";
     };
 
-    # Enable polkit for authentication
+    #---Polkit------
     security.polkit.enable = true;
 
-    # Enable sound with PipeWire
+    #---PipeWire------
     security.rtkit.enable = true;
 
-    # Enable network manager applet and other system services
+    #---Network------
     programs.nm-applet.enable = true;
 
-    # Enable file manager daemon
+    #---File Manager------
     services.gvfs.enable = true;
 
-    # Enable thumbnail support
+    #---Thumbnails------
     services.tumbler.enable = true;
   };
 }

@@ -1,5 +1,5 @@
 {lib, ...}: {
-  ###########   Keyboard settings   ###########
+  #---Keyboard------
   system.keyboard.enableKeyMapping = true;
   system.keyboard.remapCapsLockToEscape = true;
 }

@@ -7,6 +7,7 @@
 with lib; {
   imports = [
     ./wayland.nix
+    ./vicinae.nix
   ];
 
   options.wayland-desktop = {
@@ -15,19 +16,20 @@ with lib; {
 
   config = mkIf config.wayland-desktop.enable {
     wayland.enable = true;
+    vicinae.enable = true;
 
     environment.systemPackages = with pkgs; [
-      # Applications
+      #---Apps------
       pavucontrol
 
-      # Bluetooth management
+      #---Bluetooth------
       blueberry
 
-      # System utilities
+      #---Utils------
       papirus-icon-theme
       gvfs
 
-      # Nvidia
+      #---Nvidia------
       libva-utils
       vdpauinfo
       vulkan-tools

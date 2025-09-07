@@ -17,14 +17,14 @@
     gl = "git log --oneline --graph";
     gdiff = "git diff";
 
-    # Jujutsu aliases
+    #---Jujutsu------
     jd = "jj desc";
     jf = "jj git fetch";
     jn = "jj new";
     jp = "jj git push";
     js = "jj st";
 
-    # Better ls with eza
+    #---Eza------
     ls = "eza";
     la = "eza --all";
     lla = "eza --long --all";

@@ -4,12 +4,18 @@
   pkgs,
   ...
 }:
-with lib; {
+with lib; let
+  pywalConverter = pkgs.writeScriptBin "vicinae-pywal-converter" ''
+    #!${pkgs.python3}/bin/python3
+    ${builtins.readFile (lib.configFile "vicinae/pywal_to_json_converter.py")}
+  '';
+in {
   options.vicinae = {
     enable = mkEnableOption "vicinae launcher";
   };
 
   config = mkIf config.vicinae.enable {
+    environment.systemPackages = [pywalConverter];
     home-manager.sharedModules = [
       {
         xdg.configFile."vicinae/config.toml" = {

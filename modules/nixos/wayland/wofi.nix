@@ -10,15 +10,15 @@ with lib; {
   };
 
   config = mkIf config.wofi.enable {
-    # Install wofi
+    #---Package------
     environment.systemPackages = with pkgs; [
       wofi
     ];
 
-    # Home Manager configuration
+    #---Home Manager------
     home-manager.sharedModules = [
       {
-        # Wofi config files
+        #---Config Files------
         xdg.configFile."wofi/config" = {
           source = lib.configFile "wofi/config";
         };
@@ -26,7 +26,7 @@ with lib; {
           source = lib.configFile "wofi/style.css";
         };
 
-        # Enable wofi program
+        #---Program------
         programs.wofi = {
           enable = true;
         };

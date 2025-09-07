@@ -32,7 +32,7 @@ lib.nixosSystem' (
 
     networking.hostName = "volt";
 
-    # Enable bspwm desktop environment
+    #---bspwm------
     desktop.enable = true;
 
     boot.initrd.availableKernelModules = [

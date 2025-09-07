@@ -4,14 +4,14 @@
   vicinae,
   ...
 }: {
-  # Common Linux system packages that were scattered across modules
+  #---Common Packages------
   environment.systemPackages = with pkgs; [
-    # Base system tools (from sys.nix)
+    #---System Tools------
     nixfmt-rfc-style
     nixd
     xclip
 
-    # Applications
+    #---Applications------
     brave
     ghostty
     vesktop

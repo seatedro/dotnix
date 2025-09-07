@@ -27,7 +27,7 @@ with lib; {
           pywal
         ];
 
-        # Create pywal template directory
+        #---Templates------
         xdg.configFile."wal/templates/".source = lib.configFile "wal/templates";
       }
     ];

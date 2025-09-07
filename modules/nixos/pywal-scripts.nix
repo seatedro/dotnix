@@ -10,7 +10,7 @@ with lib; {
       (pkgs.writeShellScriptBin "wal-set" ''
         #!/usr/bin/env bash
 
-        # Set wallpaper and generate colors
+        #---Set Wallpaper------
         if [ $# -eq 0 ]; then
           echo "Usage: wal-set <image-path> [light|dark]"
           echo "       wal-set --theme <theme-name>"
@@ -21,38 +21,38 @@ with lib; {
         fi
 
         if [ "$1" = "--theme" ]; then
-          # Use preset theme
+          #---Preset------
           if [ "$3" = "light" ] || [[ "$2" == *"dawn"* ]] || [[ "$2" == *"light"* ]]; then
             wal -l -q --theme "$2"
           else
             wal -q --theme "$2"
           fi
         elif [ -f "$1" ]; then
-          # Generate from image
+          #---From Image------
           MODE=""
           if [ "$2" = "light" ]; then
             MODE="-l"
           fi
           wal -q -i "$1" $MODE
 
-          # Set wallpaper with swww
+          #---SWWW------
           swww img "$1" --transition-type center --transition-step 10 --transition-fps 30
         else
           echo "Error: File not found: $1"
           exit 1
         fi
 
-        # Copy generated configs to appropriate locations
+        #---Copy Configs------
         cp ~/.cache/wal/colors-waybar.css ~/.config/waybar/colors.css 2>/dev/null || true
         cp ~/.cache/wal/colors-mako ~/.config/mako/colors 2>/dev/null || true
         cp ~/.cache/wal/colors-vicinae.toml ~/.config/vicinae/colors.toml 2>/dev/null || true
 
-        # Enable colors source in hyprland.conf if not already done
+        #---Hyprland Colors------
         if ! grep -q "^source = ~/.cache/wal/colors-hypr" ~/.config/hypr/hyprland.conf; then
           sed -i 's|# source = ~/.cache/wal/colors-hypr|source = ~/.cache/wal/colors-hypr|' ~/.config/hypr/hyprland.conf
         fi
 
-        # Reload applications
+        #---Reload Apps------
         pkill waybar 2>/dev/null || true
         sleep 0.5
         waybar & disown
@@ -65,7 +65,7 @@ with lib; {
       (pkgs.writeShellScriptBin "wal-select" ''
         #!/usr/bin/env bash
 
-        # Interactive wallpaper selector
+        #---Interactive------
         WALLPAPER_DIR="''${1:-$HOME/Documents/Wallpapers}"
 
         if [ ! -d "$WALLPAPER_DIR" ]; then
@@ -78,7 +78,7 @@ with lib; {
           exit 1
         fi
 
-        # Check for selector tool
+        #---Check Tool------
         if command -v fzf >/dev/null 2>&1; then
           IMAGE=$(find "$WALLPAPER_DIR" -type f \( -iname "*.jpg" -o -iname "*.png" -o -iname "*.jpeg" -o -iname "*.gif" \) 2>/dev/null | fzf --preview 'file {}')
         elif command -v wofi >/dev/null 2>&1; then
@@ -97,7 +97,7 @@ with lib; {
       (pkgs.writeShellScriptBin "wal-random" ''
         #!/usr/bin/env bash
 
-        # Set random wallpaper from directory
+        #---Random------
         WALLPAPER_DIR="''${1:-$HOME/Pictures/Wallpapers}"
 
         if [ ! -d "$WALLPAPER_DIR" ]; then
@@ -110,7 +110,7 @@ with lib; {
           exit 1
         fi
 
-        # Find random image
+        #---Find Image------
         IMAGE=$(find "$WALLPAPER_DIR" -type f \( -iname "*.jpg" -o -iname "*.png" -o -iname "*.jpeg" \) 2>/dev/null | shuf -n 1)
 
         if [ -n "$IMAGE" ]; then

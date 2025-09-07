@@ -10,21 +10,21 @@ with lib; {
   };
 
   config = mkIf config.mako.enable {
-    # Install mako and libnotify
+    #---Packages------
     environment.systemPackages = with pkgs; [
       mako
       libnotify
     ];
 
-    # Home Manager configuration
+    #---Home Manager------
     home-manager.sharedModules = [
       {
-        # Enable mako service
+        #---Service------
         services.mako = {
           enable = true;
 
           settings = {
-            # Kanagawa theme configuration
+            #---Kanagawa------
             background-color = "#181616";
             text-color = "#c5c9c5";
             border-color = "#8ba4b0";
@@ -38,21 +38,21 @@ with lib; {
 
             font = "JetBrainsMono Nerd Font 12";
 
-            # Position
+            #---Position------
             anchor = "top-right";
 
-            # Timeout
+            #---Timeout------
             default-timeout = 5000;
 
-            # Icons
+            #---Icons------
             icon-path = "${pkgs.papirus-icon-theme}/share/icons/Papirus-Dark";
             max-icon-size = 48;
 
-            # Grouping
+            #---Grouping------
             group-by = "summary";
           };
 
-          # Extra config
+          #---Extra------
           extraConfig = ''
             [urgency=low]
             border-color=#87a987

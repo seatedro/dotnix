@@ -65,7 +65,7 @@ in {
         [
           module
           overlayModule
-          # Allow unfree packages.
+          #---Unfree------
           {nixpkgs.config.allowUnfree = true;}
         ]
         ++ modulesCommon

@@ -15,7 +15,7 @@ with lib; {
         services.picom = {
           enable = true;
           settings = {
-            # Transitions
+            #---Transitions------
             transition-length = 300;
             transition-pow-x = 0.1;
             transition-pow-y = 0.1;
@@ -23,7 +23,7 @@ with lib; {
             transition-pow-h = 0.1;
             size-transition = true;
 
-            # Corner radius - increased for gruvbox aesthetic
+            #---Corner Radius------
             corner-radius = 8.0;
             rounded-corners-exclude = [
               "class_g = 'awesome'"
@@ -42,7 +42,7 @@ with lib; {
               "class_g = 'Polybar'"
             ];
 
-            # Shadow - adjusted for gruvbox dark hard
+            #---Shadow------
             shadow = true;
             shadow-radius = 15;
             shadow-opacity = 0.6;
@@ -62,7 +62,7 @@ with lib; {
               "class_g = 'rofi'"
             ];
 
-            # Fading
+            #---Fading------
             fading = true;
             fade-in-step = 0.03;
             fade-out-step = 0.03;
@@ -72,7 +72,7 @@ with lib; {
               "class_g = 'rofi'"
             ];
 
-            # Opacity - adjusted for gruvbox theme
+            #---Opacity------
             inactive-opacity = 0.95;
             active-opacity = 1.0;
             popup_menu = {
@@ -111,7 +111,7 @@ with lib; {
               "100:class_g    = 'dunst'"
             ];
 
-            # Blur - reduced for performance and gruvbox aesthetic
+            #---Blur------
             blur = {
               method = "dual_kawase";
               strength = 3;
