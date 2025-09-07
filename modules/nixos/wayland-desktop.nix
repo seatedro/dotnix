@@ -4,10 +4,7 @@
   pkgs,
   ...
 }:
-
-with lib;
-
-{
+with lib; {
   imports = [
     ./wayland.nix
   ];
@@ -44,7 +41,7 @@ with lib;
       libGL
     ];
 
-    services.xserver.videoDrivers = [ "nvidia" ];
+    services.xserver.videoDrivers = ["nvidia"];
 
     services.displayManager.ly.enable = true;
 

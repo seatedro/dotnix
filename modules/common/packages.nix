@@ -1,6 +1,8 @@
-{ pkgs, glimpse, ... }:
-
 {
+  pkgs,
+  glimpse,
+  ...
+}: {
   environment.systemPackages = with pkgs; [
     # Editors
     vim
@@ -68,5 +70,4 @@
     # Custom packages
     glimpse.packages.${pkgs.system}.default
   ];
-
 }

@@ -1,8 +1,10 @@
-{ config, lib, ... }:
-let
-  inherit (lib) last mkConst splitString;
-in
 {
+  config,
+  lib,
+  ...
+}: let
+  inherit (lib) last mkConst splitString;
+in {
   options = {
     os = mkConst <| last <| splitString "-" config.nixpkgs.hostPlatform.system;
     isDarwin = mkConst <| config.os == "darwin";

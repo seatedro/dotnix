@@ -4,10 +4,7 @@
   pkgs,
   ...
 }:
-
-with lib;
-
-{
+with lib; {
   options.vicinae = {
     enable = mkEnableOption "vicinae launcher";
   };
@@ -52,7 +49,7 @@ with lib;
             quick_switch = true
             available_themes = [
               "gruvbox",
-              "catppuccin", 
+              "catppuccin",
               "nord",
               "tokyo-night",
               "kanagawa",

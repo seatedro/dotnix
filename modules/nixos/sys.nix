@@ -1,13 +1,9 @@
-{ pkgs, ... }:
-
-let
+{pkgs, ...}: let
   berkeley-mono = import ../../fonts/berkeley-mono.nix {
     inherit pkgs;
     inherit (pkgs) lib;
   };
-in
-{
-
+in {
   networking.networkmanager.enable = true;
 
   time.timeZone = "America/Los_Angeles";

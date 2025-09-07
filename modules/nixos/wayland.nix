@@ -4,10 +4,7 @@
   pkgs,
   ...
 }:
-
-with lib;
-
-{
+with lib; {
   imports = [
     ./wayland/hyprland.nix
     ./wayland/waybar.nix
@@ -16,6 +13,7 @@ with lib;
     ./wayland/steam.nix
     ./pywal.nix
     ./pywal-scripts.nix
+    ./darkman.nix
   ];
 
   options.wayland = {
@@ -30,6 +28,7 @@ with lib;
     mako.enable = true;
     steam.enable = true;
     pywal.enable = true;
+    darkman.enable = mkIf config.pywal.useDarkman true;
 
     # Enable sound
     hardware.pulseaudio.enable = false;
@@ -44,9 +43,10 @@ with lib;
     xdg.portal = {
       enable = true;
       config = {
-        common.default = [ "hyprland" ];
-        hyprland.default = [ "hyprland" ];
-        hyprland."org.freedesktop.impl.portal.FileChooser" = [ "termfilechooser" ];
+        common.default = ["hyprland"];
+        hyprland.default = ["hyprland"];
+        hyprland."org.freedesktop.impl.portal.FileChooser" = ["termfilechooser"];
+        hyprland."org.freedesktop.impl.portal.Settings" = ["darkman"];
       };
       extraPortals = [
         pkgs.xdg-desktop-portal-hyprland
@@ -75,4 +75,3 @@ with lib;
     services.gnome.gnome-keyring.enable = true;
   };
 }
-

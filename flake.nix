@@ -64,39 +64,51 @@
     nix-colors.url = "github:misterio77/nix-colors";
   };
 
-  outputs =
-    inputs@{ nixpkgs, nix-darwin, ... }:
-    let
-      inherit (builtins) readDir;
-      inherit (nixpkgs.lib)
-        attrsToList
-        const
-        groupBy
-        listToAttrs
-        mapAttrs
-        nameValuePair
-        ;
+  outputs = inputs @ {
+    nixpkgs,
+    nix-darwin,
+    ...
+  }: let
+    inherit (builtins) readDir;
+    inherit
+      (nixpkgs.lib)
+      attrsToList
+      const
+      groupBy
+      listToAttrs
+      mapAttrs
+      nameValuePair
+      ;
 
-      lib' = nixpkgs.lib.extend (_: _: nix-darwin.lib);
-      lib = lib'.extend <| import ./lib inputs;
+    lib' = nixpkgs.lib.extend (_: _: nix-darwin.lib);
+    lib = lib'.extend <| import ./lib inputs;
 
-      hostsByType =
-        readDir ./hosts
-        |> mapAttrs (name: const <| import ./hosts/${name} lib)
-        |> attrsToList
-        |> groupBy (
-          { name, value }:
-          if name == "volt" || name == "thanatos" then "nixosConfigurations" else "darwinConfigurations"
-        )
-        |> mapAttrs (const listToAttrs);
+    hostsByType =
+      readDir ./hosts
+      |> mapAttrs (name: const <| import ./hosts/${name} lib)
+      |> attrsToList
+      |> groupBy (
+        {
+          name,
+          value,
+        }:
+          if name == "volt" || name == "thanatos"
+          then "nixosConfigurations"
+          else "darwinConfigurations"
+      )
+      |> mapAttrs (const listToAttrs);
 
-      hostConfigs =
-        hostsByType.darwinConfigurations // hostsByType.nixosConfigurations
-        |> attrsToList
-        |> map ({ name, value }: nameValuePair name value.config)
-        |> listToAttrs;
-
-    in
+    hostConfigs =
+      hostsByType.darwinConfigurations
+      // hostsByType.nixosConfigurations
+      |> attrsToList
+      |> map ({
+        name,
+        value,
+      }:
+        nameValuePair name value.config)
+      |> listToAttrs;
+  in
     hostsByType
     // hostConfigs
     // {
@@ -109,5 +121,4 @@
         aarch64-darwin = nixpkgs.legacyPackages.aarch64-darwin.nixfmt-rfc-style;
       };
     };
-
 }

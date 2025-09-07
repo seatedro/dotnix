@@ -1,6 +1,6 @@
-inputs: self: super:
-let
-  inherit (self)
+inputs: self: super: let
+  inherit
+    (self)
     attrValues
     filter
     getAttrFromPath
@@ -8,10 +8,9 @@ let
     collectNix
     ;
 
-  collectInputs =
-    let
-      inputs' = attrValues inputs;
-    in
+  collectInputs = let
+    inputs' = attrValues inputs;
+  in
     path: inputs' |> filter (hasAttrByPath path) |> map (getAttrFromPath path);
 
   inputModulesDarwin = collectInputs [
@@ -36,16 +35,15 @@ let
   modulesDarwin = collectNix ../modules/darwin;
   modulesNixOS = collectNix ../modules/nixos;
 
-  specialArgs = inputs // {
-    inherit inputs;
+  specialArgs =
+    inputs
+    // {
+      inherit inputs;
 
-    lib = self;
-  };
-
-in
-{
-  darwinSystem' =
-    module:
+      lib = self;
+    };
+in {
+  darwinSystem' = module:
     super.darwinSystem {
       inherit specialArgs;
 
@@ -59,8 +57,7 @@ in
         ++ inputModulesDarwin;
     };
 
-  nixosSystem' =
-    module:
+  nixosSystem' = module:
     super.nixosSystem {
       inherit specialArgs;
 
@@ -69,7 +66,7 @@ in
           module
           overlayModule
           # Allow unfree packages.
-          { nixpkgs.config.allowUnfree = true; }
+          {nixpkgs.config.allowUnfree = true;}
         ]
         ++ modulesCommon
         ++ modulesNixOS

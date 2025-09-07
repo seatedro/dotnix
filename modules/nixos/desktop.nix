@@ -4,10 +4,7 @@
   pkgs,
   ...
 }:
-
-with lib;
-
-{
+with lib; {
   imports = [
     ./x11.nix
     ./dunst.nix

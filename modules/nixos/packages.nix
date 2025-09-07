@@ -3,9 +3,7 @@
   swww,
   vicinae,
   ...
-}:
-
-{
+}: {
   # Common Linux system packages that were scattered across modules
   environment.systemPackages = with pkgs; [
     # Base system tools (from sys.nix)

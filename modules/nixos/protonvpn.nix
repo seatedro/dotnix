@@ -1,12 +1,15 @@
-{ config, pkgs, lib, ... }:
-
-with lib;
-
-let cfg = config.services.protonvpn;
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
+with lib; let
+  cfg = config.services.protonvpn;
 in {
   options = {
     services.protonvpn = {
-      enable = mkEnableOption "Enable ProtonVPN (using Wireguard)"; 
+      enable = mkEnableOption "Enable ProtonVPN (using Wireguard)";
 
       autostart = mkOption {
         default = true;
@@ -43,7 +46,7 @@ in {
           description = "The path to a file containing the private key for this interface/peer. Only root should have access to the file. See your Wireguard certificate.";
         };
 
-        dns =  {
+        dns = {
           enable = mkOption {
             default = true;
             example = "true";
@@ -86,14 +89,18 @@ in {
   config = mkIf cfg.enable {
     networking.wg-quick.interfaces."${cfg.interface.name}" = {
       autostart = cfg.autostart;
-      dns = if cfg.interface.dns.enable then [ cfg.interface.dns.ip ] else [ ];
+      dns =
+        if cfg.interface.dns.enable
+        then [cfg.interface.dns.ip]
+        else [];
       privateKeyFile = cfg.interface.privateKeyFile;
-      address = [ cfg.interface.ip ];
+      address = [cfg.interface.ip];
       listenPort = cfg.interface.port;
 
       peers = [
-        { publicKey = cfg.endpoint.publicKey;
-          allowedIPs = [ "0.0.0.0/0" "::/0"];
+        {
+          publicKey = cfg.endpoint.publicKey;
+          allowedIPs = ["0.0.0.0/0" "::/0"];
           endpoint = "${cfg.endpoint.ip}:${builtins.toString cfg.endpoint.port}";
         }
       ];

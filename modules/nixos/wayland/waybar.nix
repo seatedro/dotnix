@@ -4,10 +4,7 @@
   pkgs,
   ...
 }:
-
-with lib;
-
-{
+with lib; {
   options.waybar = {
     enable = mkEnableOption "Waybar status bar";
   };
@@ -33,4 +30,4 @@ with lib;
       }
     ];
   };
-} 
+}

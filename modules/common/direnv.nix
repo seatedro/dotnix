@@ -1,6 +1,4 @@
-{ pkgs, ... }:
-
-{
+{pkgs, ...}: {
   home-manager.sharedModules = [
     {
       programs.direnv = {

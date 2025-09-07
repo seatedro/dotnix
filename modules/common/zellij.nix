@@ -1,6 +1,8 @@
-{ lib, pkgs, ... }:
-
 {
+  lib,
+  pkgs,
+  ...
+}: {
   home-manager.sharedModules = [
     {
       xdg.configFile = {

@@ -1,6 +1,4 @@
-{ pkgs, ... }:
-
-{
+{pkgs, ...}: {
   environment.shellAliases = {
     nb = "nix build";
     nf = "nix flake";

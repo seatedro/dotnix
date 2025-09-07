@@ -1,10 +1,15 @@
-{ pkgs, lib }:
-
+{
+  pkgs,
+  lib,
+}:
 pkgs.stdenvNoCC.mkDerivation {
   pname = "berkeley-mono";
   version = "2.0";
 
-  src = builtins.path { path = ../.config/fonts; name = "berkeley-mono-src"; };
+  src = builtins.path {
+    path = ../.config/fonts;
+    name = "berkeley-mono-src";
+  };
 
   dontUnpack = true;
 

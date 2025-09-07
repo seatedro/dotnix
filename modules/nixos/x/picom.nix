@@ -4,10 +4,7 @@
   pkgs,
   ...
 }:
-
-with lib;
-
-{
+with lib; {
   options.picom = {
     enable = mkEnableOption "Picom compositor";
   };

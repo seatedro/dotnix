@@ -4,10 +4,7 @@
   pkgs,
   ...
 }:
-
-with lib;
-
-{
+with lib; {
   config = mkIf config.pywal.enable {
     environment.systemPackages = [
       (pkgs.writeShellScriptBin "wal-set" ''
@@ -37,7 +34,7 @@ with lib;
             MODE="-l"
           fi
           wal -q -i "$1" $MODE
-          
+
           # Set wallpaper with swww
           swww img "$1" --transition-type center --transition-step 10 --transition-fps 30
         else
@@ -48,7 +45,6 @@ with lib;
         # Copy generated configs to appropriate locations
         cp ~/.cache/wal/colors-waybar.css ~/.config/waybar/colors.css 2>/dev/null || true
         cp ~/.cache/wal/colors-mako ~/.config/mako/colors 2>/dev/null || true
-        cp ~/.cache/wal/colors-ghostty ~/.config/ghostty/colors 2>/dev/null || true
         cp ~/.cache/wal/colors-vicinae.toml ~/.config/vicinae/colors.toml 2>/dev/null || true
 
         # Enable colors source in hyprland.conf if not already done

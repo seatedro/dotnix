@@ -4,10 +4,7 @@
   pkgs,
   ...
 }:
-
-with lib;
-
-{
+with lib; {
   imports = [
     ./x/bspwm.nix
     ./x/sxhkd.nix
@@ -38,7 +35,7 @@ with lib;
     # XDG Portal for desktop integration
     xdg.portal = {
       enable = true;
-      extraPortals = [ pkgs.xdg-desktop-portal-gnome ];
+      extraPortals = [pkgs.xdg-desktop-portal-gnome];
       config.common.default = "*";
     };
 
@@ -53,6 +50,5 @@ with lib;
 
     # Enable touchpad support
     services.libinput.enable = true;
-
   };
-} 
+}

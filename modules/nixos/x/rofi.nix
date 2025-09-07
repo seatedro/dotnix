@@ -4,10 +4,7 @@
   pkgs,
   ...
 }:
-
-with lib;
-
-{
+with lib; {
   options.rofi = {
     enable = mkEnableOption "Rofi application launcher";
   };

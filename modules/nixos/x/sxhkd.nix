@@ -4,10 +4,7 @@
   pkgs,
   ...
 }:
-
-with lib;
-
-{
+with lib; {
   options.sxhkd = {
     enable = mkEnableOption "Sxhkd keyboard shortcut daemon";
   };

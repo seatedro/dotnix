@@ -4,10 +4,7 @@
   pkgs,
   ...
 }:
-
-with lib;
-
-{
+with lib; {
   options.bspwm = {
     enable = mkEnableOption "Bspwm window manager";
   };

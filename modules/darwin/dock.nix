@@ -14,6 +14,5 @@
 
     orientation = "bottom";
     mineffect = "genie"; # or "scale"
-
   };
 }

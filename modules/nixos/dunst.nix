@@ -4,10 +4,7 @@
   pkgs,
   ...
 }:
-
-with lib;
-
-{
+with lib; {
   config = {
     environment.systemPackages = with pkgs; [
       libnotify

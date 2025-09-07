@@ -4,10 +4,7 @@
   pkgs,
   ...
 }:
-
-with lib;
-
-{
+with lib; {
   options.hyprland = {
     enable = mkEnableOption "Hyprland wayland compositor";
   };
@@ -43,7 +40,6 @@ with lib;
 
       # System utilities
       polkit_gnome
-
     ];
 
     # Enable sound with PipeWire
