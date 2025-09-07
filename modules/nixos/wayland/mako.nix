@@ -23,32 +23,34 @@ with lib; {
         services.mako = {
           enable = true;
 
-          # Kanagawa theme configuration
-          backgroundColor = "#181616";
-          textColor = "#c5c9c5";
-          borderColor = "#8ba4b0";
-          borderRadius = 8;
-          borderSize = 2;
+          settings = {
+            # Kanagawa theme configuration
+            background-color = "#181616";
+            text-color = "#c5c9c5";
+            border-color = "#8ba4b0";
+            border-radius = 8;
+            border-size = 2;
 
-          width = 400;
-          height = 150;
-          margin = "10";
-          padding = "15";
+            width = 400;
+            height = 150;
+            margin = "10";
+            padding = "15";
 
-          font = "JetBrainsMono Nerd Font 12";
+            font = "JetBrainsMono Nerd Font 12";
 
-          # Position
-          anchor = "top-right";
+            # Position
+            anchor = "top-right";
 
-          # Timeout
-          defaultTimeout = 5000;
+            # Timeout
+            default-timeout = 5000;
 
-          # Icons
-          iconPath = "${pkgs.papirus-icon-theme}/share/icons/Papirus-Dark";
-          maxIconSize = 48;
+            # Icons
+            icon-path = "${pkgs.papirus-icon-theme}/share/icons/Papirus-Dark";
+            max-icon-size = 48;
 
-          # Grouping
-          groupBy = "summary";
+            # Grouping
+            group-by = "summary";
+          };
 
           # Extra config
           extraConfig = ''

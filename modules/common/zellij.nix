@@ -16,7 +16,6 @@
       programs.zellij = {
         enable = true;
         package = pkgs.zellij;
-        exitShellOnExit = true;
       };
     }
   ];
