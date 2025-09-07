@@ -45,7 +45,10 @@ with lib;
       enable = true;
       config = {
         common.default = [ "hyprland" ];
-        hyprland.default = [ "hyprland" ];
+        hyprland.default = [
+          "hyprland"
+          "gtk"
+        ];
         hyprland."org.freedesktop.impl.portal.FileChooser" = [ "termfilechooser" ];
         hyprland."org.freedesktop.impl.portal.Settings" = [ "darkman" ];
       };

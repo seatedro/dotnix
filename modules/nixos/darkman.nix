@@ -36,6 +36,14 @@ with lib; {
     #---GTK------
     programs.dconf.enable = true;
 
+    #---Override darkman portal to work with Hyprland------
+    environment.etc."xdg/xdg-desktop-portal/portals/darkman-hyprland.portal".text = ''
+      [portal]
+      DBusName=org.freedesktop.impl.portal.desktop.darkman
+      Interfaces=org.freedesktop.impl.portal.Settings
+      UseIn=hyprland
+    '';
+
     home-manager.sharedModules = [
       {
         #---Config------
@@ -121,6 +129,13 @@ with lib; {
               ${pkgs.procps}/bin/pkill -SIGUSR2 waybar 2>/dev/null || true  # Try to reload config first
             fi
             ${pkgs.mako}/bin/makoctl reload 2>/dev/null || true
+            
+            #---Notify Neovim instances------
+            for socket in /run/user/1000/nvim.*.0; do
+              if [ -S "$socket" ]; then
+                ${pkgs.neovim}/bin/nvim --server "$socket" --remote-send ":lua vim.cmd.colorscheme('gruvbox'); vim.o.background='dark'<CR>" 2>/dev/null || true
+              fi
+            done
           '';
         };
 
@@ -194,6 +209,13 @@ with lib; {
               ${pkgs.procps}/bin/pkill -SIGUSR2 waybar 2>/dev/null || true  # Try to reload config first
             fi
             ${pkgs.mako}/bin/makoctl reload 2>/dev/null || true
+            
+            #---Notify Neovim instances------
+            for socket in /run/user/1000/nvim.*.0; do
+              if [ -S "$socket" ]; then
+                ${pkgs.neovim}/bin/nvim --server "$socket" --remote-send ":lua vim.cmd.colorscheme('rose-pine-dawn'); vim.o.background='light'<CR>" 2>/dev/null || true
+              fi
+            done
           '';
         };
 
@@ -201,7 +223,8 @@ with lib; {
         systemd.user.services.darkman = {
           Unit = {
             Description = "Darkman - dark mode manager";
-            After = ["graphical-session.target"];
+            After = ["graphical-session.target" "hyprland-session.target"];
+            PartOf = ["graphical-session.target"];
           };
           Service = {
             Type = "simple";
@@ -210,7 +233,7 @@ with lib; {
             RestartSec = 5;
           };
           Install = {
-            WantedBy = ["default.target"];
+            WantedBy = ["hyprland-session.target" "graphical-session.target"];
           };
         };
       }
