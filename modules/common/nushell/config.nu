@@ -69,4 +69,17 @@ $env.config.hooks = {
 }
 
 alias gg = nvim -c 'Neogit'
+## Auto-start yazi only in interactive sessions, unless skipped
+#let-env YAZI_SKIP_AUTO = ($env.YAZI_SKIP_AUTO? | default "")
+#
+#if (is-interactive) and ($env.YAZI_SKIP_AUTO == "") {
+#  let-env INSIDE_YAZI = "1"
+#  try {
+#    yazi
+#  } catch {
+#    # If yazi isn't installed, don't break the shell
+#  }
+#  hide-env INSIDE_YAZI
+#}
+
 source ~/.cache/carapace/init.nu

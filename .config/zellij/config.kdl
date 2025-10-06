@@ -49,6 +49,16 @@ keybinds clear-defaults=true {
         // Session management
         bind "d" { Detach; }
         bind "s" { SwitchToMode "Session"; }
+
+        // Resize
+        bind "Alt h" { Resize "Left"; }
+        bind "Alt l" { Resize "Right"; }
+        bind "Alt j" { Resize "Down"; }
+        bind "Alt k" { Resize "Up"; }
+        bind "Shift Left" { Resize "Left"; }
+        bind "Shift Right" { Resize "Right"; }
+        bind "Shift Down" { Resize "Down"; }
+        bind "Shift Up" { Resize "Up"; }
     }
 
     scroll {
@@ -88,7 +98,7 @@ keybinds clear-defaults=true {
 
 // Basic settings
 on_force_close "detach"
-pane_frames true
+pane_frames false
 default_layout "simple"
 default_mode "normal"
 mouse_mode true

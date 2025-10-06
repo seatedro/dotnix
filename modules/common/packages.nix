@@ -1,8 +1,4 @@
-{
-  pkgs,
-  glimpse,
-  ...
-}: {
+{ pkgs, glimpse, ... }: {
   environment.systemPackages = with pkgs; [
     #---Editors------
     vim
@@ -25,6 +21,7 @@
 
     #---System------
     zsh
+    libiconv
     fish
     nushell
     btop
