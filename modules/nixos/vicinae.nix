@@ -2,6 +2,7 @@
   config,
   lib,
   pkgs,
+  vicinae,
   ...
 }:
 with lib; let
@@ -15,9 +16,28 @@ in {
   };
 
   config = mkIf config.vicinae.enable {
-    environment.systemPackages = [pywalConverter];
+    environment.systemPackages = [
+      pywalConverter
+      vicinae.packages.${pkgs.system}.default
+    ];
     home-manager.sharedModules = [
       {
+        systemd.user.services.vicinae = {
+          Unit = {
+            Description = "Vicinae launcher server";
+            After = ["graphical-session.target"];
+            PartOf = ["graphical-session.target"];
+          };
+          Service = {
+            Type = "simple";
+            ExecStart = "${vicinae.packages.${pkgs.system}.default}/bin/vicinae server";
+            Restart = "on-failure";
+            RestartSec = 5;
+          };
+          Install = {
+            WantedBy = [];
+          };
+        };
         xdg.configFile."vicinae/config.toml" = {
           text = ''
             [general]

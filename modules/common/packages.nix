@@ -1,4 +1,5 @@
-{ pkgs, glimpse, ... }: {
+{ pkgs, glimpse, ... }:
+{
   environment.systemPackages = with pkgs; [
     #---Editors------
     vim
@@ -15,6 +16,7 @@
     jujutsu
     alacritty
     carapace
+    postman
 
     #---Nix Tools------
     alejandra

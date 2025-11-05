@@ -50,10 +50,15 @@ with lib; {
 
             #---Grouping------
             group-by = "summary";
+            
+            #---Markup------
+            markup = true;
           };
 
           #---Extra------
           extraConfig = ''
+            include=~/.config/mako/colors
+            
             [urgency=low]
             border-color=#87a987
 

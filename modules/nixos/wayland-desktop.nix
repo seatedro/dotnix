@@ -8,6 +8,7 @@ with lib; {
   imports = [
     ./wayland.nix
     ./vicinae.nix
+    ./volume-osd.nix
   ];
 
   options.wayland-desktop = {

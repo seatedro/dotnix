@@ -3,7 +3,8 @@
   swww,
   vicinae,
   ...
-}: {
+}:
+{
   #---Common Packages------
   environment.systemPackages = with pkgs; [
     #---System Tools------
@@ -16,6 +17,7 @@
     ghostty
     vesktop
     telegram-desktop
+    qbittorrent
 
     # File management (common across desktop modules)
     xfce.thunar

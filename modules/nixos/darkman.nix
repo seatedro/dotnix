@@ -2,6 +2,7 @@
   config,
   lib,
   pkgs,
+  vicinae,
   ...
 }:
 with lib; {
@@ -109,12 +110,9 @@ with lib; {
               ${pkgs.coreutils}/bin/mv ~/.config/vicinae/vicinae.json.tmp ~/.config/vicinae/vicinae.json
             fi
 
-            #---Restart Vicinae------
-            if ${pkgs.procps}/bin/pgrep vicinae >/dev/null; then
-              ${pkgs.procps}/bin/pkill vicinae 2>/dev/null || true
-              ${pkgs.coreutils}/bin/sleep 0.5
-              vicinae server & disown
-            fi
+            #---Vicinae config updated------
+            # Vicinae will pick up the new theme on next launch
+            # (managed by systemd, no restart needed)
 
             #---Ghostty Theme------
             echo '# Managed by darkman - Dark mode' > ~/.config/ghostty/theme
@@ -189,12 +187,9 @@ with lib; {
               ${pkgs.coreutils}/bin/mv ~/.config/vicinae/vicinae.json.tmp ~/.config/vicinae/vicinae.json
             fi
 
-            #---Restart Vicinae------
-            if ${pkgs.procps}/bin/pgrep vicinae >/dev/null; then
-              ${pkgs.procps}/bin/pkill vicinae 2>/dev/null || true
-              ${pkgs.coreutils}/bin/sleep 0.5
-              vicinae server & disown
-            fi
+            #---Vicinae config updated------
+            # Vicinae will pick up the new theme on next launch
+            # (managed by systemd, no restart needed)
 
             #---Ghostty Theme------
             echo '# Managed by darkman - Light mode' > ~/.config/ghostty/theme
@@ -223,19 +218,45 @@ with lib; {
         systemd.user.services.darkman = {
           Unit = {
             Description = "Darkman - dark mode manager";
-            After = ["graphical-session.target" "hyprland-session.target"];
+            # Start after graphical session and swww daemon
+            After = ["graphical-session.target" "swww-daemon.service"];
+            PartOf = ["graphical-session.target"];
+            Wants = ["swww-daemon.service"];
+          };
+          Service = {
+            Type = "simple";
+            ExecStartPre = "${pkgs.coreutils}/bin/sleep 5";
+            ExecStart = "${pkgs.darkman}/bin/darkman run";
+            Restart = "on-failure";
+            RestartSec = 5;
+            Environment = [
+              "PATH=${lib.makeBinPath [pkgs.swww pkgs.procps pkgs.coreutils vicinae.packages.${pkgs.system}.default]}:\${PATH}"
+            ];
+          };
+          Install = {
+            WantedBy = [];
+          };
+        };
+
+        #---SWWW Daemon Service------
+        systemd.user.services.swww-daemon = {
+          Unit = {
+            Description = "SWWW wallpaper daemon";
+            After = ["graphical-session.target"];
             PartOf = ["graphical-session.target"];
           };
           Service = {
             Type = "simple";
-            ExecStart = "${pkgs.darkman}/bin/darkman run";
+            ExecStartPre = "${pkgs.coreutils}/bin/sleep 2";
+            ExecStart = "${pkgs.swww}/bin/swww-daemon";
             Restart = "on-failure";
             RestartSec = 5;
           };
           Install = {
-            WantedBy = ["hyprland-session.target" "graphical-session.target"];
+            WantedBy = [];
           };
         };
+        
       }
     ];
 
@@ -308,12 +329,9 @@ with lib; {
             ${pkgs.coreutils}/bin/mv ~/.config/vicinae/vicinae.json.tmp ~/.config/vicinae/vicinae.json
           fi
 
-          #---Restart Vicinae------
-          if ${pkgs.procps}/bin/pgrep vicinae >/dev/null; then
-            ${pkgs.procps}/bin/pkill vicinae 2>/dev/null || true
-            ${pkgs.coreutils}/bin/sleep 0.5
-            vicinae server & disown
-          fi
+          #---Vicinae config updated------
+          # Vicinae will pick up the new theme on next launch
+          # (managed by systemd, no restart needed)
 
           #---Reload Services------
           ${pkgs.procps}/bin/pkill -SIGUSR2 waybar 2>/dev/null || true
