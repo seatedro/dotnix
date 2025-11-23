@@ -1,4 +1,5 @@
-{pkgs, ...}: {
+{ pkgs, ... }:
+{
   environment.shellAliases = {
     nb = "nix build";
     nf = "nix flake";
@@ -9,7 +10,6 @@
     g = "git";
     gs = "git status";
     ga = "git add";
-    gc = "git commit";
     gp = "git push";
     gpl = "git pull";
     gco = "git checkout";

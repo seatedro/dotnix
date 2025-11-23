@@ -4,9 +4,11 @@ lib.darwinSystem' (
     lib,
     pkgs,
     ...
-  }: let
+  }:
+  let
     inherit (lib) collectNix remove;
-  in {
+  in
+  {
     imports = collectNix ./. |> remove ./default.nix;
 
     networking.hostName = "nori";
@@ -18,7 +20,7 @@ lib.darwinSystem' (
       uid = 501;
     };
 
-    users.knownUsers = ["ro"];
+    users.knownUsers = [ "ro" ];
 
     home-manager.users.ro.home = {
       stateVersion = "25.11";
@@ -26,7 +28,7 @@ lib.darwinSystem' (
     };
 
     environment.etc.nix-darwin.source = "/Users/ro/.config/nix";
-    nix.settings.trusted-users = ["ro"];
+    nix.settings.trusted-users = [ "ro" ];
 
     system.stateVersion = 5;
     nixpkgs.hostPlatform = "aarch64-darwin";

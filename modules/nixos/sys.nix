@@ -1,9 +1,11 @@
-{pkgs, ...}: let
+{ pkgs, ... }:
+let
   berkeley-mono = import ../../fonts/berkeley-mono.nix {
     inherit pkgs;
     inherit (pkgs) lib;
   };
-in {
+in
+{
   networking.networkmanager.enable = true;
 
   time.timeZone = "America/Los_Angeles";
@@ -20,7 +22,10 @@ in {
     berkeley-mono
   ];
 
-  hardware.graphics.enable = true;
+  hardware = {
+    graphics.enable = true;
+    keybaord.zsa.enable = true;
+  };
   environment.systemPackages = with pkgs; [
     nixfmt-rfc-style
     nixd
@@ -31,7 +36,6 @@ in {
     brave
     alacritty
     xclip
-    zed-editor
     code-cursor
     xfce.thunar
     xfce.thunar-volman

@@ -4,7 +4,8 @@
   pkgs,
   ...
 }:
-with lib; {
+with lib;
+{
   imports = [
     ./x/bspwm.nix
     ./x/sxhkd.nix
@@ -35,7 +36,7 @@ with lib; {
     #---XDG Portal------
     xdg.portal = {
       enable = true;
-      extraPortals = [pkgs.xdg-desktop-portal-gnome];
+      extraPortals = [ pkgs.xdg-desktop-portal-gnome ];
       config.common.default = "*";
     };
 

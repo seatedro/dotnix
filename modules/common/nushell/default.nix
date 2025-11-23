@@ -3,9 +3,9 @@
   lib,
   pkgs,
   ...
-}: let
-  inherit
-    (lib)
+}:
+let
+  inherit (lib)
     attrValues
     enabled
     mkIf
@@ -13,15 +13,15 @@
     readFile
     removeAttrs
     ;
-in {
+in
+{
   environment =
     optionalAttrs config.isDarwin {
-      shells = [pkgs.nushell];
+      shells = [ pkgs.nushell ];
     }
     // {
       systemPackages = attrValues {
-        inherit
-          (pkgs)
+        inherit (pkgs)
           fish # For completions
           zoxide # For completions and better cd
           starship
@@ -35,11 +35,11 @@ in {
   home-manager.sharedModules = [
     {
       xdg.configFile = {
-        "nushell/zoxide.nu".source = pkgs.runCommand "zoxide.nu" {} ''
+        "nushell/zoxide.nu".source = pkgs.runCommand "zoxide.nu" { } ''
           ${pkgs.zoxide}/bin/zoxide init nushell > $out
         '';
 
-        "nushell/starship.nu".source = pkgs.runCommand "starship.nu" {} ''
+        "nushell/starship.nu".source = pkgs.runCommand "starship.nu" { } ''
           ${pkgs.starship}/bin/starship init nu > $out
         '';
       };

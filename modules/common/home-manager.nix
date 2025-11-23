@@ -1,8 +1,9 @@
-{inputs, ...}: {
+{ inputs, ... }:
+{
   home-manager = {
     useGlobalPkgs = true;
     useUserPackages = true;
-    extraSpecialArgs = {inherit inputs;};
+    extraSpecialArgs = { inherit inputs; };
 
     sharedModules = [
       inputs.nix-colors.homeManagerModules.default

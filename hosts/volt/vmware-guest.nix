@@ -8,16 +8,15 @@
   pkgs,
   ...
 }:
-with lib; let
+with lib;
+let
   cfg = config.virtualisation.vmware.guest;
-  open-vm-tools =
-    if cfg.headless
-    then pkgs.open-vm-tools-headless
-    else pkgs.open-vm-tools;
+  open-vm-tools = if cfg.headless then pkgs.open-vm-tools-headless else pkgs.open-vm-tools;
   xf86inputvmmouse = pkgs.xorg.xf86inputvmmouse;
-in {
+in
+{
   imports = [
-    (mkRenamedOptionModule ["services" "vmwareGuest"] ["virtualisation" "vmware" "guest"])
+    (mkRenamedOptionModule [ "services" "vmwareGuest" ] [ "virtualisation" "vmware" "guest" ])
   ];
 
   options.virtualisation.vmware.guest = {
@@ -37,15 +36,15 @@ in {
       }
     ];
 
-    boot.initrd.availableKernelModules = ["mptspi"];
+    boot.initrd.availableKernelModules = [ "mptspi" ];
     # boot.initrd.kernelModules = [ "vmw_pvscsi" ];
 
-    environment.systemPackages = [open-vm-tools];
+    environment.systemPackages = [ open-vm-tools ];
 
     systemd.services.vmware = {
       description = "VMWare Guest Service";
-      wantedBy = ["multi-user.target"];
-      after = ["display-manager.service"];
+      wantedBy = [ "multi-user.target" ];
+      after = [ "display-manager.service" ];
       unitConfig.ConditionVirtualization = "vmware";
       serviceConfig.ExecStart = "${open-vm-tools}/bin/vmtoolsd";
     };
@@ -62,7 +61,7 @@ in {
         where = "/run/vmblock-fuse";
         type = "fuse";
         options = "subtype=vmware-vmblock,default_permissions,allow_other";
-        wantedBy = ["multi-user.target"];
+        wantedBy = [ "multi-user.target" ];
       }
     ];
 
@@ -93,6 +92,6 @@ in {
       '';
     };
 
-    services.udev.packages = [open-vm-tools];
+    services.udev.packages = [ open-vm-tools ];
   };
 }

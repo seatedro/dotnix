@@ -3,9 +3,11 @@
   lib,
   pkgs,
   ...
-}: let
+}:
+let
   inherit (lib) merge mkDefault optionalAttrs;
-in {
+in
+{
   nix = {
     settings = {
       experimental-features = [
@@ -36,15 +38,9 @@ in {
         persistent = true;
       };
 
-    enable =
-      if config.isDarwin
-      then false
-      else true;
+    enable = if config.isDarwin then false else true;
 
-    optimise.automatic =
-      if config.isDarwin
-      then false
-      else true;
+    optimise.automatic = if config.isDarwin then false else true;
   };
 
   environment.systemPackages = with pkgs; [

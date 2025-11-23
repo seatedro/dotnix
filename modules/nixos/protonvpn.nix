@@ -4,9 +4,11 @@
   lib,
   ...
 }:
-with lib; let
+with lib;
+let
   cfg = config.services.protonvpn;
-in {
+in
+{
   options = {
     services.protonvpn = {
       enable = mkEnableOption "Enable ProtonVPN (using Wireguard)";
@@ -89,18 +91,18 @@ in {
   config = mkIf cfg.enable {
     networking.wg-quick.interfaces."${cfg.interface.name}" = {
       autostart = cfg.autostart;
-      dns =
-        if cfg.interface.dns.enable
-        then [cfg.interface.dns.ip]
-        else [];
+      dns = if cfg.interface.dns.enable then [ cfg.interface.dns.ip ] else [ ];
       privateKeyFile = cfg.interface.privateKeyFile;
-      address = [cfg.interface.ip];
+      address = [ cfg.interface.ip ];
       listenPort = cfg.interface.port;
 
       peers = [
         {
           publicKey = cfg.endpoint.publicKey;
-          allowedIPs = ["0.0.0.0/0" "::/0"];
+          allowedIPs = [
+            "0.0.0.0/0"
+            "::/0"
+          ];
           endpoint = "${cfg.endpoint.ip}:${builtins.toString cfg.endpoint.port}";
         }
       ];

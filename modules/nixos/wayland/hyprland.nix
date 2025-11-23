@@ -4,7 +4,8 @@
   pkgs,
   ...
 }:
-with lib; {
+with lib;
+{
   options.hyprland = {
     enable = mkEnableOption "Hyprland wayland compositor";
   };

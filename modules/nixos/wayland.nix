@@ -15,7 +15,6 @@ with lib;
     ./pywal.nix
     ./pywal-scripts.nix
     ./darkman.nix
-    ./eww.nix
   ];
 
   options.wayland = {
@@ -31,7 +30,6 @@ with lib;
     steam.enable = true;
     pywal.enable = true;
     darkman.enable = mkIf config.pywal.useDarkman true;
-    modules.eww.enable = true;
 
     #---Sound------
     services.pulseaudio.enable = false;

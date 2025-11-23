@@ -4,7 +4,8 @@
   pkgs,
   ...
 }:
-with lib; {
+with lib;
+{
   options.wofi = {
     enable = mkEnableOption "Wofi application launcher";
   };

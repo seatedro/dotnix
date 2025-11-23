@@ -4,7 +4,8 @@
   pkgs,
   ...
 }:
-with lib; {
+with lib;
+{
   config = mkIf config.pywal.enable {
     environment.systemPackages = [
       (pkgs.writeShellScriptBin "wal-set" ''

@@ -2,15 +2,16 @@
   config,
   lib,
   ...
-}: let
-  inherit
-    (lib)
+}:
+let
+  inherit (lib)
     attrNames
     filterAttrs
     hasPrefix
     head
     ;
-in {
+in
+{
   system.primaryUser =
     head
     <| attrNames

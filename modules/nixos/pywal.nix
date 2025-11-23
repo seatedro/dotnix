@@ -4,7 +4,8 @@
   pkgs,
   ...
 }:
-with lib; {
+with lib;
+{
   options.pywal = {
     enable = mkEnableOption "pywal color scheme generator";
     useDarkman = mkOption {

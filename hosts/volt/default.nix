@@ -4,12 +4,14 @@ lib.nixosSystem' (
     lib,
     pkgs,
     ...
-  }: let
+  }:
+  let
     inherit (lib) collectNix remove;
-  in {
+  in
+  {
     imports = collectNix ./. |> remove ./default.nix;
 
-    disabledModules = ["virtualisation/vmware-guest.nix"];
+    disabledModules = [ "virtualisation/vmware-guest.nix" ];
 
     users.users.ro = {
       isNormalUser = true;
@@ -28,7 +30,7 @@ lib.nixosSystem' (
       uid = 1000;
     };
 
-    home-manager.users.ro = {};
+    home-manager.users.ro = { };
 
     networking.hostName = "volt";
 
@@ -43,9 +45,9 @@ lib.nixosSystem' (
       "sd_mod"
       "sr_mod"
     ];
-    boot.initrd.kernelModules = [];
-    boot.kernelModules = [];
-    boot.extraModulePackages = [];
+    boot.initrd.kernelModules = [ ];
+    boot.kernelModules = [ ];
+    boot.extraModulePackages = [ ];
 
     fileSystems."/" = {
       device = "/dev/disk/by-label/nixos";

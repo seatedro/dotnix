@@ -4,7 +4,8 @@
   pkgs,
   ...
 }:
-with lib; {
+with lib;
+{
   options.waybar = {
     enable = mkEnableOption "Waybar status bar";
   };
@@ -29,13 +30,13 @@ with lib; {
             enable = false;
           };
         };
-        
+
         systemd.user.services.waybar = {
           Unit = {
             Description = "Highly customizable Wayland bar for Sway and Wlroots based compositors.";
             Documentation = "https://github.com/Alexays/Waybar/wiki";
-            After = ["graphical-session.target"];
-            PartOf = ["graphical-session.target"];
+            After = [ "graphical-session.target" ];
+            PartOf = [ "graphical-session.target" ];
           };
           Service = {
             Type = "simple";
@@ -45,7 +46,7 @@ with lib; {
             RestartSec = 1;
           };
           Install = {
-            WantedBy = [];
+            WantedBy = [ ];
           };
         };
       }

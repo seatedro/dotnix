@@ -5,12 +5,14 @@
   vicinae,
   ...
 }:
-with lib; let
+with lib;
+let
   pywalConverter = pkgs.writeScriptBin "vicinae-pywal-converter" ''
     #!${pkgs.python3}/bin/python3
     ${builtins.readFile (lib.configFile "vicinae/pywal_to_json_converter.py")}
   '';
-in {
+in
+{
   options.vicinae = {
     enable = mkEnableOption "vicinae launcher";
   };
@@ -25,8 +27,8 @@ in {
         systemd.user.services.vicinae = {
           Unit = {
             Description = "Vicinae launcher server";
-            After = ["graphical-session.target"];
-            PartOf = ["graphical-session.target"];
+            After = [ "graphical-session.target" ];
+            PartOf = [ "graphical-session.target" ];
           };
           Service = {
             Type = "simple";
@@ -35,7 +37,7 @@ in {
             RestartSec = 5;
           };
           Install = {
-            WantedBy = [];
+            WantedBy = [ ];
           };
         };
         xdg.configFile."vicinae/config.toml" = {

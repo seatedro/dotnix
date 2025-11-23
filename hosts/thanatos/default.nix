@@ -5,9 +5,11 @@ lib.nixosSystem' (
     pkgs,
     config,
     ...
-  }: let
+  }:
+  let
     inherit (lib) collectNix remove mkDefault;
-  in {
+  in
+  {
     imports = collectNix ./. |> remove ./default.nix;
 
     users.users.ro = {
@@ -25,7 +27,7 @@ lib.nixosSystem' (
       uid = 1000;
     };
 
-    home-manager.users.ro = {};
+    home-manager.users.ro = { };
 
     networking.hostName = "thanatos";
 
@@ -52,14 +54,14 @@ lib.nixosSystem' (
       "usb_storage"
       "sd_mod"
     ];
-    boot.initrd.kernelModules = [];
-    boot.kernelModules = ["kvm-amd"];
-    boot.extraModulePackages = [];
+    boot.initrd.kernelModules = [ ];
+    boot.kernelModules = [ "kvm-amd" ];
+    boot.extraModulePackages = [ ];
     boot.loader = {
       efi.canTouchEfiVariables = true;
       grub = {
         enable = true;
-        devices = ["nodev"];
+        devices = [ "nodev" ];
         efiSupport = true;
         useOSProber = true;
         extraEntries = ''
@@ -74,6 +76,20 @@ lib.nixosSystem' (
       enable = true;
     };
 
+    hardware.bluetooth = {
+      enable = true;
+      powerOnBoot = true;
+      settings = {
+        General = {
+          Experimental = true;
+          FastConnectable = true;
+        };
+        Policy = {
+          AutoEnable = true;
+        };
+      };
+    };
+
     hardware.nvidia = {
       modesetting.enable = true;
       powerManagement.enable = false;
@@ -83,6 +99,7 @@ lib.nixosSystem' (
       package = config.boot.kernelPackages.nvidiaPackages.latest;
     };
 
+    hardware.enableRedistributableFirmware = true;
     hardware.cpu.amd.updateMicrocode = mkDefault config.hardware.enableRedistributableFirmware;
 
     fileSystems."/" = {
@@ -100,7 +117,7 @@ lib.nixosSystem' (
     };
 
     swapDevices = [
-      {device = "/dev/disk/by-uuid/11bd10e3-c4a2-41b7-8695-b71d16b7ed1f";}
+      { device = "/dev/disk/by-uuid/11bd10e3-c4a2-41b7-8695-b71d16b7ed1f"; }
     ];
 
     #boot.loader.systemd-boot.consoleMode = "0";

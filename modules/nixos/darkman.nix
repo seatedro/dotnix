@@ -5,7 +5,8 @@
   vicinae,
   ...
 }:
-with lib; {
+with lib;
+{
   options.darkman = {
     enable = mkEnableOption "darkman dark/light mode switching daemon";
 
@@ -51,11 +52,7 @@ with lib; {
         xdg.configFile."darkman/config.yaml".text = ''
           ${optionalString (config.darkman.latitude != null) "lat: ${toString config.darkman.latitude}"}
           ${optionalString (config.darkman.longitude != null) "lng: ${toString config.darkman.longitude}"}
-          usegeoclue: ${
-            if config.darkman.useGeoclue
-            then "true"
-            else "false"
-          }
+          usegeoclue: ${if config.darkman.useGeoclue then "true" else "false"}
           dbusserver: true
           portal: true
         '';
@@ -127,7 +124,7 @@ with lib; {
               ${pkgs.procps}/bin/pkill -SIGUSR2 waybar 2>/dev/null || true  # Try to reload config first
             fi
             ${pkgs.mako}/bin/makoctl reload 2>/dev/null || true
-            
+
             #---Notify Neovim instances------
             for socket in /run/user/1000/nvim.*.0; do
               if [ -S "$socket" ]; then
@@ -204,7 +201,7 @@ with lib; {
               ${pkgs.procps}/bin/pkill -SIGUSR2 waybar 2>/dev/null || true  # Try to reload config first
             fi
             ${pkgs.mako}/bin/makoctl reload 2>/dev/null || true
-            
+
             #---Notify Neovim instances------
             for socket in /run/user/1000/nvim.*.0; do
               if [ -S "$socket" ]; then
@@ -219,9 +216,12 @@ with lib; {
           Unit = {
             Description = "Darkman - dark mode manager";
             # Start after graphical session and swww daemon
-            After = ["graphical-session.target" "swww-daemon.service"];
-            PartOf = ["graphical-session.target"];
-            Wants = ["swww-daemon.service"];
+            After = [
+              "graphical-session.target"
+              "swww-daemon.service"
+            ];
+            PartOf = [ "graphical-session.target" ];
+            Wants = [ "swww-daemon.service" ];
           };
           Service = {
             Type = "simple";
@@ -230,11 +230,18 @@ with lib; {
             Restart = "on-failure";
             RestartSec = 5;
             Environment = [
-              "PATH=${lib.makeBinPath [pkgs.swww pkgs.procps pkgs.coreutils vicinae.packages.${pkgs.system}.default]}:\${PATH}"
+              "PATH=${
+                lib.makeBinPath [
+                  pkgs.swww
+                  pkgs.procps
+                  pkgs.coreutils
+                  vicinae.packages.${pkgs.system}.default
+                ]
+              }:\${PATH}"
             ];
           };
           Install = {
-            WantedBy = [];
+            WantedBy = [ ];
           };
         };
 
@@ -242,8 +249,8 @@ with lib; {
         systemd.user.services.swww-daemon = {
           Unit = {
             Description = "SWWW wallpaper daemon";
-            After = ["graphical-session.target"];
-            PartOf = ["graphical-session.target"];
+            After = [ "graphical-session.target" ];
+            PartOf = [ "graphical-session.target" ];
           };
           Service = {
             Type = "simple";
@@ -253,10 +260,10 @@ with lib; {
             RestartSec = 5;
           };
           Install = {
-            WantedBy = [];
+            WantedBy = [ ];
           };
         };
-        
+
       }
     ];
 

@@ -4,7 +4,8 @@
   pkgs,
   ...
 }:
-with lib; {
+with lib;
+{
   options.polybar = {
     enable = mkEnableOption "Polybar status bar";
   };

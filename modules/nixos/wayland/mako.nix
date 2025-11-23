@@ -4,7 +4,8 @@
   pkgs,
   ...
 }:
-with lib; {
+with lib;
+{
   options.mako = {
     enable = mkEnableOption "Mako notification daemon";
   };
@@ -50,7 +51,7 @@ with lib; {
 
             #---Grouping------
             group-by = "summary";
-            
+
             #---Markup------
             markup = true;
           };
@@ -58,7 +59,7 @@ with lib; {
           #---Extra------
           extraConfig = ''
             include=~/.config/mako/colors
-            
+
             [urgency=low]
             border-color=#87a987
 

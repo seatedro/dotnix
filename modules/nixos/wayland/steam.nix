@@ -3,7 +3,8 @@
   lib,
   ...
 }:
-with lib; {
+with lib;
+{
   options.steam = {
     enable = mkEnableOption "Steam";
   };
