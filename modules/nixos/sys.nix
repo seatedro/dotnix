@@ -24,7 +24,7 @@ in
 
   hardware = {
     graphics.enable = true;
-    keybaord.zsa.enable = true;
+    keyboard.zsa.enable = true;
   };
   environment.systemPackages = with pkgs; [
     nixfmt-rfc-style
@@ -40,7 +40,8 @@ in
     xfce.thunar
     xfce.thunar-volman
     xfce.tumbler
-    pkgs.gvfs
+    gvfs
+    keymapp
 
     #---Auto-resize Hack------
     (writeShellScriptBin "xrandr-auto" ''

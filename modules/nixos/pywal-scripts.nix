@@ -46,6 +46,7 @@ with lib;
         #---Copy Configs------
         cp ~/.cache/wal/colors-waybar.css ~/.config/waybar/colors.css 2>/dev/null || true
         cp ~/.cache/wal/colors-mako ~/.config/mako/colors 2>/dev/null || true
+        cp ~/.cache/wal/colors-wofi.css ~/.config/wofi/colors.css 2>/dev/null || true
         cp ~/.cache/wal/colors-vicinae.toml ~/.config/vicinae/colors.toml 2>/dev/null || true
 
         #---Hyprland Colors------

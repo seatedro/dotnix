@@ -99,6 +99,7 @@ with lib;
             #---Application Configs------
             ${pkgs.coreutils}/bin/cp ~/.cache/wal/colors-waybar.css ~/.config/waybar/colors.css 2>/dev/null || true
             ${pkgs.coreutils}/bin/cp ~/.cache/wal/colors-mako ~/.config/mako/colors 2>/dev/null || true
+            ${pkgs.coreutils}/bin/cp ~/.cache/wal/colors-wofi.css ~/.config/wofi/colors.css 2>/dev/null || true
 
             #---Vicinae Theme------
             vicinae-pywal-converter 2>/dev/null || true
@@ -176,6 +177,7 @@ with lib;
             #---Application Configs------
             ${pkgs.coreutils}/bin/cp ~/.cache/wal/colors-waybar.css ~/.config/waybar/colors.css 2>/dev/null || true
             ${pkgs.coreutils}/bin/cp ~/.cache/wal/colors-mako ~/.config/mako/colors 2>/dev/null || true
+            ${pkgs.coreutils}/bin/cp ~/.cache/wal/colors-wofi.css ~/.config/wofi/colors.css 2>/dev/null || true
 
             #---Vicinae Theme------
             vicinae-pywal-converter 2>/dev/null || true
@@ -327,6 +329,7 @@ with lib;
           #---Copy Configs------
           ${pkgs.coreutils}/bin/cp ~/.cache/wal/colors-waybar.css ~/.config/waybar/colors.css 2>/dev/null || true
           ${pkgs.coreutils}/bin/cp ~/.cache/wal/colors-mako ~/.config/mako/colors 2>/dev/null || true
+          ${pkgs.coreutils}/bin/cp ~/.cache/wal/colors-wofi.css ~/.config/wofi/colors.css 2>/dev/null || true
 
           #---Generate Theme------
           vicinae-pywal-converter 2>/dev/null || true

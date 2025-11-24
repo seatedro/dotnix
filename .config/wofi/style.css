@@ -1,6 +1,3 @@
-/* Import theme colors */
-@import "theme.css";
-
 * {
     font-family: "JetBrainsMono Nerd Font";
     font-size: 14px;
@@ -55,4 +52,6 @@ window {
 
 #entry image {
     margin-right: 8px;
-} 
+}
+
+@import "colors.css"; 

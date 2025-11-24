@@ -1,9 +1,11 @@
 {
   pkgs,
   swww,
-  vicinae,
   ...
 }:
+let
+  helium-browser = pkgs.callPackage ../../pkgs/helium.nix { };
+in
 {
   #---Common Packages------
   environment.systemPackages = with pkgs; [
@@ -11,9 +13,11 @@
     nixfmt-rfc-style
     nixd
     xclip
+    protonvpn-gui
 
     #---Applications------
     brave
+    helium-browser
     ghostty
     vesktop
     telegram-desktop
@@ -34,6 +38,5 @@
     sdl3
 
     swww.packages.${pkgs.system}.swww
-    vicinae.packages.${pkgs.system}.default
   ];
 }

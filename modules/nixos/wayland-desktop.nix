@@ -17,7 +17,7 @@ with lib;
 
   config = mkIf config.wayland-desktop.enable {
     wayland.enable = true;
-    vicinae.enable = true;
+    wofi.enable = true;
 
     environment.systemPackages = with pkgs; [
       #---Apps------

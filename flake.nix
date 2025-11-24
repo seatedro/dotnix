@@ -120,5 +120,17 @@
         aarch64-linux = nixpkgs.legacyPackages.aarch64-linux.nixfmt-rfc-style;
         aarch64-darwin = nixpkgs.legacyPackages.aarch64-darwin.nixfmt-rfc-style;
       };
+
+      packages = lib.genAttrs [
+        "x86_64-linux"
+        "aarch64-linux"
+      ] (system:
+        let
+          pkgs = nixpkgs.legacyPackages.${system};
+        in
+        {
+          helium-browser = pkgs.callPackage ./modules/nixos/helium.nix { };
+        }
+      );
     };
 }

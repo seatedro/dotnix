@@ -25,7 +25,7 @@ with lib;
     #---Wayland------
     hyprland.enable = true;
     waybar.enable = true;
-    wofi.enable = false;
+    wofi.enable = true;
     mako.enable = true;
     steam.enable = true;
     pywal.enable = true;
