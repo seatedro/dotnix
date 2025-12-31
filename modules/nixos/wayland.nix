@@ -52,7 +52,7 @@ with lib;
           "gtk"
         ];
         hyprland."org.freedesktop.impl.portal.FileChooser" = [ "termfilechooser" ];
-        hyprland."org.freedesktop.impl.portal.Settings" = [ "darkman" ];
+        hyprland."org.freedesktop.impl.portal.Settings" = [ "gtk" ];
       };
       extraPortals = [
         pkgs.xdg-desktop-portal-hyprland

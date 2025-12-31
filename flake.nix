@@ -67,9 +67,15 @@
     };
 
     kuro = {
-      url = "path:./shell";
+      url = "git+file:///nix-config/shell";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.quickshell.follows = "quickshell";
+      inputs.caelestia-cli.follows = "caelestia-cli";
+    };
+
+    caelestia-cli = {
+      url = "git+file:///nix-config/shell-cli";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
 
     nix-colors.url = "github:misterio77/nix-colors";

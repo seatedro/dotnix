@@ -21,6 +21,8 @@ in
 
   fonts.packages = [
     pkgs.nerd-fonts.jetbrains-mono
+    pkgs.nerd-fonts.geist-mono
+    pkgs.geist-font
     berkeley-mono
   ];
 

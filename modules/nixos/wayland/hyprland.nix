@@ -21,8 +21,6 @@ with lib;
     environment.systemPackages = with pkgs; [
       #---Core------
       hyprland
-      hypridle
-      hyprlock
       hyprpicker
       hyprshot
 
@@ -101,13 +99,6 @@ with lib;
         xdg.configFile."hypr/windows.conf" = {
           source = lib.configFile "hypr/windows.conf";
         };
-        xdg.configFile."hypr/hypridle.conf" = {
-          source = lib.configFile "hypr/hypridle.conf";
-        };
-        xdg.configFile."hypr/hyprlock.conf" = {
-          source = lib.configFile "hypr/hyprlock.conf";
-        };
-
         xdg.configFile."wallpaper.png" = {
           source = ../../../wallpapers/3840x2160-dark-lines.png;
         };

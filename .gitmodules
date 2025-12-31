@@ -1,3 +1,6 @@
 [submodule "shell"]
 	path = shell
 	url = git@github.com:seatedro/shell.git
+[submodule "shell-cli"]
+	path = shell-cli
+	url = https://github.com/seatedro/shell-cli.git

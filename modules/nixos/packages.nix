@@ -19,6 +19,8 @@ in
     nixfmt-rfc-style
     nixd
     xclip
+    glib
+    gsettings-desktop-schemas
     protonvpn-gui
 
     #---Applications------
@@ -28,6 +30,8 @@ in
     vesktop
     telegram-desktop
     qbittorrent
+    zed-editor-fhs
+    krita
 
     # File management (common across desktop modules)
     thunar

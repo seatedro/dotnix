@@ -1,3 +1,5 @@
 .config/fonts
 
 *.DS_Store
+
+.todo.md

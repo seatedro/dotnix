@@ -3,6 +3,7 @@
   lib,
   pkgs,
   kuro,
+  caelestia-cli,
   ...
 }:
 with lib;
@@ -12,6 +13,10 @@ with lib;
   };
 
   config = mkIf config.kuro.enable {
+    environment.systemPackages = [
+      caelestia-cli.packages.${pkgs.stdenv.hostPlatform.system}.default
+    ];
+
     home-manager.sharedModules = [
       kuro.homeManagerModules.default
       {
@@ -21,7 +26,7 @@ with lib;
 
           systemd = {
             enable = true;
-            target = "hyprland-session.target";
+            target = "graphical-session.target";
           };
 
           settings = {
