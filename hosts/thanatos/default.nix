@@ -32,6 +32,7 @@ lib.nixosSystem' (
     networking.hostName = "thanatos";
 
     wayland-desktop.enable = true;
+    kuro.enable = true;
 
     # services.protonvpn = {
     #   enable = true;

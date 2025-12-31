@@ -115,9 +115,9 @@ with lib;
             #---Ghostty Theme------
             echo '# Managed by darkman - Dark mode' > ~/.config/ghostty/theme
             if [ -f ~/.cache/wal/dark-ghostty-theme ]; then
-              echo "theme = \"$(${pkgs.coreutils}/bin/cat ~/.cache/wal/dark-ghostty-theme)\"" >> ~/.config/ghostty/theme
+              echo "theme = $(${pkgs.coreutils}/bin/cat ~/.cache/wal/dark-ghostty-theme)" >> ~/.config/ghostty/theme
             else
-              echo 'theme = "GruvboxDarkHard"' >> ~/.config/ghostty/theme
+              echo 'theme = Gruvbox Dark Hard' >> ~/.config/ghostty/theme
             fi
 
             #---Reload Services------
@@ -193,9 +193,9 @@ with lib;
             #---Ghostty Theme------
             echo '# Managed by darkman - Light mode' > ~/.config/ghostty/theme
             if [ -f ~/.cache/wal/light-ghostty-theme ]; then
-              echo "theme = \"$(${pkgs.coreutils}/bin/cat ~/.cache/wal/light-ghostty-theme)\"" >> ~/.config/ghostty/theme
+              echo "theme = $(${pkgs.coreutils}/bin/cat ~/.cache/wal/light-ghostty-theme)" >> ~/.config/ghostty/theme
             else
-              echo 'theme = "rose-pine-dawn"' >> ~/.config/ghostty/theme
+              echo 'theme = Rose Pine Dawn' >> ~/.config/ghostty/theme
             fi
 
             #---Reload Services------
@@ -237,7 +237,7 @@ with lib;
                   pkgs.swww
                   pkgs.procps
                   pkgs.coreutils
-                  vicinae.packages.${pkgs.system}.default
+                  vicinae.packages.${pkgs.stdenv.hostPlatform.system}.default
                 ]
               }:\${PATH}"
             ];
@@ -389,7 +389,7 @@ with lib;
         CURRENT_MODE=$(${pkgs.darkman}/bin/darkman get 2>/dev/null || echo "dark")
         if [ "$MODE" = "$CURRENT_MODE" ]; then
           echo "# Managed by darkman - $MODE mode" > ~/.config/ghostty/theme
-          echo "theme = \"$THEME\"" >> ~/.config/ghostty/theme
+          echo "theme = $THEME" >> ~/.config/ghostty/theme
         fi
 
         echo "Ghostty $MODE mode theme set to: $THEME"

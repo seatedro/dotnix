@@ -14,6 +14,7 @@
     bun
     awscli2
     jujutsu
+    jjui
     alacritty
     carapace
     postman
@@ -67,6 +68,6 @@
     openssh
 
     #---Custom------
-    glimpse.packages.${pkgs.system}.default
+    glimpse.packages.${pkgs.stdenv.hostPlatform.system}.default
   ];
 }

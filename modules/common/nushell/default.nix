@@ -48,11 +48,20 @@ in
         enableNushellIntegration = false;
 
         settings = {
-          vcs.disabled = false;
+          format = "$directory$custom$character";
           command_timeout = 100;
           scan_timeout = 20;
           character.error_symbol = "";
           character.success_symbol = "";
+          custom.jj = {
+            command = "jj-starship";
+            detect_folders = [
+              ".jj"
+              ".git"
+            ];
+            shell = [ "sh" ];
+            format = "$output ";
+          };
         };
       };
 

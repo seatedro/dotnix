@@ -24,12 +24,14 @@ with lib;
   config = mkIf config.wayland.enable {
     #---Wayland------
     hyprland.enable = true;
-    waybar.enable = true;
-    wofi.enable = true;
-    mako.enable = true;
     steam.enable = true;
-    pywal.enable = true;
-    darkman.enable = mkIf config.pywal.useDarkman true;
+
+    # disabled - kuro handles these
+    # waybar.enable = true;
+    # wofi.enable = true;
+    # mako.enable = true;
+    # pywal.enable = true;
+    # darkman.enable = mkIf config.pywal.useDarkman true;
 
     #---Sound------
     services.pulseaudio.enable = false;
@@ -64,7 +66,7 @@ with lib;
 
     #---Fonts------
     fonts.packages = with pkgs; [
-      noto-fonts-emoji
+      noto-fonts-color-emoji
       liberation_ttf
       fira-code
       fira-code-symbols

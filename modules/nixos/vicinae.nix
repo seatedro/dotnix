@@ -20,7 +20,7 @@ in
   config = mkIf config.vicinae.enable {
     environment.systemPackages = [
       pywalConverter
-      vicinae.packages.${pkgs.system}.default
+      vicinae.packages.${pkgs.stdenv.hostPlatform.system}.default
     ];
     home-manager.sharedModules = [
       {
@@ -32,7 +32,7 @@ in
           };
           Service = {
             Type = "simple";
-            ExecStart = "${vicinae.packages.${pkgs.system}.default}/bin/vicinae server";
+            ExecStart = "${vicinae.packages.${pkgs.stdenv.hostPlatform.system}.default}/bin/vicinae server";
             Restart = "on-failure";
             RestartSec = 5;
           };

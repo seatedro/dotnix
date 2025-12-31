@@ -61,6 +61,17 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    quickshell = {
+      url = "git+https://git.outfoxxed.me/outfoxxed/quickshell";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    kuro = {
+      url = "path:./shell";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.quickshell.follows = "quickshell";
+    };
+
     nix-colors.url = "github:misterio77/nix-colors";
   };
 
@@ -121,15 +132,19 @@
         aarch64-darwin = nixpkgs.legacyPackages.aarch64-darwin.nixfmt-rfc-style;
       };
 
-      packages = lib.genAttrs [
-        "x86_64-linux"
-      ] (system:
-        let
-          pkgs = nixpkgs.legacyPackages.${system};
-        in
-        {
-          helium-browser = pkgs.callPackage ./pkgs/helium.nix { };
-        }
-      );
+      packages =
+        lib.genAttrs
+          [
+            "x86_64-linux"
+          ]
+          (
+            system:
+            let
+              pkgs = nixpkgs.legacyPackages.${system};
+            in
+            {
+              helium-browser = pkgs.callPackage ./pkgs/helium.nix { };
+            }
+          );
     };
 }

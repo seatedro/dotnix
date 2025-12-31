@@ -34,7 +34,7 @@ appimageTools.wrapType2 {
 
   passthru = {
     updateScript = pkgs.nix-update-script {
-      attrPath = "packages.${pkgs.system}.helium-browser";
+      attrPath = "packages.${pkgs.stdenv.hostPlatform.system}.helium-browser";
     };
   };
 

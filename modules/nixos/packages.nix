@@ -1,12 +1,18 @@
 {
   pkgs,
   swww,
+  quickshell,
   ...
 }:
 let
   helium-browser = pkgs.callPackage ../../pkgs/helium.nix { };
+  quickshellPkg = quickshell.packages.${pkgs.stdenv.hostPlatform.system}.default;
 in
 {
+  environment.sessionVariables = {
+    QML2_IMPORT_PATH = "${quickshellPkg}/lib/qt-6/qml";
+  };
+
   #---Common Packages------
   environment.systemPackages = with pkgs; [
     #---System Tools------
@@ -24,9 +30,9 @@ in
     qbittorrent
 
     # File management (common across desktop modules)
-    xfce.thunar
-    xfce.thunar-volman
-    xfce.tumbler
+    thunar
+    thunar-volman
+    tumbler
     gvfs
 
     # Media viewers
@@ -36,7 +42,9 @@ in
     # System applications
     wineWowPackages.stable
     sdl3
+    kdePackages.qtdeclarative
 
-    swww.packages.${pkgs.system}.swww
+    swww.packages.${pkgs.stdenv.hostPlatform.system}.swww
+    quickshellPkg
   ];
 }

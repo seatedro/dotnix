@@ -39,7 +39,7 @@ with lib;
       playerctl
 
       #---System------
-      polkit_gnome
+      hyprpolkitagent
     ];
 
     #---PipeWire------
@@ -58,6 +58,24 @@ with lib;
     #---Home Manager------
     home-manager.sharedModules = [
       {
+        #---Polkit Agent------
+        systemd.user.services.hyprpolkitagent = {
+          Unit = {
+            Description = "Hyprland Polkit Authentication Agent";
+            After = [ "graphical-session.target" ];
+          };
+          Service = {
+            Type = "simple";
+            ExecStart = "${pkgs.hyprpolkitagent}/libexec/hyprpolkitagent";
+            Restart = "on-failure";
+            RestartSec = 1;
+            TimeoutStopSec = 10;
+          };
+          Install = {
+            WantedBy = [ "graphical-session.target" ];
+          };
+        };
+
         #---Config Files------
         xdg.configFile."hypr/hyprland.conf" = {
           source = lib.configFile "hypr/hyprland.conf";

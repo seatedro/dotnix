@@ -17,7 +17,9 @@ with lib;
 
   config = mkIf config.wayland-desktop.enable {
     wayland.enable = true;
-    wofi.enable = true;
+
+    # disabled - kuro handles launcher
+    # wofi.enable = true;
 
     environment.systemPackages = with pkgs; [
       #---Apps------
@@ -61,7 +63,7 @@ with lib;
       enable = true;
       fcitx5.addons = with pkgs; [
         fcitx5-mozc
-        fcitx5-configtool
+        qt6Packages.fcitx5-configtool
         fcitx5-gtk
       ];
     };
