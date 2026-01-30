@@ -79,6 +79,8 @@
     };
 
     nix-colors.url = "github:misterio77/nix-colors";
+
+    nixos-hardware.url = "github:NixOS/nixos-hardware";
   };
 
   outputs =
@@ -110,7 +112,10 @@
             name,
             value,
           }:
-          if name == "volt" || name == "thanatos" then "nixosConfigurations" else "darwinConfigurations"
+          if name == "volt" || name == "thanatos" || name == "forge" then
+            "nixosConfigurations"
+          else
+            "darwinConfigurations"
         )
         |> mapAttrs (const listToAttrs);
 

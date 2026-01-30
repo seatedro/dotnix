@@ -22,31 +22,15 @@ with lib;
     # wofi.enable = true;
 
     environment.systemPackages = with pkgs; [
-      #---Apps------
       pavucontrol
-
-      #---Bluetooth------
       blueberry
-
-      #---Utils------
       papirus-icon-theme
       gvfs
-
-      #---Nvidia------
-      libva-utils
-      vdpauinfo
       vulkan-tools
-      vulkan-validation-layers
-      libvdpau-va-gl
-      egl-wayland
-      wgpu-utils
       mesa
       libglvnd
-      nvitop
       libGL
     ];
-
-    services.xserver.videoDrivers = [ "nvidia" ];
 
     services.displayManager.ly.enable = true;
 

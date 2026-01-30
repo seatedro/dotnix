@@ -34,6 +34,18 @@ lib.nixosSystem' (
     wayland-desktop.enable = true;
     kuro.enable = true;
 
+    services.xserver.videoDrivers = [ "nvidia" ];
+
+    environment.systemPackages = with pkgs; [
+      libva-utils
+      vdpauinfo
+      vulkan-validation-layers
+      libvdpau-va-gl
+      egl-wayland
+      wgpu-utils
+      nvitop
+    ];
+
     # services.protonvpn = {
     #   enable = true;
     #   interface = {
