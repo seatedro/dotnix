@@ -37,7 +37,6 @@ in
     wget
     curl
     tree
-    brave
     alacritty
     xclip
     code-cursor

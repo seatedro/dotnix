@@ -37,6 +37,10 @@ $env.CARAPACE_BRIDGES = 'zsh,fish,bash,inshellisense' # optional
 mkdir ~/.cache/carapace
 carapace _carapace nushell | save --force ~/.cache/carapace/init.nu
 
+# Activate direnv for non-interactive shells (interactive shells use the home-manager hook in config.nu)
+if not $nu.is-interactive {
+  direnv export json | from json | default {} | load-env
+}
 
 def copy []: string -> nothing {
 	print --no-newline $"(ansi osc)52;c;($in | encode base64)(ansi st)"

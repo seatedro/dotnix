@@ -13,6 +13,8 @@ with lib;
   };
 
   config = mkIf config.kuro.enable {
+    services.upower.enable = true;
+
     environment.systemPackages = [
       caelestia-cli.packages.${pkgs.stdenv.hostPlatform.system}.default
     ];

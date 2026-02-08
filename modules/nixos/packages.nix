@@ -24,7 +24,9 @@ in
     protonvpn-gui
 
     #---Applications------
-    brave
+    (brave.override {
+      commandLineArgs = "--ozone-platform=wayland --enable-features=WaylandFractionalScaleV1";
+    })
     helium-browser
     ghostty
     vesktop
@@ -32,6 +34,8 @@ in
     qbittorrent
     zed-editor-fhs
     krita
+    slack
+    k9s
 
     # File management (common across desktop modules)
     thunar

@@ -23,6 +23,7 @@ with lib;
       hyprland
       hyprpicker
       hyprshot
+      rose-pine-hyprcursor
 
       #---Utils------
       wl-clipboard
@@ -30,6 +31,10 @@ with lib;
       grim
       slurp
       swaybg
+
+      #---Gestures------
+      libinput-gestures
+      wtype
 
       #---Controls------
       wireplumber
@@ -74,12 +79,22 @@ with lib;
           };
         };
 
+        xdg.mimeApps = {
+          enable = true;
+          defaultApplications = {
+            "text/html" = "brave-browser.desktop";
+            "x-scheme-handler/http" = "brave-browser.desktop";
+            "x-scheme-handler/https" = "brave-browser.desktop";
+            "x-scheme-handler/about" = "brave-browser.desktop";
+            "x-scheme-handler/unknown" = "brave-browser.desktop";
+          };
+        };
+        xdg.configFile."mimeapps.list".force = true;
+        xdg.dataFile."applications/mimeapps.list".force = true;
+
         #---Config Files------
         xdg.configFile."hypr/hyprland.conf" = {
           source = lib.configFile "hypr/hyprland.conf";
-        };
-        xdg.configFile."hypr/monitors.conf" = {
-          source = lib.configFile "hypr/monitors.conf";
         };
         xdg.configFile."hypr/autostart.conf" = {
           source = lib.configFile "hypr/autostart.conf";
@@ -98,6 +113,20 @@ with lib;
         };
         xdg.configFile."hypr/windows.conf" = {
           source = lib.configFile "hypr/windows.conf";
+        };
+        # hypr/scheme/current.conf is managed by caelestia at runtime
+        xdg.configFile."libinput-gestures.conf" = {
+          source = lib.configFile "libinput-gestures.conf";
+        };
+        xdg.configFile."xdg-desktop-portal-termfilechooser/config" = {
+          text = ''
+            [filechooser]
+            cmd=yazi-wrapper.sh
+            default_dir=$HOME
+            env=TERMCMD='${pkgs.ghostty}/bin/ghostty -e' PATH=${pkgs.yazi}/bin:$PATH
+            open_mode=suggested
+            save_mode=last
+          '';
         };
         xdg.configFile."wallpaper.png" = {
           source = ../../../wallpapers/3840x2160-dark-lines.png;

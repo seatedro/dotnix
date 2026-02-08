@@ -51,13 +51,12 @@ with lib;
           "hyprland"
           "gtk"
         ];
-        hyprland."org.freedesktop.impl.portal.FileChooser" = [ "termfilechooser" ];
         hyprland."org.freedesktop.impl.portal.Settings" = [ "gtk" ];
       };
       extraPortals = [
         pkgs.xdg-desktop-portal-hyprland
         pkgs.xdg-desktop-portal-gtk
-        pkgs.xdg-desktop-portal-termfilechooser
+        # pkgs.xdg-desktop-portal-termfilechooser  # available but auto-registers for Hyprland via UseIn; uncomment when working
       ];
     };
 

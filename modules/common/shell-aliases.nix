@@ -36,10 +36,7 @@
     find = "fd";
     vim = "nvim";
 
-    cp = "cp --recursive --verbose --progress";
     mk = "mkdir";
-    mv = "mv --verbose";
-    rm = "rm --recursive --verbose";
   };
 
   environment.shells = with pkgs; [

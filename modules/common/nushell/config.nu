@@ -73,8 +73,4 @@ def rebuild [] { sudo nixos-rebuild switch --flake $"path:/nix-config#(hostname)
 def gc [repo: any]: any -> any { git clone $"git@github.com:(($repo) | into string)" }
 
 
-# if $nu.is-interactive and ($env.YAZI_ID? | default "" | is-empty) {
-#   yazi
-# }
-
 source ~/.cache/carapace/init.nu
