@@ -128,6 +128,10 @@ in
           bind -T copy-mode-vi v send -X begin-selection
           bind -T copy-mode-vi y send -X copy-selection-and-cancel
 
+          # reduce scroll speed (default is 5 lines per tick)
+          bind -T copy-mode-vi WheelUpPane send-keys -X -N 2 scroll-up
+          bind -T copy-mode-vi WheelDownPane send-keys -X -N 2 scroll-down
+
           # no bells
           set -g visual-activity off
           set -g visual-bell off

@@ -51,6 +51,7 @@ in
     wineWowPackages.stable
     sdl3
     kdePackages.qtdeclarative
+    comma
 
     swww.packages.${pkgs.stdenv.hostPlatform.system}.swww
     quickshellPkg

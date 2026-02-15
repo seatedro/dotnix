@@ -131,7 +131,7 @@ in
             setopt pipe_fail no_unset
 
             local common_dir="$1"
-            local line path
+            local line sync_path
             local -a defaults paths
             typeset -A seen
 
@@ -159,12 +159,12 @@ in
             fi
 
             reply=()
-            for path in "''${paths[@]}"; do
-              path="''${path%/}"
-              [[ -z "$path" ]] && continue
-              [[ -n "''${seen[$path]-}" ]] && continue
-              seen[$path]=1
-              reply+=("$path")
+            for sync_path in "''${paths[@]}"; do
+              sync_path="''${sync_path%/}"
+              [[ -z "$sync_path" ]] && continue
+              [[ -n "''${seen[$sync_path]-}" ]] && continue
+              seen[$sync_path]=1
+              reply+=("$sync_path")
             done
           }
 
@@ -174,11 +174,13 @@ in
 
             local wt="$1"
             shift
-            local exclude pattern
+            local git_dir exclude pattern
             local -a patterns
             patterns=("$@")
 
-            exclude="$(git -C "$wt" rev-parse --git-path info/exclude 2>/dev/null)" || return 0
+            git_dir="$(git -C "$wt" rev-parse --absolute-git-dir 2>/dev/null)" || return 0
+            exclude="$git_dir/info/exclude"
+            mkdir -p "''${exclude:h}"
             touch "$exclude"
             for pattern in "''${patterns[@]}"; do
               rg -q -x -F -- "$pattern" "$exclude" || printf "\n%s\n" "$pattern" >> "$exclude"
@@ -190,7 +192,7 @@ in
             emulate -L zsh
             setopt pipe_fail no_unset
 
-            local repo_root common_dir template_root rel wt src prev path candidate dir_pattern
+            local repo_root common_dir template_root rel wt src prev sync_path candidate dir_pattern
             local has_repo_root=0
             local copied_template=0
             local copied_worktrees=0
@@ -267,10 +269,10 @@ in
 
             for wt in "''${ordered_worktrees[@]}"; do
               [[ -d "$wt" ]] || continue
-              for path in "''${sync_paths[@]}"; do
-                candidate="$wt/$path"
+              for sync_path in "''${sync_paths[@]}"; do
+                candidate="$wt/$sync_path"
                 if [[ -f "$candidate" ]]; then
-                  _ao_merge_file "$path" "$candidate" "$wt"
+                  _ao_merge_file "$sync_path" "$candidate" "$wt"
                   continue
                 fi
                 if [[ -d "$candidate" ]]; then
@@ -302,21 +304,21 @@ in
               ((copied_template++))
             done
 
-            for path in "''${sync_paths[@]}"; do
+            for sync_path in "''${sync_paths[@]}"; do
               is_file=0
               is_dir=0
               for rel in "''${merged_paths[@]}"; do
-                [[ "$rel" == "$path" ]] && is_file=1
-                [[ "$rel" == "$path/"* ]] && is_dir=1
+                [[ "$rel" == "$sync_path" ]] && is_file=1
+                [[ "$rel" == "$sync_path/"* ]] && is_dir=1
               done
               if (( is_file == 1 )); then
-                if [[ -z "''${exclude_seen[$path]-}" ]]; then
-                  exclude_seen[$path]=1
-                  exclude_patterns+=("$path")
+                if [[ -z "''${exclude_seen[$sync_path]-}" ]]; then
+                  exclude_seen[$sync_path]=1
+                  exclude_patterns+=("$sync_path")
                 fi
               fi
               if (( is_dir == 1 || is_file == 0 )); then
-                dir_pattern="$path/"
+                dir_pattern="$sync_path/"
                 if [[ -z "''${exclude_seen[$dir_pattern]-}" ]]; then
                   exclude_seen[$dir_pattern]=1
                   exclude_patterns+=("$dir_pattern")
@@ -400,7 +402,9 @@ if [ -f "$paths_file" ]; then
   done < "$paths_file"
 fi
 
-exclude="$(git rev-parse --git-path info/exclude)"
+git_dir="$(git rev-parse --absolute-git-dir)"
+exclude="$git_dir/info/exclude"
+mkdir -p "$(dirname "$exclude")"
 touch "$exclude"
 
 declare -A seen=()
