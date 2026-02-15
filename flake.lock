@@ -47,10 +47,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1769798065,
-        "narHash": "sha256-HE5pz8vNarW3zkRUsfwwYh424gzpMTgk1VovepNmRqY=",
-        "rev": "21f0f0e5c95375ea73e1ebb2877cbccdc0a3997b",
-        "revCount": 415,
+        "lastModified": 1767150299,
+        "narHash": "sha256-Vq6bCLl2gJHxA4yebTX/9L18QFXwrPraBxrMs58qAAI=",
+        "ref": "refs/heads/main",
+        "rev": "df3843ab9eccfdb8ea1a75cab761273cf735a571",
+        "revCount": 417,
         "type": "git",
         "url": "file:///nix-config/shell-cli"
       },
