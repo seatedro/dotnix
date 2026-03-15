@@ -46,17 +46,23 @@ lib.nixosSystem' (
       };
     };
 
-    services.logind = {
-      lidSwitch = "ignore";
-      lidSwitchExternalPower = "ignore";
-      lidSwitchDocked = "ignore";
+    services.logind.settings.Login = {
+      HandleLidSwitch = "ignore";
+      HandleLidSwitchExternalPower = "ignore";
+      HandleLidSwitchDocked = "ignore";
     };
 
     networking.hostName = "forge";
 
+    services.fprintd.enable = true;
+
     virtualisation.docker.enable = true;
 
+    programs.nix-index-database.comma.enable = true;
+
     wayland-desktop.enable = true;
+    hyprland.enable = true;
+    niri.enable = true;
     kuro.enable = true;
 
     age.secrets.vanta-agent-key = {

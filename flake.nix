@@ -3,17 +3,21 @@
 
   nixConfig = {
     extra-substituters = [
-      "https://cache.garnix.io/"
+      "https://seatedro.cachix.org/"
+      "https://ghostty.cachix.org"
       "https://nix-community.cachix.org/"
       "https://hyprland.cachix.org"
       "https://vicinae.cachix.org"
+      "https://niri.cachix.org"
     ];
 
     extra-trusted-public-keys = [
-      "cache.garnix.io:CTFPyKSLcx5RMJKfLo5EEPUObbA78b0YQ2DTCJXqr9g="
+      "seatedro.cachix.org-1:4fBkx08ZIy4YiohCAenWEESD1oVu04kzmz5swAUT43Q="
+      "ghostty.cachix.org-1:QB389yTa6gTyneehvqG58y0WnHjQOqgnA+wBnpWWxns="
       "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
       "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
       "vicinae.cachix.org-1:1kDrfienkGHPYbkpNj1mWTr7Fm1+zcenzgTizIcI3oc="
+      "niri.cachix.org-1:Wv0OmO7PsuocRKzfDoJ3mulSl7Z6oezYhGhR+3W2964="
     ];
 
     experimental-features = [
@@ -59,6 +63,15 @@
 
     glimpse.url = "github:seatedro/glimpse";
 
+    ghostty = {
+      url = "github:ghostty-org/ghostty/v1.3.0";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    opencode = {
+      url = "github:anomalyco/opencode";
+    };
+
     swww.url = "github:LGFae/swww";
 
     vicinae = {
@@ -83,7 +96,19 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    niri.url = "github:sodiboo/niri-flake";
+
+    dms = {
+      url = "github:AvengeMedia/DankMaterialShell/stable";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     nix-colors.url = "github:misterio77/nix-colors";
+
+    nix-index-database = {
+      url = "github:nix-community/nix-index-database";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     nixos-hardware.url = "github:NixOS/nixos-hardware";
   };
@@ -142,10 +167,10 @@
       inherit lib;
 
       formatter = {
-        x86_64-linux = nixpkgs.legacyPackages.x86_64-linux.nixfmt-rfc-style;
-        x86_64-darwin = nixpkgs.legacyPackages.x86_64-darwin.nixfmt-rfc-style;
-        aarch64-linux = nixpkgs.legacyPackages.aarch64-linux.nixfmt-rfc-style;
-        aarch64-darwin = nixpkgs.legacyPackages.aarch64-darwin.nixfmt-rfc-style;
+        x86_64-linux = nixpkgs.legacyPackages.x86_64-linux.nixfmt;
+        x86_64-darwin = nixpkgs.legacyPackages.x86_64-darwin.nixfmt;
+        aarch64-linux = nixpkgs.legacyPackages.aarch64-linux.nixfmt;
+        aarch64-darwin = nixpkgs.legacyPackages.aarch64-darwin.nixfmt;
       };
 
       packages =
@@ -160,6 +185,7 @@
             in
             {
               helium-browser = pkgs.callPackage ./pkgs/helium.nix { };
+              t3code = pkgs.callPackage ./pkgs/t3code.nix { };
             }
           );
     };

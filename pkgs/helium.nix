@@ -5,14 +5,14 @@
 }:
 let
   pname = "helium-browser";
-  version = "0.6.7.1";
+  version = "0.9.4.1";
 in
 appimageTools.wrapType2 {
   inherit pname version;
 
   src = fetchurl {
     url = "https://github.com/imputnet/helium-linux/releases/download/${version}/helium-${version}-x86_64.AppImage";
-    hash = "sha256-fZTBNhaDk5EeYcxZDJ83tweMZqtEhd7ws8AFUcHjFLs=";
+    hash = "sha256-N5gdWuxOrIudJx/4nYo4/SKSxakpTFvL4zzByv6Cnug=";
   };
 
   extraInstallCommands =
@@ -21,14 +21,14 @@ appimageTools.wrapType2 {
         inherit pname version;
         src = fetchurl {
           url = "https://github.com/imputnet/helium-linux/releases/download/${version}/helium-${version}-x86_64.AppImage";
-          hash = "sha256-fZTBNhaDk5EeYcxZDJ83tweMZqtEhd7ws8AFUcHjFLs=";
+          hash = "sha256-N5gdWuxOrIudJx/4nYo4/SKSxakpTFvL4zzByv6Cnug=";
         };
       };
     in
     ''
-      install -Dm444 ${appimageContents}/helium.desktop -t $out/share/applications
-      substituteInPlace $out/share/applications/helium.desktop \
-        --replace-fail 'Exec=AppRun' 'Exec=${pname}'
+      install -Dm444 ${appimageContents}/helium.desktop $out/share/applications/${pname}.desktop
+      substituteInPlace $out/share/applications/${pname}.desktop \
+        --replace-fail 'Exec=helium' 'Exec=${pname}'
       install -Dm444 ${appimageContents}/helium.png $out/share/pixmaps/helium.png
     '';
 

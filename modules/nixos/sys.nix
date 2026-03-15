@@ -31,7 +31,7 @@ in
     keyboard.zsa.enable = true;
   };
   environment.systemPackages = with pkgs; [
-    nixfmt-rfc-style
+    nixfmt
     nixd
     git
     wget

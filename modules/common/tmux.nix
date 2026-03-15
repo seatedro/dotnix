@@ -1,4 +1,9 @@
-{ config, pkgs, lib, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 
 let
   # gruvbox dark hard colors
@@ -60,8 +65,13 @@ in
         ];
 
         extraConfig = ''
+          set-window-option -g alternate-screen on
+
           # true color
           set -ag terminal-overrides ",*:RGB"
+          set -as terminal-features ",*:extkeys"
+          set -s extended-keys on
+          set -g xterm-keys on
           set -g allow-passthrough on
 
           # renumber windows

@@ -2,9 +2,13 @@
   config,
   lib,
   pkgs,
+  ghostty,
   ...
 }:
 with lib;
+let
+  ghosttyPkg = ghostty.packages.${pkgs.stdenv.hostPlatform.system}.default;
+in
 {
   options.hyprland = {
     enable = mkEnableOption "Hyprland wayland compositor";
@@ -45,6 +49,23 @@ with lib;
       hyprpolkitagent
     ];
 
+    #---XDG Portal------
+    xdg.portal = {
+      enable = true;
+      config = {
+        common.default = [ "hyprland" ];
+        hyprland.default = [
+          "hyprland"
+          "gtk"
+        ];
+        hyprland."org.freedesktop.impl.portal.Settings" = [ "gtk" ];
+      };
+      extraPortals = [
+        pkgs.xdg-desktop-portal-hyprland
+        pkgs.xdg-desktop-portal-gtk
+      ];
+    };
+
     #---PipeWire------
     security.rtkit.enable = true;
     services.pipewire = {
@@ -82,11 +103,11 @@ with lib;
         xdg.mimeApps = {
           enable = true;
           defaultApplications = {
-            "text/html" = "brave-browser.desktop";
-            "x-scheme-handler/http" = "brave-browser.desktop";
-            "x-scheme-handler/https" = "brave-browser.desktop";
-            "x-scheme-handler/about" = "brave-browser.desktop";
-            "x-scheme-handler/unknown" = "brave-browser.desktop";
+            "text/html" = "helium-browser.desktop";
+            "x-scheme-handler/http" = "helium-browser.desktop";
+            "x-scheme-handler/https" = "helium-browser.desktop";
+            "x-scheme-handler/about" = "helium-browser.desktop";
+            "x-scheme-handler/unknown" = "helium-browser.desktop";
           };
         };
         xdg.configFile."mimeapps.list".force = true;
@@ -123,7 +144,7 @@ with lib;
             [filechooser]
             cmd=yazi-wrapper.sh
             default_dir=$HOME
-            env=TERMCMD='${pkgs.ghostty}/bin/ghostty -e' PATH=${pkgs.yazi}/bin:$PATH
+            env=TERMCMD='${ghosttyPkg}/bin/ghostty -e' PATH=${pkgs.yazi}/bin:$PATH
             open_mode=suggested
             save_mode=last
           '';

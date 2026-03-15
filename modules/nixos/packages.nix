@@ -2,11 +2,14 @@
   pkgs,
   swww,
   quickshell,
+  ghostty,
   ...
 }:
 let
   helium-browser = pkgs.callPackage ../../pkgs/helium.nix { };
+  t3code = pkgs.callPackage ../../pkgs/t3code.nix { };
   quickshellPkg = quickshell.packages.${pkgs.stdenv.hostPlatform.system}.default;
+  ghosttyPkg = ghostty.packages.${pkgs.stdenv.hostPlatform.system}.default;
 in
 {
   environment.sessionVariables = {
@@ -16,9 +19,11 @@ in
   #---Common Packages------
   environment.systemPackages = with pkgs; [
     #---System Tools------
-    nixfmt-rfc-style
+    nixfmt
     nixd
     xclip
+    cliphist
+    fuzzel
     glib
     gsettings-desktop-schemas
     protonvpn-gui
@@ -28,14 +33,19 @@ in
       commandLineArgs = "--ozone-platform=wayland --enable-features=WaylandFractionalScaleV1";
     })
     helium-browser
-    ghostty
+    t3code
+    ghosttyPkg
     vesktop
     telegram-desktop
     qbittorrent
     zed-editor-fhs
     krita
     slack
+    opencode-desktop
     k9s
+    gnote
+    kdePackages.kalarm
+    sox
 
     # File management (common across desktop modules)
     thunar

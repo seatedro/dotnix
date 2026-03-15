@@ -22,7 +22,7 @@
           enable = true;
           shellInit = ''
             set -x EDITOR nvim
-            set -x BROWSER brave-browser
+            set -x BROWSER helium-browser
 
             if test -z "$SSH_AUTH_SOCK"
                 eval (ssh-agent -c) > /dev/null

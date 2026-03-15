@@ -187,6 +187,15 @@ in
             done
           }
 
+          _ao_fd_cmd() {
+            emulate -L zsh
+            if command -v fd-find >/dev/null 2>&1; then
+              reply=("fd-find")
+            else
+              reply=("fd")
+            fi
+          }
+
           # Merge-and-fanout sync for any git repo using worktrees.
           sync_agents_overrides() {
             emulate -L zsh
@@ -198,6 +207,7 @@ in
             local copied_worktrees=0
             local is_file=0
             local is_dir=0
+            local fd_bin
 
             local -a worktrees
             local -a ordered_worktrees
@@ -271,6 +281,17 @@ in
               [[ -d "$wt" ]] || continue
               for sync_path in "''${sync_paths[@]}"; do
                 candidate="$wt/$sync_path"
+                if [[ "$sync_path" == "AGENTS.override.md" ]]; then
+                  _ao_fd_cmd
+                  fd_bin="''${reply[1]}"
+                  while IFS= read -r src; do
+                    [[ -f "$src" ]] || continue
+                    rel="''${src#$wt/}"
+                    [[ -n "$rel" ]] || continue
+                    _ao_merge_file "$rel" "$src" "$wt"
+                  done < <("$fd_bin" -H -u -E .git -t f '^AGENTS\.override\.md$' "$wt")
+                  continue
+                fi
                 if [[ -f "$candidate" ]]; then
                   _ao_merge_file "$sync_path" "$candidate" "$wt"
                   continue

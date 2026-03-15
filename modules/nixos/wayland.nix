@@ -8,6 +8,7 @@ with lib;
 {
   imports = [
     ./wayland/hyprland.nix
+    ./wayland/niri.nix
     ./wayland/waybar.nix
     ./wayland/wofi.nix
     ./wayland/mako.nix
@@ -23,7 +24,6 @@ with lib;
 
   config = mkIf config.wayland.enable {
     #---Wayland------
-    hyprland.enable = true;
     steam.enable = true;
 
     # disabled - kuro handles these
@@ -40,24 +40,6 @@ with lib;
       pulse.enable = true;
       alsa.enable = true;
       alsa.support32Bit = true;
-    };
-
-    #---XDG Portal------
-    xdg.portal = {
-      enable = true;
-      config = {
-        common.default = [ "hyprland" ];
-        hyprland.default = [
-          "hyprland"
-          "gtk"
-        ];
-        hyprland."org.freedesktop.impl.portal.Settings" = [ "gtk" ];
-      };
-      extraPortals = [
-        pkgs.xdg-desktop-portal-hyprland
-        pkgs.xdg-desktop-portal-gtk
-        # pkgs.xdg-desktop-portal-termfilechooser  # available but auto-registers for Hyprland via UseIn; uncomment when working
-      ];
     };
 
     #---Touchpad------

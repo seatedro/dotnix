@@ -76,8 +76,8 @@ vm/bootstrap0:
 		sed --in-place '/system\.stateVersion = .*/a \
 			nix.package = pkgs.nixVersions.latest;\n \
 			nix.extraOptions = \"experimental-features = nix-command flakes\";\n \
-			nix.settings.substituters = [\"https://cache.garnix.io\" \"https://nix-community.cachix.org\"];\n \
-			nix.settings.trusted-public-keys = [\"cache.garnix.io:CTFPyKSLcx5RMJKfLo5EEPUObbA78b0YQ2DTCJXqr9g=\" \"nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs=\"];\n \
+			nix.settings.substituters = [\"https://cache.nixos.org\" \"https://seatedro.cachix.org\" \"https://nix-community.cachix.org\"];\n \
+			nix.settings.trusted-public-keys = [\"cache.nixos.org-1:6NCHdD59X431o0gWypbPFnrF6IIIKhB9Qtr8xB0qf9M=\" \"seatedro.cachix.org-1:4fBkx08ZIy4YiohCAenWEESD1oVu04kzmz5swAUT43Q=\" \"nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs=\"];\n \
   			services.openssh.enable = true;\n \
 			services.openssh.settings.PasswordAuthentication = true;\n \
 			services.openssh.settings.PermitRootLogin = \"yes\";\n \

@@ -1,0 +1,170 @@
+// Niri configuration — mirrors Hyprland setup
+
+input {
+    keyboard {
+        xkb {
+            options "caps:escape"
+        }
+        repeat-delay 300
+        repeat-rate 50
+    }
+
+    touchpad {
+        tap
+        natural-scroll false
+        click-method "clickfinger"
+    }
+
+    mouse {
+        accel-profile "flat"
+    }
+}
+
+cursor {
+    xcursor-theme "rose-pine-cursor"
+    xcursor-size 24
+}
+
+layout {
+    gaps 5
+    struts {
+        left 2
+        right 2
+        top 0
+        bottom 0
+    }
+    center-focused-column "never"
+
+    preset-column-widths {
+        proportion 0.33333
+        proportion 0.5
+        proportion 0.66667
+    }
+
+    default-column-width {
+        proportion 0.5
+    }
+
+    focus-ring {
+        width 2
+    }
+
+    border {
+        off
+    }
+}
+
+environment {
+    GDK_BACKEND "wayland"
+    QT_QPA_PLATFORM "wayland"
+    SDL_VIDEODRIVER "wayland"
+    MOZ_ENABLE_WAYLAND "1"
+    ELECTRON_OZONE_PLATFORM_HINT "wayland"
+    OZONE_PLATFORM "wayland"
+    NIXOS_OZONE_WL "1"
+    XCURSOR_SIZE "24"
+    BROWSER "helium-browser"
+}
+
+spawn-at-startup "wl-clip-persist" "--clipboard" "regular"
+spawn-at-startup "wlsunset" "-S" "05:30" "-s" "17:40"
+spawn-at-startup "xwayland-satellite"
+
+screenshot-path "~/Pictures/Screenshots/Screenshot_%Y-%m-%d_%H-%M-%S.png"
+
+prefer-no-csd
+
+window-rule {
+    geometry-corner-radius 8
+    clip-to-geometry true
+}
+
+binds {
+    // Close window
+    Mod+W { close-window; }
+
+    // Focus (vim-style)
+    Mod+H { focus-column-left; }
+    Mod+J { focus-window-down; }
+    Mod+K { focus-window-up; }
+    Mod+L { focus-column-right; }
+
+    // Move windows
+    Mod+Shift+H { move-column-left; }
+    Mod+Shift+J { move-window-down; }
+    Mod+Shift+K { move-window-up; }
+    Mod+Shift+L { move-column-right; }
+
+    // Fullscreen
+    Mod+F { maximize-column; }
+    Mod+Shift+F { fullscreen-window; }
+
+    // Floating
+    Mod+V { toggle-window-floating; }
+
+    // Column width presets
+    Mod+R { switch-preset-column-width; }
+
+    // Consume/expel from column
+    Mod+BracketLeft { consume-window-into-column; }
+    Mod+BracketRight { expel-window-from-column; }
+
+    // Focus workspaces
+    Mod+1 { focus-workspace 1; }
+    Mod+2 { focus-workspace 2; }
+    Mod+3 { focus-workspace 3; }
+    Mod+4 { focus-workspace 4; }
+    Mod+5 { focus-workspace 5; }
+    Mod+6 { focus-workspace 6; }
+    Mod+7 { focus-workspace 7; }
+    Mod+8 { focus-workspace 8; }
+    Mod+9 { focus-workspace 9; }
+
+    // Move window to workspace
+    Mod+Shift+1 { move-column-to-workspace 1; }
+    Mod+Shift+2 { move-column-to-workspace 2; }
+    Mod+Shift+3 { move-column-to-workspace 3; }
+    Mod+Shift+4 { move-column-to-workspace 4; }
+    Mod+Shift+5 { move-column-to-workspace 5; }
+    Mod+Shift+6 { move-column-to-workspace 6; }
+    Mod+Shift+7 { move-column-to-workspace 7; }
+    Mod+Shift+8 { move-column-to-workspace 8; }
+    Mod+Shift+9 { move-column-to-workspace 9; }
+
+    // Monitor focus/move
+    Mod+Alt+H { focus-monitor-left; }
+    Mod+Alt+L { focus-monitor-right; }
+    Mod+Alt+Shift+H { move-column-to-monitor-left; }
+    Mod+Alt+Shift+L { move-column-to-monitor-right; }
+
+    // Resize
+    Mod+Minus { set-column-width "-10%"; }
+    Mod+Equal { set-column-width "+10%"; }
+
+    // Scroll through workspaces
+    Mod+WheelScrollDown { focus-workspace-down; }
+    Mod+WheelScrollUp { focus-workspace-up; }
+
+    // Screenshots
+    Home { screenshot; }
+    Shift+Home { spawn "sh" "-c" "grim - | wl-copy"; }
+    Ctrl+Home { spawn "sh" "-c" "grim"; }
+
+    // Media keys
+    XF86AudioRaiseVolume { spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "5%+"; }
+    XF86AudioLowerVolume { spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "5%-"; }
+    XF86AudioMute { spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SINK@" "toggle"; }
+    XF86AudioMicMute { spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SOURCE@" "toggle"; }
+    XF86MonBrightnessUp { spawn "brightnessctl" "-e4" "-n2" "set" "5%+"; }
+    XF86MonBrightnessDown { spawn "brightnessctl" "-e4" "-n2" "set" "5%-"; }
+    XF86AudioNext { spawn "playerctl" "next"; }
+    XF86AudioPause { spawn "playerctl" "play-pause"; }
+    XF86AudioPlay { spawn "playerctl" "play-pause"; }
+    XF86AudioPrev { spawn "playerctl" "previous"; }
+
+    // Lock screen
+    Mod+Escape { spawn "swaylock"; }
+
+    // Quit niri
+    Mod+Shift+E { quit; }
+}

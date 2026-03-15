@@ -167,6 +167,6 @@
     "path": "/nix-config/assets/nix-snowflake.svg",
     "size": 20,
     "interval": 5,
-    "on-click": "brave https://search.nixos.org/packages"
+    "on-click": "helium-browser https://search.nixos.org/packages"
   }
 } 

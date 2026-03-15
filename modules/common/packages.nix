@@ -44,7 +44,6 @@
     wget
     unzip
     rsync
-    neofetch
     fastfetch
     lldb_21
     llvmPackages_21.libcxxClang

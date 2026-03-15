@@ -32,6 +32,7 @@ lib.nixosSystem' (
     networking.hostName = "thanatos";
 
     wayland-desktop.enable = true;
+    hyprland.enable = true;
     kuro.enable = true;
 
     services.xserver.videoDrivers = [ "nvidia" ];

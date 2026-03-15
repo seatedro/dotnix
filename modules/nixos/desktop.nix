@@ -2,9 +2,13 @@
   config,
   lib,
   pkgs,
+  ghostty,
   ...
 }:
 with lib;
+let
+  ghosttyPkg = ghostty.packages.${pkgs.stdenv.hostPlatform.system}.default;
+in
 {
   imports = [
     ./x11.nix
@@ -26,7 +30,7 @@ with lib;
     #---Packages------
     environment.systemPackages = with pkgs; [
       #---Apps------
-      ghostty
+      ghosttyPkg
       pcmanfm
       pavucontrol
       yazi
