@@ -46,6 +46,7 @@ in
     gnote
     kdePackages.kalarm
     sox
+    syncthing
 
     # File management (common across desktop modules)
     thunar
@@ -58,7 +59,7 @@ in
     feh
 
     # System applications
-    wineWowPackages.stable
+    wine64Packages.stable
     sdl3
     kdePackages.qtdeclarative
     comma

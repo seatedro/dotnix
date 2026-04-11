@@ -6,7 +6,7 @@
 }:
 with lib;
 {
-  config = {
+  config = mkIf (!config.kuro.enable) {
     environment.systemPackages = with pkgs; [
       libnotify
     ];

@@ -117,6 +117,9 @@ in
         xdg.configFile."hypr/hyprland.conf" = {
           source = lib.configFile "hypr/hyprland.conf";
         };
+        xdg.configFile."hypr/monitors.conf" = {
+          source = lib.configFile "hypr/monitors.conf";
+        };
         xdg.configFile."hypr/autostart.conf" = {
           source = lib.configFile "hypr/autostart.conf";
         };
