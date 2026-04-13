@@ -38,7 +38,7 @@ in
     vesktop
     telegram-desktop
     qbittorrent
-    zed-editor-fhs
+    zed-editor
     krita
     slack
     opencode-desktop

@@ -84,18 +84,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    kuro = {
-      url = "git+file:///nix-config/shell";
-      inputs.nixpkgs.follows = "nixpkgs";
-      inputs.quickshell.follows = "quickshell";
-      inputs.caelestia-cli.follows = "caelestia-cli";
-    };
-
-    caelestia-cli = {
-      url = "git+file:///nix-config/shell-cli";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     niri.url = "github:sodiboo/niri-flake";
 
     dms = {

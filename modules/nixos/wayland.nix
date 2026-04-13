@@ -26,12 +26,8 @@ with lib;
     #---Wayland------
     steam.enable = true;
 
-    # disabled - kuro handles these
-    # waybar.enable = true;
-    # wofi.enable = true;
-    # mako.enable = true;
-    # pywal.enable = true;
-    # darkman.enable = mkIf config.pywal.useDarkman true;
+    waybar.enable = true;
+    mako.enable = true;
 
     #---Sound------
     services.pulseaudio.enable = false;

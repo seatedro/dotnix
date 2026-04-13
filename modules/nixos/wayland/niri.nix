@@ -21,7 +21,6 @@ with lib;
     hyprland.enable = mkForce false;
     programs.niri.enable = true;
     programs.niri.package = niri.packages.${pkgs.system}.niri-unstable;
-    kuro.enable = mkForce false;
     services.upower.enable = true;
 
     #---Packages------

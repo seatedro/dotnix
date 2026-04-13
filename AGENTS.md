@@ -95,7 +95,3 @@ Modules use `mkEnableOption` pattern for conditional enabling. Host configuratio
 - **Shell**: Nushell as default
 - **SSH**: Ed25519 key authentication
 
-## Shell Development (shell/)
-
-The `shell/` directory contains the Quickshell-based desktop shell (caelestia-shell).
-

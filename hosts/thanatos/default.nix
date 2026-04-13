@@ -33,8 +33,6 @@ lib.nixosSystem' (
 
     wayland-desktop.enable = true;
     hyprland.enable = true;
-    kuro.enable = true;
-
     services.xserver.videoDrivers = [ "nvidia" ];
 
     environment.systemPackages = with pkgs; [

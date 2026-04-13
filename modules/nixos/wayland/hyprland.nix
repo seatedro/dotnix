@@ -138,7 +138,6 @@ in
         xdg.configFile."hypr/windows.conf" = {
           source = lib.configFile "hypr/windows.conf";
         };
-        # hypr/scheme/current.conf is managed by caelestia at runtime
         xdg.configFile."libinput-gestures.conf" = {
           source = lib.configFile "libinput-gestures.conf";
         };

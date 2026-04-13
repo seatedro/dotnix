@@ -1,462 +1,595 @@
-{
-  config,
-  lib,
-  pkgs,
-  ...
-}:
-let
-  inherit (lib)
-    enabled
-    removeAttrs
-    ;
-in
-{
+{ config, lib, pkgs, ... }:
+let inherit (lib) enabled removeAttrs;
+in {
   programs.zsh.enable = true;
 
   environment.shells = [ pkgs.zsh ];
 
-  home-manager.sharedModules = [
-    {
-      programs.zsh = enabled {
-        autocd = true;
-        enableCompletion = true;
-
-        autosuggestion = enabled { };
-        syntaxHighlighting = enabled { };
-        historySubstringSearch = enabled { };
-
-        history = {
-          size = 100000;
-          save = 100000;
-          ignoreAllDups = true;
-          ignoreSpace = true;
-          extended = true;
-          share = true;
-        };
-
-        setOptions = [
-          "GLOB_DOTS"
-          "CORRECT"
-          "COMPLETE_IN_WORD"
-          "NO_BEEP"
-          "INTERACTIVE_COMMENTS"
-        ];
-
-        sessionVariables = {
-          PAGER = "less";
-        };
-
-        shellAliases = config.environment.shellAliases // {
-          cdtmp = "cd $(mktemp -d)";
-          kc = "kubectl";
-          rebuild = "sudo nixos-rebuild switch --flake \"path:/nix-config#$(hostname)\"";
-        };
-
-        envExtra = ''
-          export PATH="$HOME/.local/bin:$HOME/.bun/bin:$PATH"
-          eval "$(direnv hook zsh)"
-        '';
-
-        initContent = ''
-          # Completion styling
-          zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
-          zstyle ':completion:*' menu select
-          zstyle ':completion:*' list-colors "''${(s.:.)LS_COLORS}"
-          zstyle ':completion:*' special-dirs true
-          zstyle ':completion:*' use-cache on
-          zstyle ':completion:*' cache-path ~/.zsh/cache
-          zstyle ':completion:*:*:*:*:descriptions' format '%F{green}-- %d --%f'
-          zstyle ':completion:*:*:*:*:corrections' format '%F{yellow}!- %d (errors: %e) -!%f'
-          zstyle ':completion:*:messages' format ' %F{purple} -- %d --%f'
-          zstyle ':completion:*:warnings' format ' %F{red}-- no matches found --%f'
-          zstyle ':completion:*' group-name '''
-          zstyle ':completion:*' verbose yes
-          zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#) ([0-9a-z-]#)*=01;34=0=01'
-          zstyle ':completion:*:*:*:*:processes' command "ps -u $USER -o pid,user,comm -w -w"
-
-          # Integrations
-          eval "$(zoxide init zsh)"
-          eval "$(carapace _carapace)"
-
-          # Edit command line in $EDITOR
-          autoload -Uz edit-command-line
-          zle -N edit-command-line
-          bindkey '^e' edit-command-line
-          bindkey -s '^f' 'tmux-sessionizer\n'
-
-          # Yazi directory wrapper
-          function y() {
-            local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
-            yazi "$@" --cwd-file="$tmp"
-            IFS= read -r -d ''' cwd < "$tmp"
-            [ -n "$cwd" ] && [ "$cwd" != "$PWD" ] && builtin cd -- "$cwd"
-            rm -f -- "$tmp"
-          }
-
-          # Git worktree helper
-          gwt() {
-            local search_dirs=("$HOME/exa" "$HOME/personal")
-
-            local display_path=$(fd -H -u -t d '^\.git$' --max-depth 5 ''${search_dirs[@]} 2>/dev/null | \
-              rg -v '/\.git/worktrees/' | \
-              sed 's|/\.git/$||' | \
-              sed "s|$HOME/||" | \
-              fzf --prompt="Select git repo: " --height=40% --reverse)
-
-            [[ -z "$display_path" ]] && return
-
-            local git_root="$HOME/$display_path"
-            local repo_name=$(basename "$git_root")
-
-            echo -n "Branch name: "
-            read branch_name
-            [[ -z "$branch_name" ]] && return
-
-            local kebab_branch=$(echo "$branch_name" | sed 's/[^a-zA-Z0-9]/-/g' | sed 's/--*/-/g' | tr '[:upper:]' '[:lower:]')
-            local worktree_dir="''${git_root}/../''${repo_name}-''${kebab_branch}"
-
-            cd "$git_root"
-
-            if git show-ref --verify --quiet refs/heads/$branch_name; then
-              git worktree add "$worktree_dir" "$branch_name"
-            else
-              git worktree add -b "$branch_name" "$worktree_dir"
-            fi
-
-            cd "$worktree_dir"
-          }
-
-          _ao_resolve_sync_paths() {
-            emulate -L zsh
-            setopt pipe_fail no_unset
-
-            local common_dir="$1"
-            local line sync_path
-            local -a defaults paths
-            typeset -A seen
-
-            defaults=(
-              "AGENTS.override.md"
-              ".agents"
-              "personal/ro/plans"
-              "personal/ro/notes"
-            )
-
-            if [[ -n "''${AO_SYNC_PATHS:-}" ]]; then
-              paths=("''${(@s:,:)AO_SYNC_PATHS}")
-            else
-              paths=("''${defaults[@]}")
-            fi
-
-            if [[ -f "$common_dir/local/ao-sync-paths" ]]; then
-              while IFS= read -r line; do
-                line="''${line%%#*}"
-                line="''${line#"''${line%%[![:space:]]*}"}"
-                line="''${line%"''${line##*[![:space:]]}"}"
-                [[ -z "$line" ]] && continue
-                paths+=("$line")
-              done < "$common_dir/local/ao-sync-paths"
-            fi
-
-            reply=()
-            for sync_path in "''${paths[@]}"; do
-              sync_path="''${sync_path%/}"
-              [[ -z "$sync_path" ]] && continue
-              [[ -n "''${seen[$sync_path]-}" ]] && continue
-              seen[$sync_path]=1
-              reply+=("$sync_path")
-            done
-          }
-
-          _ao_append_excludes_for_repo() {
-            emulate -L zsh
-            setopt pipe_fail no_unset
-
-            local wt="$1"
-            shift
-            local git_dir exclude pattern
-            local -a patterns
-            patterns=("$@")
-
-            git_dir="$(git -C "$wt" rev-parse --absolute-git-dir 2>/dev/null)" || return 0
-            exclude="$git_dir/info/exclude"
-            mkdir -p "''${exclude:h}"
-            touch "$exclude"
-            for pattern in "''${patterns[@]}"; do
-              rg -q -x -F -- "$pattern" "$exclude" || printf "\n%s\n" "$pattern" >> "$exclude"
-            done
-          }
-
-          _ao_fd_cmd() {
-            emulate -L zsh
-            if command -v fd-find >/dev/null 2>&1; then
-              reply=("fd-find")
-            else
-              reply=("fd")
-            fi
-          }
-
-          # Merge-and-fanout sync for any git repo using worktrees.
-          sync_agents_overrides() {
-            emulate -L zsh
-            setopt pipe_fail no_unset
-
-            local repo_root common_dir template_root rel wt src prev sync_path candidate dir_pattern
-            local has_repo_root=0
-            local copied_template=0
-            local copied_worktrees=0
-            local is_file=0
-            local is_dir=0
-            local fd_bin
-
-            local -a worktrees
-            local -a ordered_worktrees
-            local -a merged_paths
-            local -a sync_paths
-            local -a exclude_patterns
-
-            typeset -A merged_sources
-            typeset -A conflict_paths
-            typeset -A exclude_seen
-
-            _ao_merge_file() {
-              local in_rel="$1"
-              local in_src="$2"
-              local in_wt="$3"
-
-              if [[ -n "''${merged_sources[$in_rel]-}" ]]; then
-                prev="''${merged_sources[$in_rel]}"
-                if ! cmp -s "$prev" "$in_src"; then
-                  conflict_paths[$in_rel]=1
-                  if [[ "$in_wt" == "$repo_root" ]]; then
-                    merged_sources[$in_rel]="$in_src"
-                  fi
-                fi
-              else
-                merged_sources[$in_rel]="$in_src"
-              fi
-            }
-
-            repo_root="$(git rev-parse --show-toplevel 2>/dev/null)" || {
-              echo "error: run this inside a git worktree" >&2
-              return 1
-            }
-
-            common_dir="$(git rev-parse --git-common-dir 2>/dev/null)" || {
-              echo "error: failed to resolve git common dir" >&2
-              return 1
-            }
-
-            _ao_resolve_sync_paths "$common_dir"
-            sync_paths=("''${reply[@]}")
-            if (( ''${#sync_paths[@]} == 0 )); then
-              echo "error: no sync paths configured" >&2
-              return 1
-            fi
-
-            template_root="$common_dir/local/agents-overrides"
-            mkdir -p "$template_root"
-
-            while IFS= read -r wt; do
-              worktrees+=("''${wt#worktree }")
-            done < <(git -C "$repo_root" worktree list --porcelain | rg '^worktree ')
-
-            for wt in "''${worktrees[@]}"; do
-              if [[ "$wt" == "$repo_root" ]]; then
-                has_repo_root=1
-                break
-              fi
-            done
-            if (( has_repo_root == 0 )); then
-              worktrees+=("$repo_root")
-            fi
-
-            ordered_worktrees=("$repo_root")
-            for wt in "''${worktrees[@]}"; do
-              [[ "$wt" == "$repo_root" ]] && continue
-              ordered_worktrees+=("$wt")
-            done
-
-            for wt in "''${ordered_worktrees[@]}"; do
-              [[ -d "$wt" ]] || continue
-              for sync_path in "''${sync_paths[@]}"; do
-                candidate="$wt/$sync_path"
-                if [[ "$sync_path" == "AGENTS.override.md" ]]; then
-                  _ao_fd_cmd
-                  fd_bin="''${reply[1]}"
-                  while IFS= read -r src; do
-                    [[ -f "$src" ]] || continue
-                    rel="''${src#$wt/}"
-                    [[ -n "$rel" ]] || continue
-                    _ao_merge_file "$rel" "$src" "$wt"
-                  done < <("$fd_bin" -H -u -E .git -t f '^AGENTS\.override\.md$' "$wt")
-                  continue
-                fi
-                if [[ -f "$candidate" ]]; then
-                  _ao_merge_file "$sync_path" "$candidate" "$wt"
-                  continue
-                fi
-                if [[ -d "$candidate" ]]; then
-                  while IFS= read -r src; do
-                    rel="''${src#$wt/}"
-                    [[ -n "$rel" ]] || continue
-                    [[ -f "$src" ]] || continue
-                    _ao_merge_file "$rel" "$src" "$wt"
-                  done < <(rg --files "$candidate" | rg -v '/\.git/')
-                fi
-              done
-            done
-
-            while IFS= read -r rel; do
-              [[ -n "$rel" ]] && merged_paths+=("$rel")
-            done < <(print -rl -- ''${(k)merged_sources} | sort)
-
-            if (( ''${#merged_paths[@]} == 0 )); then
-              echo "warning: no sync files found in configured paths" >&2
-              return 1
-            fi
-
-            fd -H -u -t f . "$template_root" -x rm -f '{}' >/dev/null 2>&1 || true
-            for rel in "''${merged_paths[@]}"; do
-              src="''${merged_sources[$rel]}"
-              [[ -n "$src" ]] || continue
-              mkdir -p "$template_root/''${rel:h}"
-              cp "$src" "$template_root/$rel"
-              ((copied_template++))
-            done
-
-            for sync_path in "''${sync_paths[@]}"; do
-              is_file=0
-              is_dir=0
-              for rel in "''${merged_paths[@]}"; do
-                [[ "$rel" == "$sync_path" ]] && is_file=1
-                [[ "$rel" == "$sync_path/"* ]] && is_dir=1
-              done
-              if (( is_file == 1 )); then
-                if [[ -z "''${exclude_seen[$sync_path]-}" ]]; then
-                  exclude_seen[$sync_path]=1
-                  exclude_patterns+=("$sync_path")
-                fi
-              fi
-              if (( is_dir == 1 || is_file == 0 )); then
-                dir_pattern="$sync_path/"
-                if [[ -z "''${exclude_seen[$dir_pattern]-}" ]]; then
-                  exclude_seen[$dir_pattern]=1
-                  exclude_patterns+=("$dir_pattern")
-                fi
-              fi
-            done
-
-            for wt in "''${worktrees[@]}"; do
-              [[ -d "$wt" ]] || continue
-              _ao_append_excludes_for_repo "$wt" "''${exclude_patterns[@]}"
-              for rel in "''${merged_paths[@]}"; do
-                src="''${merged_sources[$rel]}"
-                [[ -n "$src" ]] || continue
-                if [[ "$src" == "$wt/$rel" ]]; then
-                  continue
-                fi
-                if [[ -f "$wt/$rel" ]] && cmp -s "$src" "$wt/$rel"; then
-                  continue
-                fi
-                mkdir -p "$wt/''${rel:h}"
-                cp "$src" "$wt/$rel"
-                ((copied_worktrees++))
-              done
-            done
-
-            if (( ''${#conflict_paths[@]} > 0 )); then
-              echo "note: resolved ''${#conflict_paths[@]} conflicting path(s); current worktree content was preferred"
-            fi
-            echo "synced ''${copied_template} template file(s) + ''${copied_worktrees} worktree copy operation(s)"
-          }
-
-          ao_install_post_checkout_hook() {
-            emulate -L zsh
-            setopt pipe_fail no_unset
-
-            local common_dir hook_path
-            common_dir="$(git rev-parse --git-common-dir 2>/dev/null)" || {
-              echo "error: run this inside a git repository" >&2
-              return 1
-            }
-
-            hook_path="$common_dir/hooks/post-checkout"
-            mkdir -p "''${hook_path:h}"
-
-            cat > "$hook_path" <<'EOF'
-#!/usr/bin/env bash
-set -euo pipefail
-
-common_dir="$(git rev-parse --git-common-dir)"
-repo_root="$(git rev-parse --show-toplevel)"
-template_root="$common_dir/local/agents-overrides"
-paths_file="$common_dir/local/ao-sync-paths"
-legacy_root_file="$common_dir/local/AGENTS.override.md"
-
-if [ ! -d "$template_root" ] && [ -s "$legacy_root_file" ]; then
-  mkdir -p "$template_root"
-  cp "$legacy_root_file" "$template_root/AGENTS.override.md"
-fi
-
-[ -d "$template_root" ] || exit 0
-
-while IFS= read -r -d $'\0' src; do
-  rel="''${src#"$template_root/"}"
-  dst="$repo_root/$rel"
-  if [ ! -f "$dst" ]; then
-    mkdir -p "$(dirname "$dst")"
-    cp "$src" "$dst"
-  fi
-done < <(fd -H -u -t f . "$template_root" -0)
-
-sync_paths="''${AO_SYNC_PATHS:-AGENTS.override.md,.agents,personal/ro/plans,personal/ro/notes}"
-IFS=',' read -r -a raw_paths <<< "$sync_paths"
-
-if [ -f "$paths_file" ]; then
-  while IFS= read -r line; do
-    line="''${line%%#*}"
-    line="''${line#"''${line%%[![:space:]]*}"}"
-    line="''${line%"''${line##*[![:space:]]}"}"
-    [ -z "$line" ] && continue
-    raw_paths+=("$line")
-  done < "$paths_file"
-fi
-
-git_dir="$(git rev-parse --absolute-git-dir)"
-exclude="$git_dir/info/exclude"
-mkdir -p "$(dirname "$exclude")"
-touch "$exclude"
-
-declare -A seen=()
-for path in "''${raw_paths[@]}"; do
-  path="''${path%/}"
-  [ -z "$path" ] && continue
-  if [ -n "''${seen[$path]:-}" ]; then
-    continue
-  fi
-  seen[$path]=1
-
-  if [ -f "$repo_root/$path" ] || [ -f "$template_root/$path" ]; then
-    pattern="$path"
-  else
-    pattern="$path/"
-  fi
-
-  rg -q -x -F -- "$pattern" "$exclude" || printf "\n%s\n" "$pattern" >> "$exclude"
-done
-EOF
-
-            chmod +x "$hook_path"
-            echo "installed post-checkout hook: $hook_path"
-          }
-
-          alias ao='sync_agents_overrides'
-          alias ao-sync='sync_agents_overrides'
-          alias ao-install-hook='ao_install_post_checkout_hook'
-
-        '';
+  home-manager.sharedModules = [{
+    programs.zsh = enabled {
+      autocd = true;
+      enableCompletion = true;
+
+      autosuggestion = enabled { };
+      syntaxHighlighting = enabled { };
+      historySubstringSearch = enabled { };
+
+      history = {
+        size = 100000;
+        save = 100000;
+        ignoreAllDups = true;
+        ignoreSpace = true;
+        extended = true;
+        share = true;
       };
-    }
-  ];
+
+      setOptions = [
+        "GLOB_DOTS"
+        "CORRECT"
+        "COMPLETE_IN_WORD"
+        "NO_BEEP"
+        "INTERACTIVE_COMMENTS"
+      ];
+
+      sessionVariables = { PAGER = "less"; };
+
+      shellAliases = config.environment.shellAliases // {
+        cdtmp = "cd $(mktemp -d)";
+        kc = "kubectl";
+        rebuild =
+          ''sudo nixos-rebuild switch --flake "path:/nix-config#$(hostname)"'';
+      };
+
+      envExtra = ''
+        export PATH="$HOME/.local/bin:$HOME/.bun/bin:$HOME/.opencode/bin:$PATH"
+        eval "$(direnv hook zsh)"
+      '';
+
+      initContent = ''
+                                  # Completion styling
+                                  zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
+                                  zstyle ':completion:*' menu select
+                                  zstyle ':completion:*' list-colors "''${(s.:.)LS_COLORS}"
+                                  zstyle ':completion:*' special-dirs true
+                                  zstyle ':completion:*' use-cache on
+                                  zstyle ':completion:*' cache-path ~/.zsh/cache
+                                  zstyle ':completion:*:*:*:*:descriptions' format '%F{green}-- %d --%f'
+                                  zstyle ':completion:*:*:*:*:corrections' format '%F{yellow}!- %d (errors: %e) -!%f'
+                                  zstyle ':completion:*:messages' format ' %F{purple} -- %d --%f'
+                                  zstyle ':completion:*:warnings' format ' %F{red}-- no matches found --%f'
+                                  zstyle ':completion:*' group-name '''
+                                  zstyle ':completion:*' verbose yes
+                                  zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#) ([0-9a-z-]#)*=01;34=0=01'
+                                  zstyle ':completion:*:*:*:*:processes' command "ps -u $USER -o pid,user,comm -w -w"
+
+                                  # Integrations
+                                  eval "$(zoxide init zsh)"
+                                  eval "$(carapace _carapace)"
+
+                                  # Edit command line in $EDITOR
+                                  autoload -Uz edit-command-line
+                                  zle -N edit-command-line
+                                  bindkey '^e' edit-command-line
+                                  bindkey -s '^f' 'tmux-sessionizer\n'
+
+                                  # Yazi directory wrapper
+                                  function y() {
+                                    local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
+                                    yazi "$@" --cwd-file="$tmp"
+                                    IFS= read -r -d ''' cwd < "$tmp"
+                                    [ -n "$cwd" ] && [ "$cwd" != "$PWD" ] && builtin cd -- "$cwd"
+                                    rm -f -- "$tmp"
+                                  }
+
+                                  # Git worktree helper
+                                  gwt() {
+                                    local search_dirs=("$HOME/exa" "$HOME/personal")
+
+                                    local display_path=$(fd -H -u -t d '^\.git$' --max-depth 5 ''${search_dirs[@]} 2>/dev/null | \
+                                      rg -v '/\.git/worktrees/' | \
+                                      sed 's|/\.git/$||' | \
+                                      sed "s|$HOME/||" | \
+                                      fzf --prompt="Select git repo: " --height=40% --reverse)
+
+                                    [[ -z "$display_path" ]] && return
+
+                                    local git_root="$HOME/$display_path"
+                                    local repo_name=$(basename "$git_root")
+
+                                    echo -n "Branch name: "
+                                    read branch_name
+                                    [[ -z "$branch_name" ]] && return
+
+                                    local kebab_branch=$(echo "$branch_name" | sed 's/[^a-zA-Z0-9]/-/g' | sed 's/--*/-/g' | tr '[:upper:]' '[:lower:]')
+                                    local worktree_dir="''${git_root}/../''${repo_name}-''${kebab_branch}"
+
+                                    cd "$git_root"
+                                    ao_install_post_checkout_hook >/dev/null
+
+                                    if git show-ref --verify --quiet refs/heads/$branch_name; then
+                                      git worktree add "$worktree_dir" "$branch_name"
+                                    else
+                                      git worktree add -b "$branch_name" "$worktree_dir"
+                                    fi
+
+                                    cd "$worktree_dir"
+                                  }
+
+                                  _ao_resolve_sync_paths() {
+                                    emulate -L zsh
+                                    setopt pipe_fail no_unset
+
+                                    local common_dir="$1"
+                                    local line sync_path
+                                    local -a defaults paths
+                                    typeset -A seen
+
+                                      defaults=(
+                                        "AGENTS.md"
+                                        ".agents"
+                                        "personal/ro/plans"
+                                        "personal/ro/notes"
+                                      )
+
+                                    if [[ -n "''${AO_SYNC_PATHS:-}" ]]; then
+                                      paths=("''${(@s:,:)AO_SYNC_PATHS}")
+                                    else
+                                      paths=("''${defaults[@]}")
+                                    fi
+
+                                    if [[ -f "$common_dir/local/ao-sync-paths" ]]; then
+                                      while IFS= read -r line; do
+                                        line="''${line%%#*}"
+                                        line="''${line#"''${line%%[![:space:]]*}"}"
+                                        line="''${line%"''${line##*[![:space:]]}"}"
+                                        [[ -z "$line" ]] && continue
+                                        paths+=("$line")
+                                      done < "$common_dir/local/ao-sync-paths"
+                                    fi
+
+                                    reply=()
+                                    for sync_path in "''${paths[@]}"; do
+                                      sync_path="''${sync_path%/}"
+                                      [[ -z "$sync_path" ]] && continue
+                                      [[ -n "''${seen[$sync_path]-}" ]] && continue
+                                      seen[$sync_path]=1
+                                      reply+=("$sync_path")
+                                    done
+                                  }
+
+                                  _ao_append_excludes_for_repo() {
+                                    emulate -L zsh
+                                    setopt pipe_fail no_unset
+
+                                    local wt="$1"
+                                    shift
+                                    local git_dir exclude pattern
+                                    local -a patterns
+                                    patterns=("$@")
+
+                                    git_dir="$(git -C "$wt" rev-parse --absolute-git-dir 2>/dev/null)" || return 0
+                                    exclude="$git_dir/info/exclude"
+                                    mkdir -p "''${exclude:h}"
+                                    touch "$exclude"
+                                    for pattern in "''${patterns[@]}"; do
+                                      rg -q -x -F -- "$pattern" "$exclude" || printf "\n%s\n" "$pattern" >> "$exclude"
+                                    done
+                                  }
+
+                                    _ao_migrate_legacy_template_store() {
+                                      emulate -L zsh
+                                      setopt pipe_fail no_unset
+
+                                      local template_root="$1"
+                                      local legacy_root_file="$2"
+                                      local override_src override_rel agents_rel agents_dst
+                                      local fd_bin
+
+                                      mkdir -p "$template_root"
+
+                                      if [[ -s "$legacy_root_file" ]]; then
+                                        cp "$legacy_root_file" "$template_root/AGENTS.md"
+                                        rm -f "$legacy_root_file"
+                                      fi
+
+                                      _ao_fd_cmd
+                                      fd_bin="''${reply[1]}"
+                                      while IFS= read -r override_src; do
+                                        [[ -f "$override_src" ]] || continue
+                                        override_rel="''${override_src#$template_root/}"
+                                        agents_rel="''${override_rel%AGENTS.override.md}AGENTS.md"
+                                        agents_dst="$template_root/$agents_rel"
+
+                                        mkdir -p "''${agents_dst:h}"
+                                        cp "$override_src" "$agents_dst"
+                                        rm -f "$override_src"
+                                      done < <("$fd_bin" -H -u -t f -g 'AGENTS.override.md' "$template_root")
+                                    }
+
+                                    _ao_migrate_override_files_for_repo() {
+                                      emulate -L zsh
+                                      setopt pipe_fail no_unset
+
+                                      local wt="$1"
+                                      local override_src override_rel agents_rel agents_dst
+                                      local migrated=0
+                                      local -a exclude_patterns
+                                      local fd_bin
+
+                                      _ao_fd_cmd
+                                      fd_bin="''${reply[1]}"
+                                      while IFS= read -r override_src; do
+                                        [[ -f "$override_src" ]] || continue
+                                        override_rel="''${override_src#$wt/}"
+                                        agents_rel="''${override_rel%AGENTS.override.md}AGENTS.md"
+                                        agents_dst="$wt/$agents_rel"
+
+                                        mkdir -p "''${agents_dst:h}"
+                                        cp "$override_src" "$agents_dst"
+                                        rm -f "$override_src"
+                                        exclude_patterns+=("$agents_rel")
+                                        ((migrated++))
+                                      done < <("$fd_bin" -H -u -E .git -t f -g 'AGENTS.override.md' "$wt")
+
+                                      if (( ''${#exclude_patterns[@]} > 0 )); then
+                                        _ao_append_excludes_for_repo "$wt" "''${exclude_patterns[@]}"
+                                      fi
+
+                                      reply=("$migrated")
+                                    }
+
+                                    _ao_hide_agents_for_repo() {
+                                      emulate -L zsh
+                                      setopt pipe_fail no_unset
+
+                                      local wt="$1"
+                                      shift
+                                      local rel
+
+                                      for rel in "$@"; do
+                                        git -C "$wt" update-index --skip-worktree -- "$rel" >/dev/null 2>&1 || true
+                                      done
+                                    }
+
+                                  _ao_fd_cmd() {
+                                    emulate -L zsh
+                                    if command -v fd-find >/dev/null 2>&1; then
+                                      reply=("fd-find")
+                                    else
+                                      reply=("fd")
+                                    fi
+                                  }
+
+                                  # Merge-and-fanout sync for any git repo using worktrees.
+                                  sync_agents_overrides() {
+                                    emulate -L zsh
+                                    setopt pipe_fail no_unset
+
+                                      local repo_root common_dir template_root rel wt src prev sync_path candidate dir_pattern migrated_here legacy_root_file
+                                      local has_repo_root=0
+                                      local copied_template=0
+                                      local copied_worktrees=0
+                                      local migrated_overrides=0
+                                      local is_file=0
+                                      local is_dir=0
+                                      local fd_bin
+
+                                      local -a worktrees
+                                      local -a ordered_worktrees
+                                      local -a merged_paths
+                                      local -a agents_paths
+                                      local -a sync_paths
+                                      local -a exclude_patterns
+
+                                    typeset -A merged_sources
+                                    typeset -A conflict_paths
+                                    typeset -A exclude_seen
+
+                                    _ao_merge_file() {
+                                      local in_rel="$1"
+                                      local in_src="$2"
+                                      local in_wt="$3"
+
+                                      if [[ -n "''${merged_sources[$in_rel]-}" ]]; then
+                                        prev="''${merged_sources[$in_rel]}"
+                                        if ! cmp -s "$prev" "$in_src"; then
+                                          conflict_paths[$in_rel]=1
+                                          if [[ "$in_wt" == "$repo_root" ]]; then
+                                            merged_sources[$in_rel]="$in_src"
+                                          fi
+                                        fi
+                                      else
+                                        merged_sources[$in_rel]="$in_src"
+                                      fi
+                                    }
+
+                                    repo_root="$(git rev-parse --show-toplevel 2>/dev/null)" || {
+                                      echo "error: run this inside a git worktree" >&2
+                                      return 1
+                                    }
+
+                                    common_dir="$(git rev-parse --git-common-dir 2>/dev/null)" || {
+                                      echo "error: failed to resolve git common dir" >&2
+                                      return 1
+                                    }
+
+                                    _ao_resolve_sync_paths "$common_dir"
+                                    sync_paths=("''${reply[@]}")
+                                    if (( ''${#sync_paths[@]} == 0 )); then
+                                      echo "error: no sync paths configured" >&2
+                                      return 1
+                                    fi
+
+                                      template_root="$common_dir/local/agents-overrides"
+                                      legacy_root_file="$common_dir/local/AGENTS.override.md"
+                                      _ao_migrate_legacy_template_store "$template_root" "$legacy_root_file"
+                                      mkdir -p "$template_root"
+
+                                    while IFS= read -r wt; do
+                                      worktrees+=("''${wt#worktree }")
+                                    done < <(git -C "$repo_root" worktree list --porcelain | rg '^worktree ')
+
+                                    for wt in "''${worktrees[@]}"; do
+                                      if [[ "$wt" == "$repo_root" ]]; then
+                                        has_repo_root=1
+                                        break
+                                      fi
+                                    done
+                                    if (( has_repo_root == 0 )); then
+                                      worktrees+=("$repo_root")
+                                    fi
+
+                                      ordered_worktrees=("$repo_root")
+                                      for wt in "''${worktrees[@]}"; do
+                                        [[ "$wt" == "$repo_root" ]] && continue
+                                        ordered_worktrees+=("$wt")
+                                      done
+
+                                      for wt in "''${ordered_worktrees[@]}"; do
+                                        [[ -d "$wt" ]] || continue
+                                        _ao_migrate_override_files_for_repo "$wt"
+                                        migrated_here="''${reply[1]}"
+                                        ((migrated_overrides += migrated_here))
+                                      done
+
+                                      for wt in "''${ordered_worktrees[@]}"; do
+                                        [[ -d "$wt" ]] || continue
+                                        for sync_path in "''${sync_paths[@]}"; do
+                                          candidate="$wt/$sync_path"
+                                          if [[ "$sync_path" == "AGENTS.md" ]]; then
+                                            _ao_fd_cmd
+                                            fd_bin="''${reply[1]}"
+                                            while IFS= read -r src; do
+                                              [[ -f "$src" ]] || continue
+                                              rel="''${src#$wt/}"
+                                              [[ -n "$rel" ]] || continue
+                                              _ao_merge_file "$rel" "$src" "$wt"
+                                            done < <("$fd_bin" -H -u -E .git -t f -g 'AGENTS.md' "$wt")
+                                            continue
+                                          fi
+                                        if [[ -f "$candidate" ]]; then
+                                          _ao_merge_file "$sync_path" "$candidate" "$wt"
+                                          continue
+                                        fi
+                                        if [[ -d "$candidate" ]]; then
+                                          while IFS= read -r src; do
+                                            rel="''${src#$wt/}"
+                                            [[ -n "$rel" ]] || continue
+                                            [[ -f "$src" ]] || continue
+                                            _ao_merge_file "$rel" "$src" "$wt"
+                                          done < <(rg --files "$candidate" | rg -v '/\.git/')
+                                        fi
+                                      done
+                                    done
+
+                                    while IFS= read -r rel; do
+                                      [[ -n "$rel" ]] && merged_paths+=("$rel")
+                                    done < <(print -rl -- ''${(k)merged_sources} | sort)
+
+                                      if (( ''${#merged_paths[@]} == 0 )); then
+                                        echo "warning: no sync files found in configured paths" >&2
+                                        return 1
+                                      fi
+
+                                      for rel in "''${merged_paths[@]}"; do
+                                        [[ "$rel" == *"AGENTS.md" ]] || continue
+                                        agents_paths+=("$rel")
+                                      done
+
+                                    fd -H -u -t f . "$template_root" -x rm -f '{}' >/dev/null 2>&1 || true
+                                    for rel in "''${merged_paths[@]}"; do
+                                      src="''${merged_sources[$rel]}"
+                                      [[ -n "$src" ]] || continue
+                                      mkdir -p "$template_root/''${rel:h}"
+                                      cp "$src" "$template_root/$rel"
+                                      ((copied_template++))
+                                    done
+
+                                    for sync_path in "''${sync_paths[@]}"; do
+                                      is_file=0
+                                      is_dir=0
+                                      for rel in "''${merged_paths[@]}"; do
+                                        [[ "$rel" == "$sync_path" ]] && is_file=1
+                                        [[ "$rel" == "$sync_path/"* ]] && is_dir=1
+                                      done
+                                      if (( is_file == 1 )); then
+                                        if [[ -z "''${exclude_seen[$sync_path]-}" ]]; then
+                                          exclude_seen[$sync_path]=1
+                                          exclude_patterns+=("$sync_path")
+                                        fi
+                                      fi
+                                      if (( is_dir == 1 || is_file == 0 )); then
+                                        dir_pattern="$sync_path/"
+                                        if [[ -z "''${exclude_seen[$dir_pattern]-}" ]]; then
+                                          exclude_seen[$dir_pattern]=1
+                                          exclude_patterns+=("$dir_pattern")
+                                        fi
+                                      fi
+                                    done
+
+                                      for rel in "''${agents_paths[@]}"; do
+                                        if [[ -z "''${exclude_seen[$rel]-}" ]]; then
+                                          exclude_seen[$rel]=1
+                                          exclude_patterns+=("$rel")
+                                        fi
+                                      done
+
+                                      for wt in "''${worktrees[@]}"; do
+                                        [[ -d "$wt" ]] || continue
+                                        _ao_append_excludes_for_repo "$wt" "''${exclude_patterns[@]}"
+                                      for rel in "''${merged_paths[@]}"; do
+                                        src="''${merged_sources[$rel]}"
+                                        [[ -n "$src" ]] || continue
+                                        if [[ "$src" == "$wt/$rel" ]]; then
+                                          continue
+                                        fi
+                                        if [[ -f "$wt/$rel" ]] && cmp -s "$src" "$wt/$rel"; then
+                                          continue
+                                        fi
+                                        mkdir -p "$wt/''${rel:h}"
+                                          cp "$src" "$wt/$rel"
+                                          ((copied_worktrees++))
+                                        done
+                                        _ao_hide_agents_for_repo "$wt" "''${agents_paths[@]}"
+                                      done
+
+                                    if (( ''${#conflict_paths[@]} > 0 )); then
+                                      echo "note: resolved ''${#conflict_paths[@]} conflicting path(s); current worktree content was preferred"
+                                    fi
+                                      echo "synced ''${copied_template} template file(s) + ''${copied_worktrees} worktree copy operation(s); migrated ''${migrated_overrides} AGENTS.override.md file(s)"
+                                    }
+
+                                  ao_install_post_checkout_hook() {
+                                    emulate -L zsh
+                                    setopt pipe_fail no_unset
+
+                                    local common_dir hook_path
+                                    common_dir="$(git rev-parse --git-common-dir 2>/dev/null)" || {
+                                      echo "error: run this inside a git repository" >&2
+                                      return 1
+                                    }
+
+                                    hook_path="$common_dir/hooks/post-checkout"
+                                    mkdir -p "''${hook_path:h}"
+
+                                            cat > "$hook_path" <<'EOF'
+        #!/usr/bin/env bash
+        set -euo pipefail
+
+        common_dir="$(git rev-parse --git-common-dir)"
+        repo_root="$(git rev-parse --show-toplevel)"
+        template_root="$common_dir/local/agents-overrides"
+        paths_file="$common_dir/local/ao-sync-paths"
+        legacy_root_file="$common_dir/local/AGENTS.override.md"
+
+        migrate_legacy_template_store() {
+          local override_src override_rel agents_rel agents_dst
+
+          mkdir -p "$template_root"
+          if [ -s "$legacy_root_file" ]; then
+            cp "$legacy_root_file" "$template_root/AGENTS.md"
+            rm -f "$legacy_root_file"
+          fi
+
+          while IFS= read -r -d $'\0' override_src; do
+            override_rel="''${override_src#"$template_root/"}"
+            agents_rel="''${override_rel%AGENTS.override.md}AGENTS.md"
+            agents_dst="$template_root/$agents_rel"
+
+            mkdir -p "$(dirname "$agents_dst")"
+            cp "$override_src" "$agents_dst"
+            rm -f "$override_src"
+          done < <(fd -H -u -t f -g 'AGENTS.override.md' "$template_root" -0)
+        }
+
+        migrate_local_overrides() {
+          local override_src override_rel agents_rel agents_dst
+
+          while IFS= read -r -d $'\0' override_src; do
+            override_rel="''${override_src#"$repo_root/"}"
+            agents_rel="''${override_rel%AGENTS.override.md}AGENTS.md"
+            agents_dst="$repo_root/$agents_rel"
+
+            mkdir -p "$(dirname "$agents_dst")"
+            cp "$override_src" "$agents_dst"
+            rm -f "$override_src"
+            git update-index --skip-worktree -- "$agents_rel" >/dev/null 2>&1 || true
+            rg -q -x -F -- "$agents_rel" "$exclude" || printf "\n%s\n" "$agents_rel" >> "$exclude"
+          done < <(fd -H -u -E .git -t f -g 'AGENTS.override.md' "$repo_root" -0)
+        }
+
+        hide_agents() {
+          local agents_src agents_rel
+
+          while IFS= read -r -d $'\0' agents_src; do
+            agents_rel="''${agents_src#"$repo_root/"}"
+            git update-index --skip-worktree -- "$agents_rel" >/dev/null 2>&1 || true
+            rg -q -x -F -- "$agents_rel" "$exclude" || printf "\n%s\n" "$agents_rel" >> "$exclude"
+          done < <(fd -H -u -E .git -t f -g 'AGENTS.md' "$repo_root" -0)
+        }
+
+        migrate_legacy_template_store
+
+        if [ -d "$template_root" ]; then
+          while IFS= read -r -d $'\0' src; do
+            rel="''${src#"$template_root/"}"
+            dst="$repo_root/$rel"
+            if [ ! -f "$dst" ]; then
+              mkdir -p "$(dirname "$dst")"
+              cp "$src" "$dst"
+            fi
+          done < <(fd -H -u -t f . "$template_root" -0)
+        fi
+
+        sync_paths="''${AO_SYNC_PATHS:-AGENTS.md,.agents,personal/ro/plans,personal/ro/notes}"
+        IFS=',' read -r -a raw_paths <<< "$sync_paths"
+
+        if [ -f "$paths_file" ]; then
+          while IFS= read -r line; do
+            line="''${line%%#*}"
+            line="''${line#"''${line%%[![:space:]]*}"}"
+            line="''${line%"''${line##*[![:space:]]}"}"
+            [ -z "$line" ] && continue
+            raw_paths+=("$line")
+          done < "$paths_file"
+        fi
+
+        git_dir="$(git rev-parse --absolute-git-dir)"
+        exclude="$git_dir/info/exclude"
+        mkdir -p "$(dirname "$exclude")"
+        touch "$exclude"
+
+        declare -A seen=()
+        for path in "''${raw_paths[@]}"; do
+          path="''${path%/}"
+          [ -z "$path" ] && continue
+          if [ -n "''${seen[$path]:-}" ]; then
+            continue
+          fi
+          seen[$path]=1
+
+          if [ -f "$repo_root/$path" ] || [ -f "$template_root/$path" ]; then
+            pattern="$path"
+          else
+            pattern="$path/"
+          fi
+
+          rg -q -x -F -- "$pattern" "$exclude" || printf "\n%s\n" "$pattern" >> "$exclude"
+        done
+
+        migrate_local_overrides
+        hide_agents
+        EOF
+
+                                    chmod +x "$hook_path"
+                                    echo "installed post-checkout hook: $hook_path"
+                                  }
+
+                                  alias ao='sync_agents_overrides'
+                                  alias ao-sync='sync_agents_overrides'
+                                  alias ao-install-hook='ao_install_post_checkout_hook'
+
+      '';
+    };
+  }];
 }

@@ -63,8 +63,6 @@ lib.nixosSystem' (
     wayland-desktop.enable = true;
     hyprland.enable = true;
     niri.enable = true;
-    kuro.enable = true;
-
     age.secrets.vanta-agent-key = {
       file = ../../secrets/vanta-agent-key.age;
       mode = "0400";

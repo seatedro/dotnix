@@ -18,9 +18,6 @@ with lib;
   config = mkIf config.wayland-desktop.enable {
     wayland.enable = true;
 
-    # disabled - kuro handles launcher
-    # wofi.enable = true;
-
     environment.systemPackages = with pkgs; [
       pavucontrol
       blueberry
