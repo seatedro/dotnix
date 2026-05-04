@@ -39,7 +39,6 @@ in
     tree
     alacritty
     xclip
-    code-cursor
     thunar
     thunar-volman
     tumbler

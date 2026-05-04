@@ -32,6 +32,32 @@ lib.nixosSystem' (
     };
 
     home-manager.users.rohit = {
+      xdg.configFile."Deskflow/Deskflow.conf" = {
+        force = true;
+        text = ''
+          [core]
+          coreMode=1
+          lastVersion=1.25.0.0
+          port=24800
+          screenName=forge
+          startedBefore=true
+
+          [client]
+          remoteHost=macbook
+
+          [security]
+          checkPeerFingerprints=false
+          tlsEnabled=false
+
+          [log]
+          level=6
+
+          [gui]
+          enableUpdateCheck=false
+          logExpanded=true
+        '';
+      };
+
       xdg.configFile."hypr/monitors.conf" = {
         text = ''
           env = GDK_SCALE,1.25
@@ -59,6 +85,38 @@ lib.nixosSystem' (
     virtualisation.docker.enable = true;
 
     programs.nix-index-database.comma.enable = true;
+    programs.mosh = {
+      enable = true;
+      openFirewall = true;
+    };
+
+    environment.systemPackages = [
+      pkgs.deskflow
+    ];
+
+    systemd.user.services.deskflow = {
+      description = "Deskflow Client";
+      bindsTo = [ "graphical-session.target" ];
+      wants = [
+        "graphical-session-pre.target"
+      ];
+      after = [
+        "graphical-session-pre.target"
+      ];
+      wantedBy = [ "graphical-session.target" ];
+      serviceConfig = {
+        Environment = [ "XDG_SESSION_TYPE=x11" ];
+        ExecStart = "${pkgs.deskflow}/bin/deskflow-core client -s /home/rohit/.config/Deskflow/Deskflow.conf";
+        Restart = "always";
+        RestartSec = 5;
+      };
+    };
+
+    systemd.tmpfiles.rules = [
+      "d /usr/share 0755 root root -"
+      "d /usr/share/X11 0755 root root -"
+      "L+ /usr/share/X11/xkb - - - - ${pkgs.xkeyboard_config}/share/X11/xkb"
+    ];
 
     wayland-desktop.enable = true;
     hyprland.enable = true;

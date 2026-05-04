@@ -8,8 +8,6 @@
     {
       xdg.configFile = {
         "zellij/config.kdl".source = lib.configFile "zellij/config.kdl";
-      };
-      xdg.configFile = {
         "zellij/layouts/simple.kdl".source = pkgs.replaceVars (lib.configFile "zellij/simple.kdl") {
           zjstatus = pkgs.zjstatus;
         };

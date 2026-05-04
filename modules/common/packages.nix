@@ -11,6 +11,10 @@
     rustup
     zig
     nodejs_24
+    python3
+    gcc
+    gnumake
+    pkg-config
     bun
     awscli2
     jujutsu

@@ -41,7 +41,6 @@ in
     zed-editor
     krita
     slack
-    opencode-desktop
     k9s
     gnote
     kdePackages.kalarm

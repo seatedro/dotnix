@@ -36,6 +36,7 @@ with lib;
       playerctl
       wireplumber
       rose-pine-cursor
+      apple-cursor
     ];
 
     #---dconf------
@@ -83,6 +84,19 @@ with lib;
             "wpblur"
           ];
         };
+
+        xdg.mimeApps = {
+          enable = true;
+          defaultApplications = {
+            "text/html" = "helium-browser.desktop";
+            "x-scheme-handler/http" = "helium-browser.desktop";
+            "x-scheme-handler/https" = "helium-browser.desktop";
+            "x-scheme-handler/about" = "helium-browser.desktop";
+            "x-scheme-handler/unknown" = "helium-browser.desktop";
+          };
+        };
+        xdg.configFile."mimeapps.list".force = true;
+        xdg.dataFile."applications/mimeapps.list".force = true;
 
         #---Niri Settings------
         programs.niri.settings = {

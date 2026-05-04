@@ -20,7 +20,7 @@ with lib;
 
     environment.systemPackages = with pkgs; [
       pavucontrol
-      blueberry
+      blueman
       papirus-icon-theme
       gvfs
       vulkan-tools
