@@ -5,14 +5,14 @@
 }:
 let
   pname = "helium-browser";
-  version = "0.10.6.1";
+  version = "0.13.6.1";
 in
 appimageTools.wrapType2 {
   inherit pname version;
 
   src = fetchurl {
     url = "https://github.com/imputnet/helium-linux/releases/download/${version}/helium-${version}-x86_64.AppImage";
-    hash = "sha256-6xqNRaP3aqitEseexRVEEjKkJClC0j1HHZoRGQanhSk=";
+    hash = "sha256-ZcZo/vFXWrZjuPjIt2MYbsxs4LU7NvpB3I6mrPzAJjE=";
   };
 
   extraInstallCommands =
@@ -21,7 +21,7 @@ appimageTools.wrapType2 {
         inherit pname version;
         src = fetchurl {
           url = "https://github.com/imputnet/helium-linux/releases/download/${version}/helium-${version}-x86_64.AppImage";
-          hash = "sha256-6xqNRaP3aqitEseexRVEEjKkJClC0j1HHZoRGQanhSk=";
+          hash = "sha256-ZcZo/vFXWrZjuPjIt2MYbsxs4LU7NvpB3I6mrPzAJjE=";
         };
       };
     in

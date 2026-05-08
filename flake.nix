@@ -28,7 +28,7 @@
     ];
 
     builders-use-substitutes = true;
-    http-connections = 50;
+    http-connections = 4;
     lazy-trees = true;
     show-trace = true;
     trusted-users = [
@@ -41,6 +41,8 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+
+    nixpkgs-zed.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
 
     nix-darwin = {
       url = "github:LnL7/nix-darwin";

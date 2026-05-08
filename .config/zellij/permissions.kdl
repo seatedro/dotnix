@@ -1,0 +1,5 @@
+"@zjstatus@/bin/zjstatus.wasm" {
+    ReadApplicationState
+    ChangeApplicationState
+    RunCommands
+}

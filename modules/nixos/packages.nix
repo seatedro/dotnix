@@ -3,6 +3,7 @@
   swww,
   quickshell,
   ghostty,
+  nixpkgs-zed,
   ...
 }:
 let
@@ -10,6 +11,7 @@ let
   t3code = pkgs.callPackage ../../pkgs/t3code.nix { };
   quickshellPkg = quickshell.packages.${pkgs.stdenv.hostPlatform.system}.default;
   ghosttyPkg = ghostty.packages.${pkgs.stdenv.hostPlatform.system}.default;
+  zedPkg = nixpkgs-zed.legacyPackages.${pkgs.stdenv.hostPlatform.system}.zed-editor;
 in
 {
   environment.sessionVariables = {
@@ -26,7 +28,7 @@ in
     fuzzel
     glib
     gsettings-desktop-schemas
-    protonvpn-gui
+    proton-vpn
 
     #---Applications------
     (brave.override {
@@ -38,7 +40,7 @@ in
     vesktop
     telegram-desktop
     qbittorrent
-    zed-editor
+    zedPkg
     krita
     slack
     k9s

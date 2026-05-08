@@ -101,6 +101,10 @@ keybinds clear-defaults=true {
     session {
         bind "Esc" { SwitchToMode "Normal"; }
         bind "d" { Detach; }
+        bind "w" {
+            LaunchOrFocusPlugin "session-manager" { floating true; move_to_focused_tab true; };
+            SwitchToMode "Normal";
+        }
     }
 }
 

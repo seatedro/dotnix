@@ -1,0 +1,273 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+STATE_DIR="${XDG_RUNTIME_DIR:-/tmp}/dms-dictation"
+STATUS_FILE="$STATE_DIR/status.json"
+PID_FILE="$STATE_DIR/recording.pid"
+AUDIO_FILE="$STATE_DIR/input.wav"
+RESULT_FILE="$STATE_DIR/result.json"
+LOG_FILE="$STATE_DIR/transcribe.log"
+LOCK_FILE="$STATE_DIR/lock"
+
+WHISPER_DIR="${DMS_DICTATION_WHISPER_DIR:-/home/ro/code/whisper}"
+TRTLLM_IMAGE="${DMS_DICTATION_IMAGE:-whisper-trtllm-dictation:latest}"
+TRTLLM_BASE_IMAGE="${DMS_DICTATION_BASE_IMAGE:-nvcr.io/nvidia/tritonserver:26.03-trtllm-python-py3}"
+ENGINE_DIR="${DMS_DICTATION_ENGINE_DIR:-.trtllm/large-v3-turbo-fp16-b32}"
+ASSETS_DIR="${DMS_DICTATION_ASSETS_DIR:-.trtllm/assets}"
+MAX_SECONDS="${DMS_DICTATION_MAX_SECONDS:-30}"
+
+mkdir -p "$STATE_DIR"
+
+set_status() {
+  local state="$1"
+  local message="${2:-}"
+  local text="${3:-}"
+  local error="${4:-}"
+  local tmp="$STATUS_FILE.tmp"
+  jq -n \
+    --arg state "$state" \
+    --arg message "$message" \
+    --arg text "$text" \
+    --arg error "$error" \
+    --arg updated "$(date --iso-8601=seconds)" \
+    '{state: $state, message: $message, text: $text, error: $error, updated: $updated}' > "$tmp"
+  mv "$tmp" "$STATUS_FILE"
+}
+
+notify() {
+  notify-send -a dms-dictation "$@" >/dev/null 2>&1 || true
+}
+
+docker_cmd() {
+  if docker info >/dev/null 2>&1; then
+    docker "$@"
+  elif [ -x /run/wrappers/bin/sg ]; then
+    /run/wrappers/bin/sg docker -c "$(printf '%q ' docker "$@")"
+  else
+    docker "$@"
+  fi
+}
+
+ensure_image() {
+  if docker_cmd image inspect "$TRTLLM_IMAGE" >/dev/null 2>&1; then
+    return
+  fi
+
+  set_status setup "building dictation image"
+  docker_cmd build \
+    --build-arg "BASE_IMAGE=$TRTLLM_BASE_IMAGE" \
+    -f "$WHISPER_DIR/docker/trtllm-dictation.Dockerfile" \
+    -t "$TRTLLM_IMAGE" \
+    "$WHISPER_DIR" >>"$LOG_FILE" 2>&1
+}
+
+pid_from_file() {
+  [ -f "$PID_FILE" ] || return 1
+  local pid
+  pid="$(tr -dc '0-9' < "$PID_FILE" 2>/dev/null || true)"
+  [ -n "$pid" ] || return 1
+  kill -0 "$pid" >/dev/null 2>&1 || return 1
+  printf '%s\n' "$pid"
+}
+
+pid_cmdline() {
+  local pid="$1"
+  tr '\0' ' ' < "/proc/$pid/cmdline" 2>/dev/null || ps -p "$pid" -o args= 2>/dev/null || true
+}
+
+recording_pid() {
+  local pid
+  pid="$(pid_from_file)" || return 1
+  local cmdline
+  cmdline="$(pid_cmdline "$pid")"
+  [ -n "$cmdline" ] || return 1
+  [[ "$cmdline" == *"$AUDIO_FILE"* ]] || return 1
+  printf '%s\n' "$pid"
+}
+
+start_recording() {
+  if recording_pid >/dev/null; then
+    set_status listening "recording"
+    return
+  fi
+
+  rm -f "$AUDIO_FILE" "$RESULT_FILE" "$LOG_FILE"
+  set_status listening "recording"
+
+  pw-record \
+    --rate 16000 \
+    --channels 1 \
+    --format s16 \
+    --sample-count "$((MAX_SECONDS * 16000))" \
+    "$AUDIO_FILE" >>"$LOG_FILE" 2>&1 9>&- &
+  printf '%s\n' "$!" > "$PID_FILE"
+}
+
+stop_recording() {
+  local pid="${1:-}"
+  if [ -z "$pid" ]; then
+    pid="$(recording_pid || true)"
+  fi
+
+  if [ -n "$pid" ]; then
+    kill -INT "$pid" >/dev/null 2>&1 || true
+    for _ in $(seq 1 50); do
+      kill -0 "$pid" >/dev/null 2>&1 || break
+      sleep 0.05
+    done
+    if kill -0 "$pid" >/dev/null 2>&1; then
+      kill -TERM "$pid" >/dev/null 2>&1 || true
+      for _ in $(seq 1 50); do
+        kill -0 "$pid" >/dev/null 2>&1 || break
+        sleep 0.05
+      done
+    fi
+  fi
+  rm -f "$PID_FILE"
+}
+
+transcribe_and_type() {
+  if [ ! -s "$AUDIO_FILE" ]; then
+    set_status error "no audio captured" "" "No audio was captured."
+    notify "Dictation failed" "No audio was captured."
+    return 1
+  fi
+
+  set_status transcribing "transcribing"
+  ensure_image
+
+  docker_cmd run --rm \
+    --device nvidia.com/gpu=all \
+    --ipc=host \
+    --ulimit memlock=-1 \
+    --ulimit stack=67108864 \
+    -v "$WHISPER_DIR:/workspace/whisper" \
+    -v "$STATE_DIR:/dictation" \
+    -w /workspace/whisper \
+    "$TRTLLM_IMAGE" \
+    python3 transcribe_trtllm_file.py \
+      --audio-file /dictation/input.wav \
+      --engine-dir "$ENGINE_DIR" \
+      --assets-dir "$ASSETS_DIR" \
+      --batch-size 1 \
+      --output-json /dictation/result.json >>"$LOG_FILE" 2>&1
+
+  local text
+  text="$(jq -r '.text // ""' "$RESULT_FILE" | sed -e 's/[[:space:]]\+$//')"
+  if [ -z "$text" ]; then
+    set_status error "empty transcript" "" "Whisper returned an empty transcript."
+    notify "Dictation empty" "No text was inserted."
+    return 1
+  fi
+
+  printf '%s' "$text" | wl-copy
+  if wtype -- "$text"; then
+    set_status idle "inserted" "$text"
+  else
+    set_status error "transcript copied" "$text" "wtype failed; transcript is on the clipboard."
+    notify "Dictation copied" "Typing failed, so the transcript was copied."
+    return 1
+  fi
+}
+
+toggle() {
+  (
+    flock -n 9 || exit 0
+
+    local state
+    state="$(jq -r '.state // "idle"' "$STATUS_FILE" 2>/dev/null || echo idle)"
+
+    local pid
+    pid="$(recording_pid || true)"
+    if [ -n "$pid" ]; then
+      set_status stopping "stopping"
+      stop_recording "$pid"
+      transcribe_and_type || true
+      return
+    fi
+
+    if [ -f "$PID_FILE" ] && [ -s "$AUDIO_FILE" ]; then
+      rm -f "$PID_FILE"
+      transcribe_and_type || true
+      return
+    fi
+
+    if [ -f "$PID_FILE" ]; then
+      rm -f "$PID_FILE"
+      if [ "$state" = "listening" ]; then
+        set_status idle "stopped"
+        return
+      fi
+    fi
+
+    if [ "$state" = "listening" ]; then
+      if [ -s "$AUDIO_FILE" ]; then
+        transcribe_and_type || true
+      else
+        set_status idle "stopped"
+      fi
+      return
+    fi
+
+    if [ "$state" = "transcribing" ] || [ "$state" = "setup" ] || [ "$state" = "stopping" ]; then
+      notify "Dictation is busy" "Wait for the current transcript to finish."
+      return
+    fi
+
+    start_recording
+  ) 9>"$LOCK_FILE"
+}
+
+finish() {
+  (
+    flock -n 9 || exit 0
+
+    local pid
+    pid="$(recording_pid || true)"
+    if [ -n "$pid" ]; then
+      set_status stopping "stopping"
+      stop_recording "$pid"
+      transcribe_and_type || true
+      return
+    fi
+
+    rm -f "$PID_FILE"
+    if [ -s "$AUDIO_FILE" ]; then
+      transcribe_and_type || true
+    else
+      set_status idle "stopped"
+    fi
+  ) 9>"$LOCK_FILE"
+}
+
+case "${1:-toggle}" in
+  toggle)
+    toggle
+    ;;
+  start)
+    start_recording
+    ;;
+  stop)
+    pid="$(recording_pid || true)"
+    stop_recording "$pid"
+    transcribe_and_type
+    ;;
+  finish)
+    finish
+    ;;
+  status)
+    if ! cat "$STATUS_FILE" 2>/dev/null; then
+      set_status idle "ready"
+      cat "$STATUS_FILE"
+    fi
+    ;;
+  reset)
+    pid="$(recording_pid || true)"
+    stop_recording "$pid"
+    set_status idle "ready"
+    ;;
+  *)
+    echo "usage: dms-dictation-toggle [toggle|start|stop|finish|status|reset]" >&2
+    exit 2
+    ;;
+esac

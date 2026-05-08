@@ -3,11 +3,14 @@
   lib,
   pkgs,
   ghostty,
+  quickshell,
+  dms,
   ...
 }:
 with lib;
 let
   ghosttyPkg = ghostty.packages.${pkgs.stdenv.hostPlatform.system}.default;
+  quickshellPkg = quickshell.packages.${pkgs.stdenv.hostPlatform.system}.default;
 in
 {
   options.hyprland = {
@@ -28,6 +31,7 @@ in
       hyprpicker
       hyprshot
       rose-pine-hyprcursor
+      quickshellPkg
 
       #---Utils------
       wl-clipboard
@@ -35,6 +39,9 @@ in
       grim
       slurp
       swaybg
+      jq
+      libnotify
+      pipewire
 
       #---Gestures------
       libinput-gestures
@@ -81,7 +88,16 @@ in
 
     #---Home Manager------
     home-manager.sharedModules = [
+      dms.homeModules.dank-material-shell
       {
+        programs.dank-material-shell = {
+          enable = true;
+          systemd = {
+            enable = true;
+            target = "graphical-session.target";
+          };
+        };
+
         #---Polkit Agent------
         systemd.user.services.hyprpolkitagent = {
           Unit = {
@@ -99,6 +115,27 @@ in
             WantedBy = [ "graphical-session.target" ];
           };
         };
+
+        # systemd.user.services.dms-dictation = {
+        #   Unit = {
+        #     Description = "DMS dictation Quickshell overlay";
+        #     After = [
+        #       "graphical-session.target"
+        #       "dms.service"
+        #     ];
+        #     PartOf = [ "graphical-session.target" ];
+        #   };
+        #   Service = {
+        #     Type = "simple";
+        #     ExecStart = "${quickshellPkg}/bin/qs -c dms-dictation -n";
+        #     Restart = "on-failure";
+        #     RestartSec = 1;
+        #     Environment = "DMS_DICTATION_TOGGLE=%h/.local/bin/dms-dictation-toggle";
+        #   };
+        #   Install = {
+        #     WantedBy = [ "graphical-session.target" ];
+        #   };
+        # };
 
         xdg.mimeApps = {
           enable = true;
@@ -128,6 +165,13 @@ in
         };
         xdg.configFile."hypr/dms/binds.conf" = {
           source = lib.configFile "hypr/dms/binds.conf";
+        };
+        xdg.configFile."quickshell/dms-dictation/shell.qml" = {
+          source = lib.configFile "quickshell/dms-dictation/shell.qml";
+        };
+        home.file.".local/bin/dms-dictation-toggle" = {
+          source = lib.configFile "bin/dms-dictation-toggle";
+          executable = true;
         };
         xdg.configFile."hypr/envs.conf" = {
           source = lib.configFile "hypr/envs.conf";

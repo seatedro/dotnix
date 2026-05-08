@@ -76,6 +76,7 @@ in
     settings.PermitRootLogin = "yes";
   };
 
+  services.envfs.enable = true;
   services.tailscale.enable = true;
   services.desktopManager.plasma6.enable = false;
 

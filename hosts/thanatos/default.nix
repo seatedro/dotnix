@@ -15,7 +15,7 @@ lib.nixosSystem' (
     users.users.ro = {
       isNormalUser = true;
       home = "/home/ro";
-      shell = pkgs.nushell;
+      shell = pkgs.zsh;
       hashedPassword = "$6$9JrLHgKEaJieS/Gn$aUDwvLENKq17IglfQN9tAqqRCVTQQEs43LUZTARt13BDC5tdEjCDb.rS2O6Bf8u/8HdHqdjOQfgbqO0.0vvJa1";
       extraGroups = [
         "wheel"
@@ -31,7 +31,16 @@ lib.nixosSystem' (
 
     networking.hostName = "thanatos";
 
+    networking.networkmanager.settings."connection-ethernet-enp9s0" = {
+      match-device = "interface-name:enp9s0";
+      "ipv4.route-metric" = 90;
+      "ipv6.route-metric" = 90;
+    };
+
     programs.mosh.enable = true;
+
+    virtualisation.docker.enable = true;
+    hardware.nvidia-container-toolkit.enable = true;
 
     services.openssh.openFirewall = false;
     services.openssh.settings.PasswordAuthentication = true;
@@ -62,19 +71,6 @@ lib.nixosSystem' (
       wgpu-utils
       nvitop
     ];
-
-    # services.protonvpn = {
-    #   enable = true;
-    #   interface = {
-    #     privateKeyFile = "/root/secrets/protonvpn-private-key";
-    #     ip = "10.2.0.2/32";
-    #     dns.ip = "10.2.0.1";
-    #   };
-    #   endpoint = {
-    #     publicKey = "2xvxhMK0AalXOMq6Dh0QMVJ0Cl3WQTmWT5tdeb8SpR0=";
-    #     ip = "79.127.185.166";
-    #   };
-    # };
 
     boot.initrd.availableKernelModules = [
       "nvme"
