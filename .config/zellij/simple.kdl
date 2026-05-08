@@ -4,7 +4,7 @@ layout {
             hide_frame_for_single_pane "true"
 
             format_left  "{mode}#[fg=default,bold] {session} #[fg=bright_black] {tabs}"
-            format_right "#[fg=bright_black] {datetime} "
+            format_right "#[fg=bright_black] Tabs ^1-^5 ^←/^→  {datetime} "
             format_space ""
 
             mode_normal          "#[fg=black,bg=cyan,bold] NORMAL "
