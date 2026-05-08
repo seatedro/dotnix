@@ -32,6 +32,7 @@ path add /run/wrappers/bin
 path add /opt/homebrew/bin
 path add ~/.bun/bin
 path add ~/.cargo/bin
+path add ~/.local/bin
 
 $env.CARAPACE_BRIDGES = 'zsh,fish,bash,inshellisense' # optional
 mkdir ~/.cache/carapace

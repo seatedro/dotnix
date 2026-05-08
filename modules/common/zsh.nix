@@ -82,6 +82,16 @@ in
                                     bindkey '^e' edit-command-line
                                     bindkey -s '^f' 'tmux-sessionizer\n'
 
+                                    zm() {
+                                      if [ $# -eq 0 ]; then
+                                        zellij --layout mobile
+                                      elif zellij list-sessions -s 2>/dev/null | grep -qx "$1"; then
+                                        zellij attach "$1"
+                                      else
+                                        zellij -n mobile -s "$1"
+                                      fi
+                                    }
+
                                     # Yazi directory wrapper
                                     function y() {
                                       local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd

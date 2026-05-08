@@ -1,6 +1,7 @@
 keybinds clear-defaults=true {
     normal {
         bind "Ctrl b" { SwitchToMode "Tmux"; }
+        bind "Ctrl t" "Alt t" { SwitchToMode "RenameTab"; TabNameInput 0; }
         bind "Ctrl s" { SwitchToMode "EnterSearch"; SearchInput 0; }
     }
 
@@ -30,7 +31,7 @@ keybinds clear-defaults=true {
         bind "p" { GoToPreviousTab; SwitchToMode "Normal"; }
         bind "n" { GoToNextTab; SwitchToMode "Normal"; }
         bind "&" { CloseTab; SwitchToMode "Normal"; }
-        bind "," { SwitchToMode "RenameTab"; }
+        bind "," "r" { SwitchToMode "RenameTab"; TabNameInput 0; }
         
         // Numbers for direct tab access
         bind "1" { GoToTab 1; SwitchToMode "Normal"; }
@@ -222,6 +223,8 @@ on_force_close "detach"
 pane_frames false
 default_layout "simple"
 default_mode "normal"
+default_shell "nu"
 mouse_mode true
 copy_on_select true
 theme "adaptive-terminal"
+show_startup_tips false

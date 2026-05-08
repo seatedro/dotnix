@@ -1,0 +1,25 @@
+// Mobile-first: one full-width pane, slim status bar on top.
+layout {
+    pane size=1 borderless=true {
+        plugin location="file://@zjstatus@/bin/zjstatus.wasm" {
+            hide_frame_for_single_pane "true"
+
+            format_left  "{mode} {tabs}"
+            format_right "{datetime} ^T rename "
+            format_space ""
+
+            mode_normal          "#[bg=#89B4FA] "
+            mode_tmux            "#[bg=#ffc387] "
+            mode_default_to_mode "tmux"
+
+            tab_normal "#[fg=#665c54] {index} {name} "
+            tab_active "#[bg=#89B4FA,fg=#282828,bold] {index} {name} "
+
+            datetime          "{format} "
+            datetime_format   "%H:%M"
+            datetime_timezone "America/Los Angeles"
+        }
+    }
+
+    pane
+}

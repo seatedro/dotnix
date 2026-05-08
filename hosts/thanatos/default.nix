@@ -31,6 +31,24 @@ lib.nixosSystem' (
 
     networking.hostName = "thanatos";
 
+    programs.mosh.enable = true;
+
+    services.openssh.openFirewall = false;
+    services.openssh.settings.PasswordAuthentication = true;
+
+    # Restrict SSH (22/tcp) and mosh (60000-61000/udp) to the tailscale interface.
+    # programs.mosh opens its UDP range globally; force it off, then reopen on tailscale0 only.
+    networking.firewall.allowedUDPPortRanges = lib.mkForce [ ];
+    networking.firewall.interfaces."tailscale0" = {
+      allowedTCPPorts = [ 22 ];
+      allowedUDPPortRanges = [
+        {
+          from = 60000;
+          to = 61000;
+        }
+      ];
+    };
+
     wayland-desktop.enable = true;
     hyprland.enable = true;
     services.xserver.videoDrivers = [ "nvidia" ];

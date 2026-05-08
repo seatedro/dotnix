@@ -11,6 +11,9 @@
         "zellij/layouts/simple.kdl".source = pkgs.replaceVars (lib.configFile "zellij/simple.kdl") {
           zjstatus = pkgs.zjstatus;
         };
+        "zellij/layouts/mobile.kdl".source = pkgs.replaceVars (lib.configFile "zellij/mobile.kdl") {
+          zjstatus = pkgs.zjstatus;
+        };
       };
       programs.zellij = {
         enable = true;

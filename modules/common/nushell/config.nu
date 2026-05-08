@@ -70,6 +70,18 @@ $env.config.hooks = {
 
 alias gg = nvim -c 'Neogit'
 def rebuild [] { sudo nixos-rebuild switch --flake $"path:/nix-config#(hostname)" }
+def zm [name?: string] {
+  if $name == null {
+    zellij --layout mobile
+  } else {
+    let sessions = (do -i { zellij list-sessions -s } | complete | get stdout | lines)
+    if $name in $sessions {
+      zellij attach $name
+    } else {
+      zellij -n mobile -s $name
+    }
+  }
+}
 def gc [repo: any]: any -> any { git clone $"git@github.com:(($repo) | into string)" }
 
 

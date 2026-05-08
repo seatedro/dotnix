@@ -126,6 +126,9 @@ in
         xdg.configFile."hypr/bindings.conf" = {
           source = lib.configFile "hypr/bindings.conf";
         };
+        xdg.configFile."hypr/dms/binds.conf" = {
+          source = lib.configFile "hypr/dms/binds.conf";
+        };
         xdg.configFile."hypr/envs.conf" = {
           source = lib.configFile "hypr/envs.conf";
         };
