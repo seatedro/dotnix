@@ -9,6 +9,38 @@ lib.nixosSystem' (
   }:
   let
     inherit (lib) collectNix remove mkDefault;
+    hyprLidClose = pkgs.writeShellApplication {
+      name = "hypr-lid-close";
+      runtimeInputs = [
+        pkgs.hyprland
+        pkgs.jq
+      ];
+      text = ''
+        external_monitor="$(hyprctl monitors -j | jq -r 'first(.[] | select(.name != "eDP-1") | .name) // empty')"
+
+        if [[ -z "$external_monitor" ]]; then
+          exit 0
+        fi
+
+        while IFS= read -r workspace; do
+          hyprctl dispatch moveworkspacetomonitor "$workspace $external_monitor"
+        done < <(hyprctl workspaces -j | jq -r '.[] | select(.monitor == "eDP-1") | .name')
+
+        hyprctl dispatch focusmonitor "$external_monitor"
+        hyprctl keyword monitor "eDP-1, disable"
+      '';
+    };
+    hyprLidOpen = pkgs.writeShellApplication {
+      name = "hypr-lid-open";
+      runtimeInputs = [ pkgs.hyprland ];
+      text = ''
+        if [[ -f "$HOME/.config/hypr/dms/outputs.conf" ]]; then
+          hyprctl keyword source "$HOME/.config/hypr/dms/outputs.conf"
+        else
+          hyprctl keyword monitor "eDP-1, 2880x1920@120.00, auto, 1.5"
+        fi
+      '';
+    };
   in
   {
     imports = (collectNix ./. |> remove ./default.nix) ++ [
@@ -58,18 +90,6 @@ lib.nixosSystem' (
         '';
       };
 
-      xdg.configFile."hypr/monitors.conf" = {
-        text = ''
-          env = GDK_SCALE,1.25
-          monitor = eDP-1, 2880x1920@120.00, auto, 1.5
-          monitor = desc:Dell Inc. DELL S3425DW, 3440x1440@120.00, auto-up, 1
-
-          # Lid switch: disable laptop screen when closed, re-enable when opened
-          bindl = , switch:on:Lid Switch, exec, hyprctl keyword monitor "eDP-1, disable"
-          bindl = , switch:off:Lid Switch, exec, hyprctl keyword monitor "eDP-1, 2880x1920@120.00, auto, 1.5"
-        '';
-        force = true;
-      };
     };
 
     services.logind.settings.Login = {
@@ -119,8 +139,19 @@ lib.nixosSystem' (
     ];
 
     wayland-desktop.enable = true;
-    hyprland.enable = true;
+    hyprland = {
+      enable = true;
+      extraConfig = ''
+        animations {
+          enabled = false
+        }
+
+        bindl = , switch:on:Lid Switch, exec, ${lib.getExe hyprLidClose}
+        bindl = , switch:off:Lid Switch, exec, ${lib.getExe hyprLidOpen}
+      '';
+    };
     niri.enable = true;
+    dms.enable = true;
     age.secrets.vanta-agent-key = {
       file = ../../secrets/vanta-agent-key.age;
       mode = "0400";

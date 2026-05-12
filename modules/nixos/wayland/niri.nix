@@ -3,7 +3,6 @@
   lib,
   pkgs,
   niri,
-  dms,
   ...
 }:
 with lib;
@@ -18,7 +17,6 @@ with lib;
 
   config = mkIf config.niri.enable {
     #---Niri------
-    hyprland.enable = mkForce false;
     programs.niri.enable = true;
     programs.niri.package = niri.packages.${pkgs.system}.niri-unstable;
     services.upower.enable = true;
@@ -46,12 +44,14 @@ with lib;
     xdg.portal = {
       enable = true;
       config = {
-        common.default = [
-          "gnome"
+        common."org.freedesktop.impl.portal.FileChooser" = [
           "gtk"
         ];
         niri.default = [
           "gnome"
+          "gtk"
+        ];
+        niri."org.freedesktop.impl.portal.FileChooser" = [
           "gtk"
         ];
         niri."org.freedesktop.impl.portal.Settings" = [
@@ -66,34 +66,32 @@ with lib;
 
     #---Home Manager------
     home-manager.sharedModules = [
-      dms.homeModules.dank-material-shell
-      dms.homeModules.niri
       {
-        programs.dank-material-shell = {
-          enable = true;
-          systemd.enable = true;
-          niri.enableKeybinds = false;
-          niri.enableSpawn = false;
-          niri.includes.filesToInclude = [
-            "alttab"
-            "binds"
-            "colors"
-            "cursor"
-            "layout"
-            "outputs"
-            "wpblur"
-          ];
-        };
-
         xdg.mimeApps = {
           enable = true;
           defaultApplications = {
+            "application/pdf" = "org.pwmt.zathura.desktop";
+            "application/x-pdf" = "org.pwmt.zathura.desktop";
             "text/html" = "helium-browser.desktop";
             "x-scheme-handler/http" = "helium-browser.desktop";
             "x-scheme-handler/https" = "helium-browser.desktop";
             "x-scheme-handler/about" = "helium-browser.desktop";
             "x-scheme-handler/unknown" = "helium-browser.desktop";
           };
+        };
+        xdg.desktopEntries."org.pwmt.zathura" = {
+          name = "Zathura";
+          genericName = "Document Viewer";
+          exec = "${pkgs.zathura}/bin/zathura %U";
+          terminal = false;
+          categories = [
+            "Office"
+            "Viewer"
+          ];
+          mimeType = [
+            "application/pdf"
+            "application/x-pdf"
+          ];
         };
         xdg.configFile."mimeapps.list".force = true;
         xdg.dataFile."applications/mimeapps.list".force = true;
@@ -204,6 +202,8 @@ with lib;
             "Mod+Ctrl+T".action.spawn = [ "t3code" ];
             "Mod+Ctrl+M".action.spawn = [ "gnote" ];
             "Mod+Ctrl+A".action.spawn = [ "kalarm" ];
+            "Mod+E".action.spawn = [ "dolphin" ];
+            "Mod+Shift+Tab".action.move-workspace-to-monitor-next = [ ];
           };
 
           window-rules = [

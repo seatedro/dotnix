@@ -51,7 +51,7 @@ in
 
         envExtra = ''
           export PROTON_PASS_LINUX_KEYRING=dbus
-          export PATH="$HOME/.local/bin:$HOME/.bun/bin:$HOME/.opencode/bin:$PATH:$HOME/.cargo/bin"
+          export PATH="$HOME/.npm-global/bin:$HOME/.local/bin:$HOME/.bun/bin:$HOME/.opencode/bin:$PATH:$HOME/.cargo/bin"
           eval "$(direnv hook zsh)"
         '';
 

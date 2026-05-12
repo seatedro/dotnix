@@ -39,8 +39,11 @@ in
     tree
     alacritty
     xclip
-    thunar
-    thunar-volman
+    kdePackages.dolphin
+    kdePackages.dolphin-plugins
+    kdePackages.kio-extras
+    kdePackages.kio-fuse
+    kdePackages.ffmpegthumbs
     tumbler
     gvfs
     keymapp

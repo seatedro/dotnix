@@ -70,7 +70,8 @@ in
           # true color
           set -ag terminal-overrides ",*:RGB"
           set -as terminal-features ",*:extkeys"
-          set -s extended-keys on
+          set -g extended-keys on
+          set -g extended-keys-format csi-u
           set -g xterm-keys on
           set -g allow-passthrough on
 

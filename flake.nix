@@ -9,6 +9,7 @@
       "https://hyprland.cachix.org"
       "https://vicinae.cachix.org"
       "https://niri.cachix.org"
+      "https://cache.numtide.com"
     ];
 
     extra-trusted-public-keys = [
@@ -18,6 +19,7 @@
       "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
       "vicinae.cachix.org-1:1kDrfienkGHPYbkpNj1mWTr7Fm1+zcenzgTizIcI3oc="
       "niri.cachix.org-1:Wv0OmO7PsuocRKzfDoJ3mulSl7Z6oezYhGhR+3W2964="
+      "niks3.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g="
     ];
 
     experimental-features = [
@@ -65,6 +67,11 @@
 
     glimpse.url = "github:seatedro/glimpse";
 
+    diffy = {
+      url = "github:seatedro/diffy";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     ghostty = {
       url = "github:ghostty-org/ghostty/v1.3.0";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -101,6 +108,8 @@
     };
 
     nixos-hardware.url = "github:NixOS/nixos-hardware";
+
+    llm-agents.url = "github:numtide/llm-agents.nix";
   };
 
   outputs =

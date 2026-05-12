@@ -15,6 +15,11 @@ in
 {
   options.hyprland = {
     enable = mkEnableOption "Hyprland wayland compositor";
+    extraConfig = mkOption {
+      type = types.lines;
+      default = "";
+      description = "Host-specific Hyprland configuration";
+    };
   };
 
   config = mkIf config.hyprland.enable {
@@ -60,11 +65,12 @@ in
     xdg.portal = {
       enable = true;
       config = {
-        common.default = [ "hyprland" ];
+        common."org.freedesktop.impl.portal.FileChooser" = [ "gtk" ];
         hyprland.default = [
           "hyprland"
           "gtk"
         ];
+        hyprland."org.freedesktop.impl.portal.FileChooser" = [ "gtk" ];
         hyprland."org.freedesktop.impl.portal.Settings" = [ "gtk" ];
       };
       extraPortals = [
@@ -178,6 +184,9 @@ in
         };
         xdg.configFile."hypr/looknfeel.conf" = {
           source = lib.configFile "hypr/looknfeel.conf";
+        };
+        xdg.configFile."hypr/extra.conf" = {
+          text = config.hyprland.extraConfig;
         };
         xdg.configFile."hypr/input.conf" = {
           source = lib.configFile "hypr/input.conf";

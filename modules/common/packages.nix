@@ -1,4 +1,9 @@
-{ pkgs, glimpse, ... }:
+{
+  pkgs,
+  glimpse,
+  llm-agents,
+  ...
+}:
 {
   environment.systemPackages = with pkgs; [
     #---Editors------
@@ -69,6 +74,11 @@
     #---Security------
     gnupg
     openssh
+
+    #---AI Agents------
+    llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.codex
+    llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.pi
+    llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.claude-code
 
     #---Custom------
     glimpse.packages.${pkgs.stdenv.hostPlatform.system}.default

@@ -26,6 +26,8 @@ with lib;
     #---Wayland------
     steam.enable = true;
 
+    xdg.portal.config.common.default = [ "gtk" ];
+
     waybar.enable = true;
     mako.enable = true;
 

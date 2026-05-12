@@ -50,12 +50,16 @@ in
     syncthing
 
     # File management (common across desktop modules)
-    thunar
-    thunar-volman
+    kdePackages.dolphin
+    kdePackages.dolphin-plugins
+    kdePackages.kio-extras
+    kdePackages.kio-fuse
+    kdePackages.ffmpegthumbs
     tumbler
     gvfs
 
     # Media viewers
+    zathura
     mpv
     feh
 
