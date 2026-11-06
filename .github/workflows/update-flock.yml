@@ -23,6 +23,9 @@ jobs:
           persist-credentials: false
 
       - uses: cachix/install-nix-action@v31.11.3
+        with:
+          extra_nix_config: |
+            experimental-features = nix-command flakes pipe-operators
 
       - name: Test release updater
         run: python3 pkgs/flock/test_update.py
