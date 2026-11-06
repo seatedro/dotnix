@@ -47,6 +47,8 @@ in
           cdtmp = "cd $(mktemp -d)";
           kc = "kubectl";
           rebuild = ''sudo nixos-rebuild switch --flake "path:/nix-config#$(hostname)"'';
+          flock-update = "/nix-config/pkgs/flock/update.sh";
+          upgrade = ''/nix-config/pkgs/flock/update.sh && nix flake update --flake /nix-config && sudo nixos-rebuild switch --flake "path:/nix-config#$(hostname)"'';
         };
 
         envExtra = ''

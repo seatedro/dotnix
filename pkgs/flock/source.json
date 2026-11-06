@@ -1,0 +1,13 @@
+{
+  "version": "0.1.8-nightly.20261105.25",
+  "sources": {
+    "x86_64-linux": {
+      "url": "https://github.com/seatedro/t3code/releases/download/v0.1.8-nightly.20261105.25/Flock-0.1.8-nightly.20261105.25-x86_64.AppImage",
+      "hash": "sha256-CuHS4K6h+ujYvnQD0RRBs61aIyaAa2cA7+tBBVqWemY="
+    },
+    "aarch64-linux": {
+      "url": "https://github.com/seatedro/t3code/releases/download/v0.1.8-nightly.20261105.25/Flock-0.1.8-nightly.20261105.25-arm64.AppImage",
+      "hash": "sha256-8vYOSfibqJrejHgCxbVQn9rI0EyYR2HxyZXnyr+je7Q="
+    }
+  }
+}

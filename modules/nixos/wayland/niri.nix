@@ -199,7 +199,7 @@ with lib;
               "helium-browser"
               "--app=https://app.devin.ai"
             ];
-            "Mod+Ctrl+T".action.spawn = [ "t3code" ];
+            "Mod+Ctrl+T".action.spawn = [ "flock-desktop" ];
             "Mod+Ctrl+M".action.spawn = [ "gnote" ];
             "Mod+Ctrl+A".action.spawn = [ "kalarm" ];
             "Mod+E".action.spawn = [ "dolphin" ];

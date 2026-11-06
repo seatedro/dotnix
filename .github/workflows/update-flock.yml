@@ -1,0 +1,69 @@
+name: Update Flock nightly
+
+on:
+  schedule:
+    - cron: "17 6 * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: update-flock
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+          persist-credentials: false
+
+      - uses: cachix/install-nix-action@v31.11.3
+
+      - name: Test release updater
+        run: python3 pkgs/flock/test_update.py
+
+      - name: Update release pins
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: ./pkgs/flock/update.sh
+
+      - name: Build Linux x86_64 package
+        run: nix build path:.#packages.x86_64-linux.flock --no-link --option use-cgroups false
+
+      - name: Evaluate Linux ARM64 package
+        run: nix eval --raw path:.#packages.aarch64-linux.flock.drvPath
+
+      - name: Commit updated release pins
+        uses: actions/github-script@v9
+        with:
+          script: |
+            const fs = require('node:fs');
+            const path = 'pkgs/flock/source.json';
+            const branch = context.payload.repository.default_branch;
+            const { owner, repo } = context.repo;
+            const { data: checkout } = await github.repos.getCommit({
+              owner, repo, ref: process.env.GITHUB_SHA,
+            });
+            const { data: head } = await github.repos.getBranch({ owner, repo, branch });
+            if (head.commit.sha !== checkout.sha) {
+              core.setFailed('Default branch changed during the build; rerun the update.');
+              return;
+            }
+            const { data: current } = await github.repos.getContent({ owner, repo, path, ref: branch });
+            const content = fs.readFileSync(path);
+            if (content.equals(Buffer.from(current.content, 'base64'))) {
+              core.info('Flock release pins are already current.');
+              return;
+            }
+            const { version } = JSON.parse(content.toString());
+            await github.repos.createOrUpdateFileContents({
+              owner, repo, path, branch,
+              sha: current.sha,
+              message: `chore: update Flock to ${version}`,
+              content: content.toString('base64'),
+            });

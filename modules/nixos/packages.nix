@@ -8,7 +8,7 @@
 }:
 let
   helium-browser = pkgs.callPackage ../../pkgs/helium.nix { };
-  t3code = pkgs.callPackage ../../pkgs/t3code.nix { };
+  flock = pkgs.callPackage ../../pkgs/flock { };
   quickshellPkg = quickshell.packages.${pkgs.stdenv.hostPlatform.system}.default;
   ghosttyPkg = ghostty.packages.${pkgs.stdenv.hostPlatform.system}.default;
   zedPkg = nixpkgs-zed.legacyPackages.${pkgs.stdenv.hostPlatform.system}.zed-editor;
@@ -17,6 +17,15 @@ in
   environment.sessionVariables = {
     QML2_IMPORT_PATH = "${quickshellPkg}/lib/qt-6/qml";
   };
+
+  home-manager.sharedModules = [
+    {
+      xdg.mimeApps.defaultApplications = {
+        "x-scheme-handler/t3code" = "flock.desktop";
+        "x-scheme-handler/t3code-dev" = "flock.desktop";
+      };
+    }
+  ];
 
   #---Common Packages------
   environment.systemPackages = with pkgs; [
@@ -35,7 +44,7 @@ in
       commandLineArgs = "--ozone-platform=wayland --enable-features=WaylandFractionalScaleV1";
     })
     helium-browser
-    t3code
+    flock
     ghosttyPkg
     vesktop
     telegram-desktop

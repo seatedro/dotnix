@@ -176,6 +176,7 @@
         lib.genAttrs
           [
             "x86_64-linux"
+            "aarch64-linux"
           ]
           (
             system:
@@ -183,6 +184,9 @@
               pkgs = nixpkgs.legacyPackages.${system};
             in
             {
+              flock = pkgs.callPackage ./pkgs/flock { };
+            }
+            // lib.optionalAttrs (system == "x86_64-linux") {
               helium-browser = pkgs.callPackage ./pkgs/helium.nix { };
               t3code = pkgs.callPackage ./pkgs/t3code.nix { };
             }
