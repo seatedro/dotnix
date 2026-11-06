@@ -49,22 +49,22 @@ jobs:
             const path = 'pkgs/flock/source.json';
             const branch = context.payload.repository.default_branch;
             const { owner, repo } = context.repo;
-            const { data: checkout } = await github.repos.getCommit({
+            const { data: checkout } = await github.rest.repos.getCommit({
               owner, repo, ref: process.env.GITHUB_SHA,
             });
-            const { data: head } = await github.repos.getBranch({ owner, repo, branch });
+            const { data: head } = await github.rest.repos.getBranch({ owner, repo, branch });
             if (head.commit.sha !== checkout.sha) {
               core.setFailed('Default branch changed during the build; rerun the update.');
               return;
             }
-            const { data: current } = await github.repos.getContent({ owner, repo, path, ref: branch });
+            const { data: current } = await github.rest.repos.getContent({ owner, repo, path, ref: branch });
             const content = fs.readFileSync(path);
             if (content.equals(Buffer.from(current.content, 'base64'))) {
               core.info('Flock release pins are already current.');
               return;
             }
             const { version } = JSON.parse(content.toString());
-            await github.repos.createOrUpdateFileContents({
+            await github.rest.repos.createOrUpdateFileContents({
               owner, repo, path, branch,
               sha: current.sha,
               message: `chore: update Flock to ${version}`,
