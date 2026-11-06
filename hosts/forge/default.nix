@@ -101,6 +101,7 @@ lib.nixosSystem' (
     networking.hostName = "forge";
 
     services.fprintd.enable = true;
+    security.pam.services.greetd.fprintAuth = false;
 
     virtualisation.docker.enable = true;
 
@@ -172,6 +173,7 @@ lib.nixosSystem' (
       "sd_mod"
     ];
     boot.initrd.kernelModules = [ ];
+    boot.kernelPackages = pkgs.linuxPackages_latest;
     boot.kernelModules = [ "kvm-amd" ];
     boot.extraModulePackages = [ ];
     boot.loader = {

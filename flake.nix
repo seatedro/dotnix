@@ -73,7 +73,7 @@
     };
 
     ghostty = {
-      url = "github:ghostty-org/ghostty/v1.3.0";
+      url = "github:ghostty-org/ghostty/v1.4.0";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -97,6 +97,11 @@
 
     dms = {
       url = "github:AvengeMedia/DankMaterialShell/stable";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    dank-greeter = {
+      url = "github:AvengeMedia/dank-greeter";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -181,14 +186,19 @@
           (
             system:
             let
-              pkgs = nixpkgs.legacyPackages.${system};
+              pkgs = import nixpkgs {
+                inherit system;
+                config.allowUnfreePredicate = pkg: lib.getName pkg == "codex";
+              };
             in
             {
               flock = pkgs.callPackage ./pkgs/flock { };
             }
             // lib.optionalAttrs (system == "x86_64-linux") {
+              capy = pkgs.callPackage ./pkgs/capy { };
+              codex = pkgs.callPackage ./pkgs/codex.nix { };
               helium-browser = pkgs.callPackage ./pkgs/helium.nix { };
-              t3code = pkgs.callPackage ./pkgs/t3code.nix { };
+              t3code = pkgs.callPackage ./pkgs/t3code { };
             }
           );
     };

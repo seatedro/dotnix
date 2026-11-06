@@ -10,11 +10,11 @@ let
 
   vanta = pkgs.stdenv.mkDerivation {
     pname = "vanta";
-    version = "2.15.0";
+    version = "2.21.0";
 
     src = pkgs.fetchurl {
-      url = "https://agent-downloads.vanta.com/targets/versions/2.15.0/vanta-amd64.deb";
-      sha256 = "02ba826388dee61aaf3e97f4bec61896620bc616754e7d107c0efcc79abd43a0";
+      url = "https://agent-downloads.vanta.com/targets/versions/2.21.0/vanta-amd64.deb";
+      sha256 = "ffd83ef40351e701346e440e20be74f6850a2a6d4b7ed13c3a7069a46c8041d1";
     };
 
     nativeBuildInputs = with pkgs; [
@@ -120,14 +120,18 @@ in
 
     systemd.services.vanta-agent = {
       description = "Vanta monitoring software";
-      after = [ "network.target" "syslog.target" ];
+      after = [
+        "network.target"
+        "syslog.target"
+      ];
       wantedBy = [ "multi-user.target" ];
 
       serviceConfig = {
         Type = "simple";
         ExecStartPre = [
           "+${setupScript}"
-        ] ++ optional (cfg.agentKeyFile != null) "+${writeConfScript}";
+        ]
+        ++ optional (cfg.agentKeyFile != null) "+${writeConfScript}";
         ExecStart = "/var/vanta/metalauncher";
         Restart = "on-failure";
         RestartSec = 10;

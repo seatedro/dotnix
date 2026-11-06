@@ -7,6 +7,8 @@
   ...
 }:
 let
+  capy = pkgs.callPackage ../../pkgs/capy { };
+  codex = pkgs.callPackage ../../pkgs/codex.nix { };
   helium-browser = pkgs.callPackage ../../pkgs/helium.nix { };
   flock = pkgs.callPackage ../../pkgs/flock { };
   quickshellPkg = quickshell.packages.${pkgs.stdenv.hostPlatform.system}.default;
@@ -18,9 +20,12 @@ in
     QML2_IMPORT_PATH = "${quickshellPkg}/lib/qt-6/qml";
   };
 
+  # Capy registers its own capy:// handler pointing at the unwrapped store
+  # binary, which can't run outside the AppImage FHS env; route it to ours.
   home-manager.sharedModules = [
     {
       xdg.mimeApps.defaultApplications = {
+        "x-scheme-handler/capy" = "capy.desktop";
         "x-scheme-handler/t3code" = "flock.desktop";
         "x-scheme-handler/t3code-dev" = "flock.desktop";
       };
@@ -40,9 +45,8 @@ in
     proton-vpn
 
     #---Applications------
-    (brave.override {
-      commandLineArgs = "--ozone-platform=wayland --enable-features=WaylandFractionalScaleV1";
-    })
+    capy
+    codex
     helium-browser
     flock
     ghosttyPkg

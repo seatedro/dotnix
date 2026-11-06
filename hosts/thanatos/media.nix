@@ -6,10 +6,39 @@
 }:
 let
   mediaRoot = "/srv/media";
+  mediaMountServices =
+    lib.genAttrs
+      [
+        "bazarr"
+        "lidarr"
+        "plex"
+        "qbittorrent"
+        "radarr"
+        "readarr"
+        "sabnzbd"
+        "sonarr"
+      ]
+      (_: {
+        unitConfig.RequiresMountsFor = [ mediaRoot ];
+        bindsTo = [ "srv-media.mount" ];
+        unitConfig.ConditionPathIsMountPoint = mediaRoot;
+      });
   mediaDomain = "media.home.arpa";
   tailscaleIp = "100.105.99.125";
   tailscaleIpv6 = "fd7a:115c:a1e0::b201:637f";
   torrentPort = 63355;
+  byparrProxy = pkgs.fetchurl {
+    url = "https://raw.githubusercontent.com/guyg2232/byparr-proxy/32d2565f3986f0d4f7e0673f32e3b32cf1d347dd/byparr-proxy.py";
+    hash = "sha256-fr+NZfRg1c1g1bTG7yoQuFdb91AVGndJgJCnuCjWCoM=";
+  };
+  byparrDefinitionSource = pkgs.fetchurl {
+    url = "https://raw.githubusercontent.com/guyg2232/byparr-proxy/32d2565f3986f0d4f7e0673f32e3b32cf1d347dd/definitions/1337x-byparr.yml";
+    hash = "sha256-RROFSWyITZLh5/+ZcGIdOo9QiiycIVlGKVh2EmJhTc0=";
+  };
+  byparrDefinition = pkgs.runCommand "1337x-byparr.yml" { } ''
+    substitute ${byparrDefinitionSource} $out \
+      --replace-fail "http://byparr-proxy:8888/" "http://127.0.0.1:8888/"
+  '';
   plexPreferences = pkgs.writeText "plex-preferences.py" ''
     import sys
     import xml.etree.ElementTree as ET
@@ -68,6 +97,14 @@ let
   ];
 in
 {
+  fileSystems.${mediaRoot} = {
+    device = "/dev/disk/by-uuid/86276c83-6652-4dff-9cad-4f2a319a6841";
+    fsType = "ext4";
+    options = [ "noatime" ];
+  };
+
+  services.fstrim.enable = true;
+
   users.groups.media = { };
 
   users.users = {
@@ -80,13 +117,24 @@ in
 
   systemd.tmpfiles.rules = map (dir: "d ${dir} 2775 root media - -") mediaDirs;
 
+  virtualisation.oci-containers.containers.byparr = {
+    image = "ghcr.io/thephaseless/byparr:3.0.4";
+    ports = [ "127.0.0.1:8192:8191" ];
+    environment = {
+      BROWSER_LOCALE = "en-US";
+      HOST = "0.0.0.0";
+      PORT = "8191";
+    };
+    extraOptions = [ "--shm-size=1g" ];
+  };
+
   services.plex = {
     enable = true;
     group = "media";
     openFirewall = true;
   };
 
-  services.overseerr.enable = true;
+  services.seerr.enable = true;
   services.tautulli = {
     enable = true;
     group = "media";
@@ -161,6 +209,31 @@ in
   services.caddy = {
     enable = true;
     virtualHosts = {
+      "http://127.0.0.1:8082" = {
+        extraConfig = ''
+          handle /api/v2/auth/login {
+            reverse_proxy localhost:8080 {
+              header_up Host localhost:8080
+              header_up Origin http://localhost:8080
+              header_up Referer http://localhost:8080/
+              @success status 204
+              handle_response @success {
+                copy_response_headers {
+                  exclude Content-Length
+                }
+                respond "Ok." 200
+              }
+            }
+          }
+          handle {
+            reverse_proxy localhost:8080 {
+              header_up Host localhost:8080
+              header_up Origin http://localhost:8080
+              header_up Referer http://localhost:8080/
+            }
+          }
+        '';
+      };
       "http://bazarr.${mediaDomain}" = {
         extraConfig = "reverse_proxy localhost:6767";
       };
@@ -180,11 +253,7 @@ in
         extraConfig = "reverse_proxy localhost:9696";
       };
       "http://qbittorrent.${mediaDomain}" = {
-        extraConfig = ''
-          reverse_proxy localhost:8080 {
-            header_up Host {upstream_hostport}
-          }
-        '';
+        extraConfig = "reverse_proxy localhost:8080";
       };
       "http://radarr.${mediaDomain}" = {
         extraConfig = "reverse_proxy localhost:7878";
@@ -204,8 +273,27 @@ in
     };
   };
 
-  systemd.services = {
+  systemd.services = lib.recursiveUpdate mediaMountServices {
     bazarr.serviceConfig.UMask = "0002";
+    byparr-proxy = {
+      description = "1337x Byparr passthrough";
+      wantedBy = [ "multi-user.target" ];
+      after = [ "podman-byparr.service" ];
+      requires = [ "podman-byparr.service" ];
+      environment = {
+        BYPARR = "http://127.0.0.1:8192/v1";
+        CACHE_TTL_S = "3600";
+        PORT = "8888";
+        STUB_CAT_PATHS = "true";
+        TIMEOUT_MS = "120000";
+        UPSTREAM = "https://1337x.to";
+      };
+      serviceConfig = {
+        DynamicUser = true;
+        ExecStart = "${pkgs.python3}/bin/python3 ${byparrProxy}";
+        Restart = "on-failure";
+      };
+    };
     lidarr.serviceConfig.UMask = "0002";
     plex = {
       preStart = ''
@@ -215,6 +303,14 @@ in
         fi
       '';
       serviceConfig.UMask = "0002";
+    };
+    prowlarr = {
+      preStart = ''
+        ${pkgs.coreutils}/bin/install -Dm0644 ${byparrDefinition} "$STATE_DIRECTORY/Definitions/Custom/1337x-byparr.yml"
+      '';
+      after = [ "byparr-proxy.service" ];
+      wants = [ "byparr-proxy.service" ];
+      restartTriggers = [ byparrDefinition ];
     };
     qbittorrent.serviceConfig.UMask = "0002";
     radarr.serviceConfig.UMask = lib.mkForce "0002";

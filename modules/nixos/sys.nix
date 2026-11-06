@@ -51,28 +51,11 @@ in
     (writeShellScriptBin "xrandr-auto" ''
       xrandr --output Virtual-1 --auto
     '')
-
-    (makeDesktopItem {
-      name = "1password";
-      desktopName = "1Password";
-      exec = "1password --ozone-platform-hint=x11 %U";
-      terminal = false;
-      type = "Application";
-      icon = "1password";
-      comment = "Password manager and secure wallet";
-      mimeTypes = [ "x-scheme-handler/onepassword" ];
-      categories = [ "Office" ];
-      startupWMClass = "1Password";
-    })
   ];
 
   programs.fish.enable = false;
 
-  programs._1password.enable = true;
-  programs._1password-gui = {
-    enable = true;
-    polkitPolicyOwners = [ "ro" ];
-  };
+  security.sudo.wheelNeedsPassword = false;
 
   services.openssh = {
     enable = true;

@@ -5,16 +5,12 @@
   ...
 }:
 {
-  imports = [
-    dms.nixosModules.greeter
-  ];
-
   options.dms.enable = lib.mkEnableOption "Dank Material Shell desktop and greeter";
 
   config = lib.mkIf config.dms.enable {
     services.displayManager.ly.enable = lib.mkForce false;
 
-    programs.dank-material-shell.greeter = {
+    programs.dms-greeter = {
       enable = true;
       compositor.name = if config.niri.enable then "niri" else "hyprland";
     };

@@ -6,6 +6,9 @@
 }:
 let
   inherit (lib) enabled removeAttrs;
+  flakePath = if config.isDarwin then "/Users/ro/.config/nix" else "/nix-config";
+  rebuildCommand = if config.isDarwin then "darwin-rebuild" else "nixos-rebuild";
+  rebuild = ''sudo ${rebuildCommand} switch --flake "path:${flakePath}#$(hostname)"'';
 in
 {
   programs.zsh.enable = true;
@@ -43,17 +46,31 @@ in
           PAGER = "less";
         };
 
-        shellAliases = config.environment.shellAliases // {
-          cdtmp = "cd $(mktemp -d)";
-          kc = "kubectl";
-          rebuild = ''sudo nixos-rebuild switch --flake "path:/nix-config#$(hostname)"'';
-          flock-update = "/nix-config/pkgs/flock/update.sh";
-          upgrade = ''/nix-config/pkgs/flock/update.sh && nix flake update --flake /nix-config && sudo nixos-rebuild switch --flake "path:/nix-config#$(hostname)"'';
-        };
+        shellAliases =
+          config.environment.shellAliases
+          // {
+            cdtmp = "cd $(mktemp -d)";
+            kc = "kubectl";
+            inherit rebuild;
+            upgrade = lib.concatStringsSep " && " (
+              lib.optionals config.isLinux [
+                "${flakePath}/pkgs/capy/update.sh"
+                "${flakePath}/pkgs/flock/update.sh"
+              ]
+              ++ [
+                "nix flake update --flake ${flakePath}"
+                rebuild
+              ]
+            );
+          }
+          // lib.optionalAttrs config.isLinux {
+            capy-update = "${flakePath}/pkgs/capy/update.sh";
+            flock-update = "${flakePath}/pkgs/flock/update.sh";
+          };
 
         envExtra = ''
           export PROTON_PASS_LINUX_KEYRING=dbus
-          export PATH="$HOME/.npm-global/bin:$HOME/.local/bin:$HOME/.bun/bin:$HOME/.opencode/bin:$PATH:$HOME/.cargo/bin"
+          export PATH="$HOME/.npm-global/bin:$HOME/.local/bin:$HOME/.bun/bin:$HOME/.opencode/bin:${lib.optionalString config.isDarwin "/opt/homebrew/bin:"}$PATH:$HOME/.cargo/bin"
           eval "$(direnv hook zsh)"
         '';
 

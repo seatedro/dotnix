@@ -8,6 +8,8 @@ let
   inherit (lib) merge mkDefault optionalAttrs;
 in
 {
+  nixpkgs.config.allowUnfree = true;
+
   nix = {
     settings = {
       experimental-features = [
